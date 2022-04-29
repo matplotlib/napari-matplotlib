@@ -1,12 +1,26 @@
 import napari
+import numpy as np
 from matplotlib.backends.backend_qt5agg import FigureCanvas
 from matplotlib.figure import Figure
-from qtpy.QtWidgets import QComboBox, QVBoxLayout, QWidget
-import numpy as np
+from qtpy.QtWidgets import QVBoxLayout, QWidget
 
 
-class ExampleQWidget(QWidget):
+class HistogramWidget(QWidget):
     def __init__(self, napari_viewer: napari.viewer.Viewer):
+        """
+        Widget to display a histogram of the currently selected layer.
+
+        Attributes
+        ----------
+        viewer : napari.viewer.Viewer
+            Main napari viewer.
+        layer : napari.layers.Layer
+            Current layer being histogrammed.
+        canvas : matplotlib.backends.backend_qt5agg.FigureCanvas
+            Matplotlib canvas.
+        axes : matplotlib.axes.Axes
+            Matplotlib axes.
+        """
         super().__init__()
         self.viewer = napari_viewer
         self.layer = self.viewer.layers[0]
@@ -22,13 +36,19 @@ class ExampleQWidget(QWidget):
 
         self.hist_current_layer()
 
-    def update_layer(self, event):
+    def update_layer(self, event: napari.utils.events.Event) -> None:
+        """
+        Update the currently selected layer.
+        """
         # Update current layer when selection changed in viewer
         if event.value:
             self.layer = event.value
             self.hist_current_layer()
 
-    def hist_current_layer(self):
+    def hist_current_layer(self) -> None:
+        """
+        Clear the axes and histogram the currently selected layer/slice.
+        """
         self.axes.clear()
         layer = self.layer
         z = self.viewer.dims.current_step[0]
