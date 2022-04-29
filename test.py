@@ -1,6 +1,7 @@
 import napari
 
 viewer = napari.Viewer()
+viewer.open_sample("napari", "brain")
 viewer.window.add_plugin_dock_widget(
     plugin_name="napari-matplotlib", widget_name="Matplotlib"
 )
