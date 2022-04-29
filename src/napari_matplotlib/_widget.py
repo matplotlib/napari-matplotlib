@@ -23,7 +23,7 @@ class HistogramWidget(QWidget):
         """
         super().__init__()
         self.viewer = napari_viewer
-        self.layer = self.viewer.layers[0]
+        self.layer = self.viewer.layers[-1]
 
         self.canvas = FigureCanvas(Figure(figsize=(5, 3)))
         self.axes = self.canvas.figure.subplots()

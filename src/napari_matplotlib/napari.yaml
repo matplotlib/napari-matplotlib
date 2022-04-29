@@ -2,10 +2,10 @@ name: napari-matplotlib
 display_name: napari Matplotlib
 contributions:
   commands:
-    - id: napari-matplotlib.make_qwidget
-      python_name: napari_matplotlib._widget:ExampleQWidget
-      title: Make example QWidget
+    - id: napari-matplotlib.histogram
+      python_name: napari_matplotlib._widget:HistogramWidget
+      title: Make a histogram
 
   widgets:
-    - command: napari-matplotlib.make_qwidget
-      display_name: Matplotlib
+    - command: napari-matplotlib.histogram
+      display_name: Matplotlib histogram
