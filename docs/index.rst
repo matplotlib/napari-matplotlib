@@ -1,13 +1,17 @@
-.. matplotlib-napari documentation master file, created by
-   sphinx-quickstart on Fri Apr 29 20:57:13 2022.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+matplotlib-napari
+=================
+``matplotlib-napari`` is a ``napari`` plugin for generating ``Matplotlib`` plots
+from one or more ``napari`` Layers.
 
-Welcome to matplotlib-napari's documentation!
-=============================================
+Design
+------
+``matplotlib-napari`` contains a number of different ``napari`` widgets. Each
+widget is designed to map one or more ``napari`` Layers on to a ``Matplotlib``
+plot. As an example, the `~.HistogramWidget` is used to
+map one or more Image layers on to a 1D histogram plot.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Contents:
 
    auto_examples/index

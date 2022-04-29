@@ -31,6 +31,7 @@ extensions = [
     "numpydoc",
     "sphinx_gallery.gen_gallery",
     "sphinx_automodapi.automodapi",
+    "sphinx_automodapi.smart_resolver",
 ]
 
 sphinx_gallery_conf = {
@@ -49,6 +50,7 @@ templates_path = ["_templates"]
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
+default_role = "py:obj"
 
 # -- Options for HTML output -------------------------------------------------
 

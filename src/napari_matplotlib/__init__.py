@@ -4,4 +4,4 @@ except ImportError:
     __version__ = "unknown"
 
 
-from ._widget import *  # NoQA
+from .histogram import *  # NoQA
