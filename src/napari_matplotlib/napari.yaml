@@ -3,7 +3,7 @@ display_name: napari Matplotlib
 contributions:
   commands:
     - id: napari-matplotlib.histogram
-      python_name: napari_matplotlib._widget:HistogramWidget
+      python_name: napari_matplotlib:HistogramWidget
       title: Make a histogram
 
   widgets:

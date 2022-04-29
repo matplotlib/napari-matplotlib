@@ -4,6 +4,8 @@ from matplotlib.backends.backend_qt5agg import FigureCanvas
 from matplotlib.figure import Figure
 from qtpy.QtWidgets import QVBoxLayout, QWidget
 
+__all__ = ["HistogramWidget"]
+
 
 class HistogramWidget(QWidget):
     def __init__(self, napari_viewer: napari.viewer.Viewer):
