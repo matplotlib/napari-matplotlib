@@ -1,15 +1,14 @@
-.. napari-matplotlib documentation main file, created by
-   sphinx-quickstart on Thu Oct  1 00:43:18 2015.
+.. matplotlib-napari documentation master file, created by
+   sphinx-quickstart on Fri Apr 29 20:57:13 2022.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to napari-matplotlib's documentation!
-===============================================================
-
-Contents:
+Welcome to matplotlib-napari's documentation!
+=============================================
 
 .. toctree::
    :maxdepth: 2
+   :caption: Contents:
 
 
 
