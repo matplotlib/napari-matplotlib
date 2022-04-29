@@ -12,7 +12,7 @@ class HistogramWidget(NapariMPLWidget):
 
     Attributes
     ----------
-    layer : napari.layers.Layer
+    layer : `napari.layers.Layer`
         Current layer being histogrammed.
     """
 

@@ -32,6 +32,7 @@ extensions = [
     "sphinx_gallery.gen_gallery",
     "sphinx_automodapi.automodapi",
     "sphinx_automodapi.smart_resolver",
+    "sphinx.ext.intersphinx",
 ]
 
 sphinx_gallery_conf = {
@@ -41,6 +42,11 @@ sphinx_gallery_conf = {
 }
 
 numpydoc_show_class_members = False
+
+intersphinx_mapping = {
+    "napari": ("https://napari.org/", None),
+    "matplotlib": ("https://matplotlib.org/", None),
+}
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]

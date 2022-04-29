@@ -10,13 +10,13 @@ class NapariMPLWidget(QWidget):
     """
     Attributes
     ----------
-    viewer : napari.viewer.Viewer
+    viewer : `napari.Viewer`
         Main napari viewer.
-    figure : matplotlib.figure.Figure
+    figure : `matplotlib.figure.Figure`
         Matplotlib figure.
     canvas : matplotlib.backends.backend_qt5agg.FigureCanvas
         Matplotlib canvas.
-    axes : matplotlib.axes.Axes
+    axes : `matplotlib.axes.Axes`
         Matplotlib axes.
     """
 
