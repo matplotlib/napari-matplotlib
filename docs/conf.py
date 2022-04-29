@@ -13,7 +13,7 @@
 # import os
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
-
+import qtgallery
 
 # -- Project information -----------------------------------------------------
 
@@ -31,6 +31,8 @@ extensions = ["sphinx_gallery.gen_gallery"]
 
 sphinx_gallery_conf = {
     "filename_pattern": ".",
+    "image_scrapers": (qtgallery.qtscraper,),
+    "reset_modules": (qtgallery.reset_qapp,),
 }
 
 # Add any paths that contain templates here, relative to this directory.

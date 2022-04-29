@@ -8,4 +8,4 @@ contributions:
 
   widgets:
     - command: napari-matplotlib.histogram
-      display_name: Matplotlib histogram
+      display_name: Histogram
