@@ -27,13 +27,19 @@ author = "David Stansby"
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ["sphinx_gallery.gen_gallery"]
+extensions = [
+    "numpydoc",
+    "sphinx_gallery.gen_gallery",
+    "sphinx_automodapi.automodapi",
+]
 
 sphinx_gallery_conf = {
     "filename_pattern": ".",
     "image_scrapers": (qtgallery.qtscraper,),
     "reset_modules": (qtgallery.reset_qapp,),
 }
+
+numpydoc_show_class_members = False
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]

@@ -11,6 +11,7 @@ Welcome to matplotlib-napari's documentation!
    :caption: Contents:
 
    auto_examples/index
+   api
 
 
 

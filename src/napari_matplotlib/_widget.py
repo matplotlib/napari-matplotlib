@@ -1,36 +1,9 @@
 import napari
 import numpy as np
-from matplotlib.backends.backend_qt5agg import FigureCanvas
-from matplotlib.figure import Figure
-from qtpy.QtWidgets import QVBoxLayout, QWidget
+
+from .base import NapariMPLWidget
 
 __all__ = ["HistogramWidget"]
-
-
-class NapariMPLWidget(QWidget):
-    """
-    Attributes
-    ----------
-    viewer : napari.viewer.Viewer
-        Main napari viewer.
-    figure : matplotlib.figure.Figure
-        Matplotlib figure.
-    canvas : matplotlib.backends.backend_qt5agg.FigureCanvas
-        Matplotlib canvas.
-    axes : matplotlib.axes.Axes
-        Matplotlib axes.
-    """
-
-    def __init__(self, napari_viewer: napari.viewer.Viewer):
-        super().__init__()
-
-        self.viewer = napari_viewer
-        self.figure = Figure(figsize=(5, 3), tight_layout=True)
-        self.canvas = FigureCanvas(self.figure)
-        self.axes = self.canvas.figure.subplots()
-
-        self.setLayout(QVBoxLayout())
-        self.layout().addWidget(self.canvas)
 
 
 class HistogramWidget(NapariMPLWidget):
