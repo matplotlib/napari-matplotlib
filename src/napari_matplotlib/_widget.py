@@ -11,15 +11,17 @@ class ExampleQWidget(QWidget):
 
         self.setLayout(QVBoxLayout())
 
-        static_canvas = FigureCanvas(Figure(figsize=(5, 3)))
-        self.axes = static_canvas.figure.subplots()
+        self.canvas = FigureCanvas(Figure(figsize=(5, 3)))
+        self.axes = self.canvas.figure.subplots()
 
         self.layer_box = QComboBox()
         self.layout().addWidget(self.layer_box)
-        self.layout().addWidget(static_canvas)
+        self.layout().addWidget(self.canvas)
 
         self.update_layers()
         self.hist_current_layer()
+
+        self.viewer.dims.events.current_step.connect(self.hist_current_layer)
 
     def update_layers(self):
         self.layer_box.clear()
@@ -30,5 +32,8 @@ class ExampleQWidget(QWidget):
         self.axes.clear()
         layer_name = self.layer_box.currentText()
         layer = self.viewer.layers[layer_name]
-        data = layer.data[self.viewer.dims.current_step[0]]
-        self.axes.hist(data.ravel(), bins='auto')
+        z = self.viewer.dims.current_step[0]
+        data = layer.data[z]
+        self.axes.hist(data.ravel(), bins="auto")
+        self.axes.set_title(f"{layer_name}, z={z}")
+        self.canvas.draw()
