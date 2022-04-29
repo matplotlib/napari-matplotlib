@@ -19,8 +19,16 @@ class ExampleQWidget(QWidget):
         self.layout().addWidget(static_canvas)
 
         self.update_layers()
+        self.hist_current_layer()
 
     def update_layers(self):
         self.layer_box.clear()
         names = [layer.name for layer in self.viewer.layers]
         self.layer_box.insertItems(0, names)
+
+    def hist_current_layer(self):
+        self.axes.clear()
+        layer_name = self.layer_box.currentText()
+        layer = self.viewer.layers[layer_name]
+        data = layer.data[self.viewer.dims.current_step[0]]
+        self.axes.hist(data.ravel(), bins='auto')
