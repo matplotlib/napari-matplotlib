@@ -6,6 +6,13 @@ contributions:
       python_name: napari_matplotlib:HistogramWidget
       title: Make a histogram
 
+    - id: napari-matplotlib.scatter
+      python_name: napari_matplotlib:ScatterWidget
+      title: Make a scatter plot
+
   widgets:
     - command: napari-matplotlib.histogram
       display_name: Histogram
+
+    - command: napari-matplotlib.scatter
+      display_name: Scatter
