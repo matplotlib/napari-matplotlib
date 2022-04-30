@@ -36,3 +36,10 @@ class NapariMPLWidget(QWidget):
 
         self.setLayout(QVBoxLayout())
         self.layout().addWidget(self.canvas)
+
+    @property
+    def current_z(self) -> int:
+        """
+        Current z-step of the viewer.
+        """
+        return self.viewer.dims.current_step[0]
