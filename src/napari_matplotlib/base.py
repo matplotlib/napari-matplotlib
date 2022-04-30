@@ -8,6 +8,12 @@ __all__ = ["NapariMPLWidget"]
 
 class NapariMPLWidget(QWidget):
     """
+    Base widget that can be embedded as a napari widget and contains a
+    Matplotlib canvas.
+
+    This creates a single Axes, and sub-classes should implement logic for
+    drawing on that Axes.
+
     Attributes
     ----------
     viewer : `napari.Viewer`
