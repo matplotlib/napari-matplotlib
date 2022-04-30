@@ -3,10 +3,9 @@ Histograms
 ==========
 """
 import napari
-from skimage import data
 
 viewer = napari.Viewer()
-viewer.add_image(data.brain())
+viewer.open_sample("napari", "kidney")
 
 viewer.window.add_plugin_dock_widget(
     plugin_name="napari-matplotlib", widget_name="Histogram"
