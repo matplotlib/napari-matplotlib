@@ -12,6 +12,16 @@ A plugin to create Matplotlib plots from napari layers
 ----------------------------------
 
 ## Introduction
+`napari-matplotlib` is a bridge between `napari` and `matplotlib`, making it easy to create publication quality `Matplotlib` plots based on the data loaded in `napari` layers.
+
+Currently you can:
+
+- Draw histograms of individual image layers
+- Scatter plot two image layers against each other
+
+Here's a demo of the scatter widget:
+
+![](examples/short_scatter.gif)
 
 ## Installation
 
