@@ -6,6 +6,9 @@ from .base import NapariMPLWidget
 __all__ = ["HistogramWidget"]
 
 
+_COLORS = {"r": "tab:red", "g": "tab:green", "b": "tab:blue"}
+
+
 class HistogramWidget(NapariMPLWidget):
     """
     Widget to display a histogram of the currently selected layer.
@@ -40,9 +43,27 @@ class HistogramWidget(NapariMPLWidget):
         """
         self.axes.clear()
         layer = self.layer
-        z = self.viewer.dims.current_step[0]
         bins = np.linspace(np.min(layer.data), np.max(layer.data), 100)
-        data = layer.data[z]
-        self.axes.hist(data.ravel(), bins=bins)
-        self.axes.set_title(f"{layer.name}, z={z}")
+
+        if layer.data.ndim - layer.rgb == 3:
+            # 3D data, can be single channel or RGB
+            data = layer.data[self.current_z]
+            self.axes.set_title(f"z={self.current_z}")
+        else:
+            data = layer.data
+
+        if layer.rgb:
+            # Histogram RGB channels independently
+            for i, c in enumerate("rgb"):
+                self.axes.hist(
+                    data[..., i].ravel(),
+                    bins=bins,
+                    label=c,
+                    histtype="step",
+                    color=_COLORS[c],
+                )
+        else:
+            self.axes.hist(data.ravel(), bins=bins, label=layer.name)
+
+        self.axes.legend()
         self.canvas.draw()
