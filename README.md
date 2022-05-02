@@ -21,7 +21,7 @@ Currently you can:
 
 Here's a demo of the scatter widget:
 
-![](examples/short_scatter.gif)
+![](https://raw.githubusercontent.com/dstansby/napari-matplotlib/main/examples/short_scatter.gif)
 
 ## Installation
 
