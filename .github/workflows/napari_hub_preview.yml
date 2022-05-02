@@ -3,11 +3,11 @@ name: napari hub Preview Page # we use this name to find your preview page artif
 
 on:
   pull_request:
-    branches:
-      - '**'
+    types: [ labeled ]
 
 jobs:
   preview-page:
+    if: ${{ github.event.label.name == 'napari hub preview' }}
     name: Preview Page Deploy
     runs-on: ubuntu-latest
 
