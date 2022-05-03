@@ -1,5 +1,5 @@
 import napari
-from matplotlib.backends.backend_qt5agg import FigureCanvas
+from matplotlib.backends.backend_qt5agg import FigureCanvas, NavigationToolbar2QT
 from matplotlib.figure import Figure
 from qtpy.QtWidgets import QVBoxLayout, QWidget
 
@@ -32,9 +32,11 @@ class NapariMPLWidget(QWidget):
         self.viewer = napari_viewer
         self.figure = Figure(figsize=(5, 3), tight_layout=True)
         self.canvas = FigureCanvas(self.figure)
+        self.toolbar = NavigationToolbar2QT(self.canvas, self)
         self.axes = self.canvas.figure.subplots()
 
         self.setLayout(QVBoxLayout())
+        self.layout().addWidget(self.toolbar)
         self.layout().addWidget(self.canvas)
 
     @property
