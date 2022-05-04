@@ -54,7 +54,7 @@ class NapariMPLWidget(QWidget):
         self.figure = Figure(figsize=(5, 3), tight_layout=True)
         self.canvas = MplCanvas()
         self.toolbar = NavigationToolbar2QT(self.canvas, self)
-        self.axes = self.canvas.figure.subplots()
+        self.axes = self.canvas.axes
 
         self.setLayout(QVBoxLayout())
         self.layout().addWidget(self.toolbar)
