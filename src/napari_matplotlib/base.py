@@ -3,6 +3,15 @@ from matplotlib.backends.backend_qt5agg import FigureCanvas, NavigationToolbar2Q
 from matplotlib.figure import Figure
 from qtpy.QtWidgets import QVBoxLayout, QWidget
 
+import matplotlib as mpl
+mpl.rc('axes', edgecolor='white')
+mpl.rc('axes', facecolor = '#262930')
+mpl.rc('axes', labelcolor = 'white')
+mpl.rc('savefig', facecolor = '#262930')
+mpl.rc('text', color = 'white')
+
+mpl.rc('xtick', color = 'white')
+mpl.rc('ytick', color = 'white')
 __all__ = ["NapariMPLWidget"]
 
 
