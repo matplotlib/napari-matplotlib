@@ -1,49 +1,34 @@
-import napari
 import numpy as np
 
 from .base import NapariMPLWidget
 
 __all__ = ["HistogramWidget"]
 
+import napari
 
 _COLORS = {"r": "tab:red", "g": "tab:green", "b": "tab:blue"}
 
 
 class HistogramWidget(NapariMPLWidget):
     """
-    Widget to display a histogram of the currently selected layer.
-
-    Attributes
-    ----------
-    layer : `napari.layers.Layer`
-        Current layer being histogrammed.
+    Display a histogram of the currently selected layer.
     """
+
+    n_layers_input = 1
 
     def __init__(self, napari_viewer: napari.viewer.Viewer):
         super().__init__(napari_viewer)
         self.axes = self.canvas.figure.subplots()
-        self.layer = self.viewer.layers[-1]
+        self.update_layers(None)
 
-        self.viewer.dims.events.current_step.connect(self.hist_current_layer)
-        self.viewer.layers.selection.events.active.connect(self.update_layer)
+    def clear(self) -> None:
+        self.axes.clear()
 
-        self.hist_current_layer()
-
-    def update_layer(self, event: napari.utils.events.Event) -> None:
-        """
-        Update the currently selected layer.
-        """
-        # Update current layer when selection changed in viewer
-        if event.value:
-            self.layer = event.value
-            self.hist_current_layer()
-
-    def hist_current_layer(self) -> None:
+    def draw(self) -> None:
         """
         Clear the axes and histogram the currently selected layer/slice.
         """
-        self.axes.clear()
-        layer = self.layer
+        layer = self.layers[0]
         bins = np.linspace(np.min(layer.data), np.max(layer.data), 100)
 
         if layer.data.ndim - layer.rgb == 3:
@@ -67,4 +52,3 @@ class HistogramWidget(NapariMPLWidget):
             self.axes.hist(data.ravel(), bins=bins, label=layer.name)
 
         self.axes.legend()
-        self.canvas.draw()
