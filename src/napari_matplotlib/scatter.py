@@ -21,6 +21,7 @@ class ScatterWidget(NapariMPLWidget):
 
     def __init__(self, napari_viewer: napari.viewer.Viewer):
         super().__init__(napari_viewer)
+        self.axes = self.canvas.figure.subplots()
         self.layers = self.viewer.layers[-2:]
 
         self.viewer.dims.events.current_step.connect(
