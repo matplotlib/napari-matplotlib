@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Tuple
 
 import napari
 import numpy as np
@@ -69,7 +69,7 @@ class SliceWidget(NapariMPLWidget):
         self.slice_selectors["z"].setValue(self.current_z)
         self.slice_selectors[self.current_dim].setEnabled(False)
 
-    def draw(self) -> None:
+    def get_xy(self) -> Tuple[np.ndarray, np.ndarray]:
         x = np.arange(self.layer.data.shape[self.current_dim_index])
 
         slices = []
@@ -82,8 +82,17 @@ class SliceWidget(NapariMPLWidget):
                 val = self.selector_values[d]
                 slices.append(slice(val, val + 1))
 
+        # Reverse since z is the first axis in napari
         slices = slices[::-1]
         y = self.layer.data[tuple(slices)].ravel()
+
+        return x, y
+
+    def draw(self) -> None:
+        """
+        Clear axes and draw a 1D plot.
+        """
+        x, y = self.get_xy()
 
         self.axes.plot(x, y)
         self.axes.set_xlabel(self.current_dim)
