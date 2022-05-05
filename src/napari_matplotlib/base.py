@@ -23,8 +23,8 @@ class NapariMPLWidget(QWidget):
     Base widget that can be embedded as a napari widget and contains a
     Matplotlib canvas.
 
-    This creates a single Axes, and sub-classes should implement logic for
-    drawing on that Axes.
+    This creates a single Figure, and sub-classes should implement logic for
+    drawing on that Figure.
 
     Attributes
     ----------
@@ -34,8 +34,6 @@ class NapariMPLWidget(QWidget):
         Matplotlib figure.
     canvas : matplotlib.backends.backend_qt5agg.FigureCanvas
         Matplotlib canvas.
-    axes : `matplotlib.axes.Axes`
-        Matplotlib axes.
     """
 
     def __init__(self, napari_viewer: napari.viewer.Viewer):
@@ -46,7 +44,6 @@ class NapariMPLWidget(QWidget):
         self.canvas = FigureCanvas()
         self.canvas.figure.patch.set_facecolor("#262930")
         self.toolbar = NavigationToolbar2QT(self.canvas, self)
-        self.axes = self.canvas.figure.subplots()
 
         self.setLayout(QVBoxLayout())
         self.layout().addWidget(self.toolbar)
