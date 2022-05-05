@@ -83,7 +83,7 @@ class NapariMPLWidget(QWidget):
 
     def update_layers(self, event: napari.utils.events.Event) -> None:
         """
-        Update the currently selected layers and re-draw.
+        Update the layers attribute with currently selected layers and re-draw.
         """
         self.layers = list(self.viewer.layers.selection)
         self._draw()

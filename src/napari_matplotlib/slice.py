@@ -4,7 +4,7 @@ import napari
 import numpy as np
 from qtpy.QtWidgets import QComboBox, QHBoxLayout, QSpinBox
 
-from napari_matplotlib.base import SingleLayerWidget
+from napari_matplotlib.base import NapariMPLWidget
 
 __all__ = ["SliceWidget"]
 
@@ -15,6 +15,7 @@ class SliceWidget(NapariMPLWidget):
     """
     Plot a 1D slice along a given dimension.
     """
+
     n_layers_input = 1
 
     def __init__(self, napari_viewer: napari.viewer.Viewer):
@@ -33,8 +34,11 @@ class SliceWidget(NapariMPLWidget):
             self.slice_selectors[d] = QSpinBox()
             button_layout.addWidget(self.slice_selectors[d])
 
-        self.update_slice_selectors()
-        self.draw()
+        self.update_layers(None)
+
+    @property
+    def layer(self):
+        return self.layers[0]
 
     @property
     def current_dim(self) -> str:
@@ -88,10 +92,14 @@ class SliceWidget(NapariMPLWidget):
 
         return x, y
 
+    def clear(self) -> None:
+        self.axes.cla()
+
     def draw(self) -> None:
         """
         Clear axes and draw a 1D plot.
         """
+        self.update_slice_selectors()
         x, y = self.get_xy()
 
         self.axes.plot(x, y)
