@@ -79,13 +79,14 @@ class NapariMPLWidget(QWidget):
         # z-step changed in viewer
         self.viewer.dims.events.current_step.connect(self._draw)
         # Layer selection changed in viewer
-        self.viewer.layers.selection.events.active.connect(self.update_layers)
+        self.viewer.layers.selection.events.changed.connect(self.update_layers)
 
     def update_layers(self, event: napari.utils.events.Event) -> None:
         """
         Update the currently selected layers and re-draw.
         """
         self.layers = list(self.viewer.layers.selection)
+        self._on_update_layers()
         self._draw()
 
     def _draw(self) -> None:
@@ -95,6 +96,7 @@ class NapariMPLWidget(QWidget):
         """
         self.clear()
         if self.n_selected_layers != self.n_layers_input:
+            self.canvas.draw()
             return
         self.draw()
         self.canvas.draw()
@@ -109,6 +111,12 @@ class NapariMPLWidget(QWidget):
     def draw(self) -> None:
         """
         Re-draw any figures.
+
+        This is a no-op, and is intended for derived classes to override.
+        """
+
+    def _on_update_layers(self) -> None:
+        """This function is called when self.layers is updated via self.update_layer()
 
         This is a no-op, and is intended for derived classes to override.
         """
