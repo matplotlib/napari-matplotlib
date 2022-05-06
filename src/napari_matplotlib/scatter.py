@@ -65,7 +65,20 @@ class ScatterBaseWidget(NapariMPLWidget):
         self.axes.set_xlabel(x_axis_name)
         self.axes.set_ylabel(y_axis_name)
 
-    def _get_data(self) -> Tuple[np.ndarray, str, str]:
+    def _get_data(self) -> Tuple[List[np.ndarray], str, str]:
+        """Get the plot data.
+
+        This must be implemented on the subclass.
+
+        Returns
+        -------
+        data : np.ndarray
+            The list containing the scatter plot data.
+        x_axis_name : str
+            The title to display on the x axis
+        y_axis_name: str
+            The title to display on the y axis
+        """
         raise NotImplementedError
 
 
@@ -91,7 +104,18 @@ class ScatterWidget(ScatterBaseWidget):
             histogram_for_large_data=histogram_for_large_data,
         )
 
-    def _get_data(self) -> Tuple[np.ndarray, str, str]:
+    def _get_data(self) -> Tuple[List[np.ndarray], str, str]:
+        """Get the plot data.
+
+        Returns
+        -------
+        data : List[np.ndarray]
+            List contains the in view slice of X and Y axis images.
+        x_axis_name : str
+            The title to display on the x axis
+        y_axis_name: str
+            The title to display on the y axis
+        """
         data = [layer.data[self.current_z] for layer in self.layers]
         x_axis_name = self.layers[0].name
         y_axis_name = self.layers[1].name
@@ -152,12 +176,39 @@ class FeaturesScatterWidget(ScatterBaseWidget):
         self._draw()
 
     def _get_valid_axis_keys(self, combo_widget=None) -> List[str]:
-        if len(self.layers) == 0:
+        """Get the valid axis keys from the layer FeatureTable.
+
+        Returns
+        -------
+        axis_keys : List[str]
+            The valid axis keys in the FeatureTable. If the table is empty
+            or there isn't a table, returns an empty list.
+        """
+        if len(self.layers) == 0 or not (hasattr(self.layers[0], "features")):
             return []
         else:
             return self.layers[0].features.keys()
 
-    def _get_data(self) -> Tuple[np.ndarray, str, str]:
+    def _get_data(self) -> Tuple[List[np.ndarray], str, str]:
+        """Get the plot data.
+
+        Returns
+        -------
+        data : List[np.ndarray]
+            List contains X and Y columns from the FeatureTable. Returns
+            an empty array if nothing to plot.
+        x_axis_name : str
+            The title to display on the x axis. Returns
+            an empty string if nothing to plot.
+        y_axis_name: str
+            The title to display on the y axis. Returns
+            an empty string if nothing to plot.
+        """
+        if not hasattr(self.layers[0], "features"):
+            # if the selected layer doesn't have a featuretable,
+            # skip draw
+            return np.array([]), "", ""
+
         feature_table = self.layers[0].features
 
         if (
@@ -169,7 +220,7 @@ class FeaturesScatterWidget(ScatterBaseWidget):
 
         data_x = feature_table[self.x_axis_key]
         data_y = feature_table[self.y_axis_key]
-        data = np.stack((data_x, data_y))
+        data = [data_x, data_y]
 
         x_axis_name = self.x_axis_key.replace("_", " ")
         y_axis_name = self.y_axis_key.replace("_", " ")
