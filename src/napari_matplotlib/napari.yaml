@@ -10,9 +10,16 @@ contributions:
       python_name: napari_matplotlib:ScatterWidget
       title: Make a scatter plot
 
+    - id: napari-matplotlib.slice
+      python_name: napari_matplotlib:SliceWidget
+      title: Plot a 1D slice
+
   widgets:
     - command: napari-matplotlib.histogram
       display_name: Histogram
 
     - command: napari-matplotlib.scatter
       display_name: Scatter
+
+    - command: napari-matplotlib.slice
+      display_name: 1D slice
