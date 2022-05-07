@@ -47,6 +47,7 @@ class NapariMPLWidget(QWidget):
 
         self.viewer = napari_viewer
         self.canvas = FigureCanvas()
+        self.canvas.figure.set_tight_layout(True)
         self.canvas.figure.patch.set_facecolor("#262930")
         self.toolbar = NavigationToolbar2QT(self.canvas, self)
 
