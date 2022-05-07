@@ -5,4 +5,4 @@ except ImportError:
 
 
 from .histogram import *  # NoQA
-from .scatter import FeaturesScatterWidget, ScatterWidget  # NoQA
+from .scatter import *  # NoQA

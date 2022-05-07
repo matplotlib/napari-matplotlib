@@ -7,7 +7,7 @@ from magicgui import magicgui
 
 from .base import NapariMPLWidget
 
-__all__ = ["ScatterWidget"]
+__all__ = ["ScatterWidget", "FeaturesScatterWidget"]
 
 
 class ScatterBaseWidget(NapariMPLWidget):
