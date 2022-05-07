@@ -2,12 +2,13 @@ from typing import Dict, Tuple
 
 import napari
 import numpy as np
-from qtpy.QtWidgets import QComboBox, QHBoxLayout, QSpinBox
+from qtpy.QtWidgets import QComboBox, QHBoxLayout, QLabel, QSpinBox
 
 from napari_matplotlib.base import NapariMPLWidget
 
 __all__ = ["SliceWidget"]
 
+_dims_sel = ["x", "y"]
 _dims = ["x", "y", "z"]
 
 
@@ -19,6 +20,7 @@ class SliceWidget(NapariMPLWidget):
     n_layers_input = 1
 
     def __init__(self, napari_viewer: napari.viewer.Viewer):
+        # Setup figure/axes
         super().__init__(napari_viewer)
         self.axes = self.canvas.figure.subplots()
 
@@ -26,13 +28,21 @@ class SliceWidget(NapariMPLWidget):
         self.layout().addLayout(button_layout)
 
         self.dim_selector = QComboBox()
+        button_layout.addWidget(QLabel("Slice axis:"))
         button_layout.addWidget(self.dim_selector)
         self.dim_selector.addItems(_dims)
 
         self.slice_selectors = {}
-        for d in _dims:
+        for d in _dims_sel:
             self.slice_selectors[d] = QSpinBox()
+            button_layout.addWidget(QLabel(f"{d}:"))
             button_layout.addWidget(self.slice_selectors[d])
+
+        # Setup callbacks
+        # Re-draw when any of the combon/spin boxes are updated
+        self.dim_selector.currentTextChanged.connect(self._draw)
+        for d in _dims_sel:
+            self.slice_selectors[d].textChanged.connect(self._draw)
 
         self.update_layers(None)
 
@@ -58,7 +68,7 @@ class SliceWidget(NapariMPLWidget):
 
     @property
     def selector_values(self) -> Dict[str, int]:
-        return {d: self.slice_selectors[d].value() for d in _dims}
+        return {d: self.slice_selectors[d].value() for d in _dims_sel}
 
     def update_slice_selectors(self) -> None:
         """
@@ -66,15 +76,17 @@ class SliceWidget(NapariMPLWidget):
         of the z slice selector.
         """
         # Update min/max
-        for i, dim in enumerate(_dims):
+        for i, dim in enumerate(_dims_sel):
             self.slice_selectors[dim].setRange(0, self.layer.data.shape[i])
 
-        # The z dimension is always set by current z in the viewer
-        self.slice_selectors["z"].setValue(self.current_z)
-        self.slice_selectors[self.current_dim].setEnabled(False)
-
     def get_xy(self) -> Tuple[np.ndarray, np.ndarray]:
+        """
+        Get data for plotting.
+        """
         x = np.arange(self.layer.data.shape[self.current_dim_index])
+
+        vals = self.selector_values
+        vals.update({"z": self.current_z})
 
         slices = []
         for d in _dims:
@@ -83,7 +95,7 @@ class SliceWidget(NapariMPLWidget):
                 slices.append(slice(None))
             else:
                 # Select specific index
-                val = self.selector_values[d]
+                val = vals[d]
                 slices.append(slice(val, val + 1))
 
         # Reverse since z is the first axis in napari
@@ -99,7 +111,6 @@ class SliceWidget(NapariMPLWidget):
         """
         Clear axes and draw a 1D plot.
         """
-        self.update_slice_selectors()
         x, y = self.get_xy()
 
         self.axes.plot(x, y)
