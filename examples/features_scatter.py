@@ -10,7 +10,9 @@ label_image = np.zeros((100, 100), dtype=np.uint16)
 label_image[10:20, 10:20] = 1
 label_image[50:70, 50:70] = 2
 
-feature_table_1 = regionprops_table(label_image, properties=("label",))
+feature_table_1 = regionprops_table(
+    label_image, properties=("label", "area", "perimeter")
+)
 feature_table_1["index"] = feature_table_1["label"]
 
 # make the points data
