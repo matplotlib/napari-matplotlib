@@ -11,33 +11,25 @@ __all__ = ["ScatterWidget", "FeaturesScatterWidget"]
 
 
 class ScatterBaseWidget(NapariMPLWidget):
+    # opacity value for the markers
+    _marker_alpha = 0.5
+
+    # flag set to True if histogram should be used
+    # for plotting large points
+    _histogram_for_large_data = True
+
+    # if the number of points is greater than this value,
+    # the scatter is plotted as a 2dhist
+    _threshold_to_switch_to_histogram = 500
+
     def __init__(
         self,
         napari_viewer: napari.viewer.Viewer,
-        marker_alpha: float = 0.5,
-        histogram_for_large_data: bool = True,
     ):
         super().__init__(napari_viewer)
 
-        # flag set to True if histogram should be used
-        # for plotting large points
-        self.histogram_for_large_data = histogram_for_large_data
-
-        # set plotting visualization attributes
-        self._marker_alpha = 0.5
-
         self.axes = self.canvas.figure.subplots()
         self.update_layers(None)
-
-    @property
-    def marker_alpha(self) -> float:
-        """Alpha (opacity) for the scatter markers"""
-        return self._marker_alpha
-
-    @marker_alpha.setter
-    def marker_alpha(self, alpha: float):
-        self._marker_alpha = alpha
-        self._draw()
 
     def clear(self) -> None:
         self.axes.clear()
@@ -52,7 +44,7 @@ class ScatterBaseWidget(NapariMPLWidget):
             # don't plot if there isn't data
             return
 
-        if self.histogram_for_large_data and (data[0].size > 500):
+        if self._histogram_for_large_data and (data[0].size > 500):
             self.axes.hist2d(
                 data[0].ravel(),
                 data[1].ravel(),
@@ -60,7 +52,7 @@ class ScatterBaseWidget(NapariMPLWidget):
                 norm=mcolor.LogNorm(),
             )
         else:
-            self.axes.scatter(data[0], data[1], alpha=self.marker_alpha)
+            self.axes.scatter(data[0], data[1], alpha=self._marker_alpha)
 
         self.axes.set_xlabel(x_axis_name)
         self.axes.set_ylabel(y_axis_name)
@@ -95,13 +87,9 @@ class ScatterWidget(ScatterBaseWidget):
     def __init__(
         self,
         napari_viewer: napari.viewer.Viewer,
-        marker_alpha: float = 0.5,
-        histogram_for_large_data: bool = True,
     ):
         super().__init__(
             napari_viewer,
-            marker_alpha=marker_alpha,
-            histogram_for_large_data=histogram_for_large_data,
         )
 
     def _get_data(self) -> Tuple[List[np.ndarray], str, str]:
@@ -129,15 +117,11 @@ class FeaturesScatterWidget(ScatterBaseWidget):
     def __init__(
         self,
         napari_viewer: napari.viewer.Viewer,
-        marker_alpha: float = 0.5,
-        histogram_for_large_data: bool = True,
         key_selection_gui: bool = True,
     ):
         self._key_selection_widget = None
         super().__init__(
             napari_viewer,
-            marker_alpha=marker_alpha,
-            histogram_for_large_data=histogram_for_large_data,
         )
 
         if key_selection_gui is True:

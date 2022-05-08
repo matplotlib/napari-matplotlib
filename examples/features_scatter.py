@@ -2,8 +2,6 @@ import napari
 import numpy as np
 from skimage.measure import regionprops_table
 
-from napari_matplotlib.scatter import FeaturesScatterWidget
-
 # make a test label image
 label_image = np.zeros((100, 100), dtype=np.uint16)
 
@@ -30,8 +28,9 @@ viewer.add_labels(label_image, features=feature_table_1)
 viewer.add_points(points_data, features=points_features)
 
 # make the widget
-features_widget = FeaturesScatterWidget(viewer, histogram_for_large_data=False)
-viewer.window.add_dock_widget(features_widget)
+viewer.window.add_plugin_dock_widget(
+    plugin_name="napari-matplotlib", widget_name="FeaturesScatter"
+)
 
 if __name__ == "__main__":
     napari.run()
