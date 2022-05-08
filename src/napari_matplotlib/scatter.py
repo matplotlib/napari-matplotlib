@@ -75,16 +75,16 @@ class ScatterBaseWidget(NapariMPLWidget):
         data : np.ndarray
             The list containing the scatter plot data.
         x_axis_name : str
-            The title to display on the x axis
+            The label to display on the x axis
         y_axis_name: str
-            The title to display on the y axis
+            The label to display on the y axis
         """
         raise NotImplementedError
 
 
 class ScatterWidget(ScatterBaseWidget):
     """
-    Widget to display scatter plot of two similarly shaped layers.
+    Widget to display scatter plot of two similarly shaped image layers.
 
     If there are more than 500 data points, a 2D histogram is displayed instead
     of a scatter plot, to avoid too many scatter points.

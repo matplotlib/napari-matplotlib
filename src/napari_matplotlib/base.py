@@ -116,7 +116,7 @@ class NapariMPLWidget(QWidget):
         """
 
     def _on_update_layers(self) -> None:
-        """This function is called when self.layers is updated via self.update_layer()
+        """This function is called when self.layers is updated via self.update_layers()
 
         This is a no-op, and is intended for derived classes to override.
         """
