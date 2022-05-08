@@ -44,7 +44,9 @@ class ScatterBaseWidget(NapariMPLWidget):
             # don't plot if there isn't data
             return
 
-        if self._histogram_for_large_data and (data[0].size > 500):
+        if self._histogram_for_large_data and (
+            data[0].size > self._threshold_to_switch_to_histogram
+        ):
             self.axes.hist2d(
                 data[0].ravel(),
                 data[1].ravel(),
