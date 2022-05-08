@@ -6,6 +6,7 @@ import numpy as np
 from magicgui import magicgui
 
 from .base import NapariMPLWidget
+from .util import Interval
 
 __all__ = ["ScatterWidget", "FeaturesScatterWidget"]
 
@@ -84,7 +85,8 @@ class ScatterWidget(ScatterBaseWidget):
     of a scatter plot, to avoid too many scatter points.
     """
 
-    n_layers_input = 2
+    n_layers_input = Interval(2, 2)
+    input_layer_types = (napari.layers.Image,)
 
     def __init__(
         self,

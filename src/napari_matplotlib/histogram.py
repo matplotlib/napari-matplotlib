@@ -6,6 +6,8 @@ __all__ = ["HistogramWidget"]
 
 import napari
 
+from .util import Interval
+
 _COLORS = {"r": "tab:red", "g": "tab:green", "b": "tab:blue"}
 
 
@@ -14,7 +16,8 @@ class HistogramWidget(NapariMPLWidget):
     Display a histogram of the currently selected layer.
     """
 
-    n_layers_input = 1
+    n_layers_input = Interval(1, 1)
+    input_layer_types = (napari.layers.Image,)
 
     def __init__(self, napari_viewer: napari.viewer.Viewer):
         super().__init__(napari_viewer)
