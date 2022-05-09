@@ -5,6 +5,9 @@ from matplotlib.backends.backend_qt5agg import (
     NavigationToolbar2QT,
 )
 from qtpy.QtWidgets import QVBoxLayout, QWidget
+from qtpy.QtGui import QIcon
+from pathlib import Path
+import os
 
 mpl.rc("axes", edgecolor="white")
 mpl.rc("axes", facecolor="#262930")
@@ -15,6 +18,9 @@ mpl.rc("text", color="white")
 mpl.rc("xtick", color="white")
 mpl.rc("ytick", color="white")
 
+# Icons modified from
+# https://github.com/matplotlib/matplotlib/tree/main/lib/matplotlib/mpl-data/images
+ICON_ROOT = Path(__file__).parent / "icons"
 __all__ = ["NapariMPLWidget"]
 
 
@@ -47,8 +53,10 @@ class NapariMPLWidget(QWidget):
 
         self.viewer = napari_viewer
         self.canvas = FigureCanvas()
+        self.canvas.figure.set_tight_layout(True)
         self.canvas.figure.patch.set_facecolor("#262930")
-        self.toolbar = NavigationToolbar2QT(self.canvas, self)
+        self.toolbar = NapariNavigationToolbar(self.canvas, self)
+        self._replace_toolbar_icons()
 
         self.setLayout(QVBoxLayout())
         self.layout().addWidget(self.toolbar)
@@ -115,8 +123,54 @@ class NapariMPLWidget(QWidget):
         This is a no-op, and is intended for derived classes to override.
         """
 
+
     def _on_update_layers(self) -> None:
         """This function is called when self.layers is updated via self.update_layers()
 
         This is a no-op, and is intended for derived classes to override.
         """
+
+    def _replace_toolbar_icons(self):
+        # Modify toolbar icons and some tooltips
+        for action in self.toolbar.actions():
+            text = action.text()
+            if text == "Pan":
+                action.setToolTip(
+                    "Pan/Zoom: Left button pans; Right button zooms; Click once to activate; Click again to deactivate"
+                )
+            if text == "Zoom":
+                action.setToolTip(
+                    "Zoom to rectangle; Click once to activate; Click again to deactivate"
+                )
+            if len(text) > 0:  # i.e. not a separator item
+                icon_path = os.path.join(ICON_ROOT, text + ".png")
+                action.setIcon(QIcon(icon_path))
+
+
+class NapariNavigationToolbar(NavigationToolbar2QT):
+    """Custom Toolbar style for Napari."""
+
+    def __init__(self, canvas, parent):
+        super().__init__(canvas, parent)
+
+    def _update_buttons_checked(self):
+        """Update toggle tool icons when selected/unselected."""
+        super()._update_buttons_checked()
+        # changes pan/zoom icons depending on state (checked or not)
+        if "pan" in self._actions:
+            if self._actions["pan"].isChecked():
+                self._actions["pan"].setIcon(
+                    QIcon(os.path.join(ICON_ROOT, "Pan_checked.png"))
+                )
+            else:
+                self._actions["pan"].setIcon(QIcon(os.path.join(ICON_ROOT,
+                                                                "Pan.png")))
+        if "zoom" in self._actions:
+            if self._actions["zoom"].isChecked():
+                self._actions["zoom"].setIcon(
+                    QIcon(os.path.join(ICON_ROOT, "Zoom_checked.png"))
+                )
+            else:
+                self._actions["zoom"].setIcon(
+                    QIcon(os.path.join(ICON_ROOT, "Zoom.png"))
+                )
