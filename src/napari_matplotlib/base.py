@@ -125,7 +125,9 @@ class NapariMPLWidget(QWidget):
         """
 
     def _on_update_layers(self) -> None:
-        """This function is called when self.layers is updated via self.update_layers()
+        """
+        This function is called when self.layers is updated via
+        ``self.update_layers()``.
 
         This is a no-op, and is intended for derived classes to override.
         """
@@ -136,11 +138,13 @@ class NapariMPLWidget(QWidget):
             text = action.text()
             if text == "Pan":
                 action.setToolTip(
-                    "Pan/Zoom: Left button pans; Right button zooms; Click once to activate; Click again to deactivate"
+                    "Pan/Zoom: Left button pans; Right button zooms; "
+                    "Click once to activate; Click again to deactivate"
                 )
             if text == "Zoom":
                 action.setToolTip(
-                    "Zoom to rectangle; Click once to activate; Click again to deactivate"
+                    "Zoom to rectangle; Click once to activate; "
+                    "Click again to deactivate"
                 )
             if len(text) > 0:  # i.e. not a separator item
                 icon_path = os.path.join(ICON_ROOT, text + ".png")
@@ -149,9 +153,6 @@ class NapariMPLWidget(QWidget):
 
 class NapariNavigationToolbar(NavigationToolbar2QT):
     """Custom Toolbar style for Napari."""
-
-    def __init__(self, canvas, parent):
-        super().__init__(canvas, parent)
 
     def _update_buttons_checked(self):
         """Update toggle tool icons when selected/unselected."""
