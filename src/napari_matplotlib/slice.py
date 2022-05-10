@@ -1,8 +1,8 @@
-from typing import Dict, Tuple
+from typing import Tuple
 
 import napari
 import numpy as np
-from qtpy.QtWidgets import QComboBox, QHBoxLayout, QLabel, QSpinBox
+from magicgui import magicgui
 
 from napari_matplotlib.base import NapariMPLWidget
 
@@ -24,68 +24,51 @@ class SliceWidget(NapariMPLWidget):
         super().__init__(napari_viewer)
         self.axes = self.canvas.figure.subplots()
 
-        button_layout = QHBoxLayout()
-        self.layout().addLayout(button_layout)
+        self._selection_widget = magicgui(
+            self._set_selector_values,
+            dim={"choices": ["x", "y", "z"]},
+            x_val={"min": 0, "max": 1},
+            y_val={"min": 0, "max": 1},
+            call_button=False,
+            auto_call=True,
+            layout="horizontal",
+        )
 
-        self.dim_selector = QComboBox()
-        button_layout.addWidget(QLabel("Slice axis:"))
-        button_layout.addWidget(self.dim_selector)
-        self.dim_selector.addItems(_dims)
-
-        self.slice_selectors = {}
-        for d in _dims_sel:
-            self.slice_selectors[d] = QSpinBox()
-            button_layout.addWidget(QLabel(f"{d}:"))
-            button_layout.addWidget(self.slice_selectors[d])
-
-        # Setup callbacks
-        # Re-draw when any of the combon/spin boxes are updated
-        self.dim_selector.currentTextChanged.connect(self._draw)
-        for d in _dims_sel:
-            self.slice_selectors[d].textChanged.connect(self._draw)
-
+        # Set initial default values
+        self._vals = {"x": 0, "y": 0}
+        self.current_dim = "x"
+        self.layout().addWidget(self._selection_widget.native)
         self.update_layers(None)
 
     @property
     def layer(self):
         return self.layers[0]
 
-    @property
-    def current_dim(self) -> str:
+    def _on_update_layers(self) -> None:
         """
-        Currently selected slice dimension.
+        Change the range widget maxima when layer selection changed.
         """
-        return self.dim_selector.currentText()
+        if len(self.layers) == 1:
+            self._selection_widget.x_val.max = self.layer.data.shape[2]
+            self._selection_widget.y_val.max = self.layer.data.shape[1]
 
-    @property
-    def current_dim_index(self) -> int:
+    def _set_selector_values(self, dim: str, x_val: int, y_val: int):
         """
-        Currently selected slice dimension index.
+        Set dimension and slice values, and re-draw the plot.
         """
-        # Note the reversed list because in napari the z-axis is the first
-        # numpy axis
-        return _dims[::-1].index(self.current_dim)
-
-    @property
-    def selector_values(self) -> Dict[str, int]:
-        return {d: self.slice_selectors[d].value() for d in _dims_sel}
-
-    def update_slice_selectors(self) -> None:
-        """
-        Update range and enabled status of the slice selectors, and the value
-        of the z slice selector.
-        """
-        # Update min/max
-        for i, dim in enumerate(_dims_sel):
-            self.slice_selectors[dim].setRange(0, self.layer.data.shape[i])
+        self.current_dim = dim
+        self._vals["x"] = x_val
+        self._vals["y"] = y_val
+        self._draw()
 
     def get_xy(self) -> Tuple[np.ndarray, np.ndarray]:
         """
         Get data for plotting.
         """
-        x = np.arange(self.layer.data.shape[self.current_dim_index])
+        dim_index = _dims[::-1].index(self.current_dim)
+        x = np.arange(self.layer.data.shape[dim_index])
 
-        vals = self.selector_values
+        vals = self._vals
         vals.update({"z": self.current_z})
 
         slices = []
@@ -108,9 +91,6 @@ class SliceWidget(NapariMPLWidget):
         self.axes.cla()
 
     def draw(self) -> None:
-        """
-        Clear axes and draw a 1D plot.
-        """
         x, y = self.get_xy()
 
         self.axes.plot(x, y)
