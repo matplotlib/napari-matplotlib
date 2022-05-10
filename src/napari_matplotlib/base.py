@@ -1,13 +1,14 @@
+import os
+from pathlib import Path
+
 import matplotlib as mpl
 import napari
 from matplotlib.backends.backend_qt5agg import (
     FigureCanvas,
     NavigationToolbar2QT,
 )
-from qtpy.QtWidgets import QVBoxLayout, QWidget
 from qtpy.QtGui import QIcon
-from pathlib import Path
-import os
+from qtpy.QtWidgets import QVBoxLayout, QWidget
 
 mpl.rc("axes", edgecolor="white")
 mpl.rc("axes", facecolor="#262930")
@@ -123,7 +124,6 @@ class NapariMPLWidget(QWidget):
         This is a no-op, and is intended for derived classes to override.
         """
 
-
     def _on_update_layers(self) -> None:
         """This function is called when self.layers is updated via self.update_layers()
 
@@ -163,8 +163,9 @@ class NapariNavigationToolbar(NavigationToolbar2QT):
                     QIcon(os.path.join(ICON_ROOT, "Pan_checked.png"))
                 )
             else:
-                self._actions["pan"].setIcon(QIcon(os.path.join(ICON_ROOT,
-                                                                "Pan.png")))
+                self._actions["pan"].setIcon(
+                    QIcon(os.path.join(ICON_ROOT, "Pan.png"))
+                )
         if "zoom" in self._actions:
             if self._actions["zoom"].isChecked():
                 self._actions["zoom"].setIcon(
