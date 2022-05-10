@@ -8,7 +8,11 @@ contributions:
 
     - id: napari-matplotlib.scatter
       python_name: napari_matplotlib:ScatterWidget
-      title: Make a scatter plot
+      title: Make a scatter plot of image intensities
+
+    - id: napari-matplotlib.features_scatter
+      python_name: napari_matplotlib:FeaturesScatterWidget
+      title: Make a scatter plot of layer features
 
     - id: napari-matplotlib.slice
       python_name: napari_matplotlib:SliceWidget
@@ -20,6 +24,9 @@ contributions:
 
     - command: napari-matplotlib.scatter
       display_name: Scatter
+
+    - command: napari-matplotlib.features_scatter
+      display_name: FeaturesScatter
 
     - command: napari-matplotlib.slice
       display_name: 1D slice
