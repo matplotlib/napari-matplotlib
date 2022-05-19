@@ -4,6 +4,7 @@ import matplotlib.colors as mcolor
 import napari
 import numpy as np
 from magicgui import magicgui
+from magicgui.widgets import ComboBox
 
 from .base import NapariMPLWidget
 from .util import Interval
@@ -135,7 +136,7 @@ class FeaturesScatterWidget(ScatterBaseWidget):
         return self._x_axis_key
 
     @x_axis_key.setter
-    def x_axis_key(self, key: Optional[str]):
+    def x_axis_key(self, key: Optional[str]) -> None:
         self._x_axis_key = key
         self._draw()
 
@@ -145,17 +146,19 @@ class FeaturesScatterWidget(ScatterBaseWidget):
         return self._y_axis_key
 
     @y_axis_key.setter
-    def y_axis_key(self, key: Optional[str]):
+    def y_axis_key(self, key: Optional[str]) -> None:
         self._y_axis_key = key
         self._draw()
 
-    def _set_axis_keys(self, x_axis_key: str, y_axis_key: str):
+    def _set_axis_keys(self, x_axis_key: str, y_axis_key: str) -> None:
         """Set both axis keys and then redraw the plot"""
         self._x_axis_key = x_axis_key
         self._y_axis_key = y_axis_key
         self._draw()
 
-    def _get_valid_axis_keys(self, combo_widget=None) -> List[str]:
+    def _get_valid_axis_keys(
+        self, combo_widget: Optional[ComboBox] = None
+    ) -> List[str]:
         """
         Get the valid axis keys from the layer FeatureTable.
 
@@ -188,7 +191,7 @@ class FeaturesScatterWidget(ScatterBaseWidget):
         if not hasattr(self.layers[0], "features"):
             # if the selected layer doesn't have a featuretable,
             # skip draw
-            return np.array([]), "", ""
+            return [], "", ""
 
         feature_table = self.layers[0].features
 
@@ -197,7 +200,7 @@ class FeaturesScatterWidget(ScatterBaseWidget):
             or (self.x_axis_key is None)
             or (self.y_axis_key is None)
         ):
-            return np.array([]), "", ""
+            return [], "", ""
 
         data_x = feature_table[self.x_axis_key]
         data_y = feature_table[self.y_axis_key]

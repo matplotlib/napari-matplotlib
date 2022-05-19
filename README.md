@@ -5,6 +5,7 @@
 [![Python Version](https://img.shields.io/pypi/pyversions/napari-matplotlib.svg?color=green)](https://python.org)
 [![tests](https://github.com/dstansby/napari-matplotlib/workflows/tests/badge.svg)](https://github.com/dstansby/napari-matplotlib/actions)
 [![codecov](https://codecov.io/gh/dstansby/napari-matplotlib/branch/main/graph/badge.svg)](https://codecov.io/gh/dstansby/napari-matplotlib)
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/matplotlib/pytest-mpl/master.svg)](https://results.pre-commit.ci/latest/github/matplotlib/pytest-mpl/master)
 [![napari hub](https://img.shields.io/endpoint?url=https://api.napari-hub.org/shields/napari-matplotlib)](https://napari-hub.org/plugins/napari-matplotlib)
 
 A plugin to create Matplotlib plots from napari layers
