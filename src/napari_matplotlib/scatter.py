@@ -110,13 +110,13 @@ class FeaturesScatterWidget(ScatterBaseWidget):
 
     def __init__(self, napari_viewer: napari.viewer.Viewer):
         super().__init__(napari_viewer)
-
         self._key_selection_widget = magicgui(
             self._set_axis_keys,
             x_axis_key={"choices": self._get_valid_axis_keys},
             y_axis_key={"choices": self._get_valid_axis_keys},
             call_button="plot",
         )
+
         self.layout().addWidget(self._key_selection_widget.native)
 
     @property
@@ -202,7 +202,7 @@ class FeaturesScatterWidget(ScatterBaseWidget):
         This is called when the layer selection changes by
         ``self.update_layers()``.
         """
-        if self._key_selection_widget is not None:
+        if hasattr(self, "_key_selection_widget"):
             self._key_selection_widget.reset_choices()
 
         # reset the axis keys
