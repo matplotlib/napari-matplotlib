@@ -4,7 +4,8 @@ import napari
 import numpy as np
 from qtpy.QtWidgets import QComboBox, QHBoxLayout, QLabel, QSpinBox
 
-from napari_matplotlib.base import NapariMPLWidget
+from .base import NapariMPLWidget
+from .util import Interval
 
 __all__ = ["SliceWidget"]
 
@@ -17,7 +18,8 @@ class SliceWidget(NapariMPLWidget):
     Plot a 1D slice along a given dimension.
     """
 
-    n_layers_input = 1
+    n_layers_input = Interval(1, 1)
+    input_layer_types = (napari.layers.Image,)
 
     def __init__(self, napari_viewer: napari.viewer.Viewer):
         # Setup figure/axes

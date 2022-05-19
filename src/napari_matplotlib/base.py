@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from typing import Tuple
 
 import matplotlib as mpl
 import napari
@@ -9,6 +10,8 @@ from matplotlib.backends.backend_qt5agg import (
 )
 from qtpy.QtGui import QIcon
 from qtpy.QtWidgets import QVBoxLayout, QWidget
+
+from .util import Interval
 
 mpl.rc("axes", edgecolor="white")
 mpl.rc("axes", facecolor="#262930")
@@ -65,6 +68,11 @@ class NapariMPLWidget(QWidget):
 
         self.setup_callbacks()
 
+    # Accept any number of input layers by default
+    n_layers_input = Interval(None, None)
+    # Accept any type of input layer by default
+    input_layer_types: Tuple[napari.layers.Layer, ...] = (napari.layers.Layer,)
+
     @property
     def n_selected_layers(self) -> int:
         """
@@ -104,10 +112,10 @@ class NapariMPLWidget(QWidget):
         figure if so.
         """
         self.clear()
-        if self.n_selected_layers != self.n_layers_input:
-            self.canvas.draw()
-            return
-        self.draw()
+        if self.n_selected_layers in self.n_layers_input and all(
+            isinstance(layer, self.input_layer_types) for layer in self.layers
+        ):
+            self.draw()
         self.canvas.draw()
 
     def clear(self) -> None:

@@ -6,6 +6,7 @@ import numpy as np
 from magicgui import magicgui
 
 from .base import NapariMPLWidget
+from .util import Interval
 
 __all__ = ["ScatterWidget", "FeaturesScatterWidget"]
 
@@ -84,7 +85,8 @@ class ScatterWidget(ScatterBaseWidget):
     of a scatter plot, to avoid too many scatter points.
     """
 
-    n_layers_input = 2
+    n_layers_input = Interval(2, 2)
+    input_layer_types = (napari.layers.Image,)
 
     def _get_data(self) -> Tuple[List[np.ndarray], str, str]:
         """Get the plot data.
@@ -106,7 +108,15 @@ class ScatterWidget(ScatterBaseWidget):
 
 
 class FeaturesScatterWidget(ScatterBaseWidget):
-    n_layers_input = 1
+    n_layers_input = Interval(1, 1)
+    # All layers that have a .features attributes
+    input_layer_types = (
+        napari.layers.Labels,
+        napari.layers.Points,
+        napari.layers.Shapes,
+        napari.layers.Tracks,
+        napari.layers.Vectors,
+    )
 
     def __init__(self, napari_viewer: napari.viewer.Viewer):
         super().__init__(napari_viewer)
@@ -146,7 +156,8 @@ class FeaturesScatterWidget(ScatterBaseWidget):
         self._draw()
 
     def _get_valid_axis_keys(self, combo_widget=None) -> List[str]:
-        """Get the valid axis keys from the layer FeatureTable.
+        """
+        Get the valid axis keys from the layer FeatureTable.
 
         Returns
         -------
