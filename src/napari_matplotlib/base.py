@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from typing import Tuple
 
 import matplotlib as mpl
 import napari
@@ -70,7 +71,7 @@ class NapariMPLWidget(QWidget):
     # Accept any number of input layers by default
     n_layers_input = Interval(None, None)
     # Accept any type of input layer by default
-    input_layer_types = (napari.layers.Layer,)
+    input_layer_types: Tuple[napari.layers.Layer, ...] = (napari.layers.Layer,)
 
     @property
     def n_selected_layers(self) -> int:

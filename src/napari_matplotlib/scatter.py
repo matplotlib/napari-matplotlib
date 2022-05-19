@@ -116,7 +116,15 @@ class ScatterWidget(ScatterBaseWidget):
 
 
 class FeaturesScatterWidget(ScatterBaseWidget):
-    n_layers_input = 1
+    n_layers_input = Interval(1, 1)
+    # All layers that have a .features attributes
+    input_layer_types = (
+        napari.layers.Labels,
+        napari.layers.Points,
+        napari.layers.Shapes,
+        napari.layers.Tracks,
+        napari.layers.Vectors,
+    )
 
     def __init__(
         self,
@@ -164,7 +172,8 @@ class FeaturesScatterWidget(ScatterBaseWidget):
         self._draw()
 
     def _get_valid_axis_keys(self, combo_widget=None) -> List[str]:
-        """Get the valid axis keys from the layer FeatureTable.
+        """
+        Get the valid axis keys from the layer FeatureTable.
 
         Returns
         -------
