@@ -21,7 +21,7 @@ class Interval:
 
     def __contains__(self, val):
         if not isinstance(val, int):
-            return NotImplemented
+            raise ValueError("variable must be an integer")
         if self.lower is not None and val < self.lower:
             return False
         if self.upper is not None and val > self.upper:
