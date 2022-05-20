@@ -7,11 +7,11 @@ contributions:
       title: Make a histogram
 
     - id: napari-matplotlib.scatter
-      python_name: napari_matplotlib:ScatterWidget
+      python_name: napari_matplotlib:ScatterWidgetLayerListSelection
       title: Make a scatter plot of image intensities
 
     - id: napari-matplotlib.features_scatter
-      python_name: napari_matplotlib:FeaturesScatterWidget
+      python_name: napari_matplotlib:FeatureScatterWidgetComboBoxSelection
       title: Make a scatter plot of layer features
 
     - id: napari-matplotlib.slice

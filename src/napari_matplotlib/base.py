@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from typing import Tuple
+from typing import List, Tuple
 
 import matplotlib as mpl
 import napari
@@ -62,6 +62,8 @@ class NapariMPLWidget(QWidget):
         self.toolbar = NapariNavigationToolbar(self.canvas, self)
         self._replace_toolbar_icons()
 
+        self._layers = []
+
         self.setLayout(QVBoxLayout())
         self.layout().addWidget(self.toolbar)
         self.layout().addWidget(self.canvas)
@@ -72,6 +74,15 @@ class NapariMPLWidget(QWidget):
     n_layers_input = Interval(None, None)
     # Accept any type of input layer by default
     input_layer_types: Tuple[napari.layers.Layer, ...] = (napari.layers.Layer,)
+
+    @property
+    def layers(self):
+        return self._layers
+
+    @layers.setter
+    def layers(self, layers: List[napari.layers.Layer]):
+        self._layers = layers
+        self._draw()
 
     @property
     def n_selected_layers(self) -> int:
@@ -93,18 +104,6 @@ class NapariMPLWidget(QWidget):
         - Layer selection changing
         - z-step changing
         """
-        # z-step changed in viewer
-        self.viewer.dims.events.current_step.connect(self._draw)
-        # Layer selection changed in viewer
-        self.viewer.layers.selection.events.changed.connect(self.update_layers)
-
-    def update_layers(self, event: napari.utils.events.Event) -> None:
-        """
-        Update the layers attribute with currently selected layers and re-draw.
-        """
-        self.layers = list(self.viewer.layers.selection)
-        self._on_update_layers()
-        self._draw()
 
     def _draw(self) -> None:
         """
@@ -128,14 +127,6 @@ class NapariMPLWidget(QWidget):
     def draw(self) -> None:
         """
         Re-draw any figures.
-
-        This is a no-op, and is intended for derived classes to override.
-        """
-
-    def _on_update_layers(self) -> None:
-        """
-        This function is called when self.layers is updated via
-        ``self.update_layers()``.
 
         This is a no-op, and is intended for derived classes to override.
         """

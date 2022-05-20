@@ -6,10 +6,17 @@ import numpy as np
 from magicgui import magicgui
 from magicgui.widgets import ComboBox
 
+from ._layer_selection import LayerComboBoxSelection, LayerListSelection
 from .base import NapariMPLWidget
 from .util import Interval
 
-__all__ = ["ScatterWidget", "FeaturesScatterWidget"]
+__all__ = [
+    "ScatterWidget",
+    "FeaturesScatterWidget",
+    "ScatterWidgetLayerListSelection",
+    "FeatureScatterWidgetLayerListSelection",
+    "FeatureScatterWidgetComboBoxSelection",
+]
 
 
 class ScatterBaseWidget(NapariMPLWidget):
@@ -26,9 +33,7 @@ class ScatterBaseWidget(NapariMPLWidget):
 
     def __init__(self, napari_viewer: napari.viewer.Viewer):
         super().__init__(napari_viewer)
-
         self.axes = self.canvas.figure.subplots()
-        self.update_layers(None)
 
     def clear(self) -> None:
         """
@@ -108,6 +113,13 @@ class ScatterWidget(ScatterBaseWidget):
         return data, x_axis_name, y_axis_name
 
 
+class ScatterWidgetLayerListSelection(ScatterWidget, LayerListSelection):
+    def __init__(self, napari_viewer: napari.viewer.Viewer):
+        super().__init__(napari_viewer)
+        self.setup_selection_callbacks()
+        self.update_layers(None)
+
+
 class FeaturesScatterWidget(ScatterBaseWidget):
     n_layers_input = Interval(1, 1)
     # All layers that have a .features attributes
@@ -121,12 +133,15 @@ class FeaturesScatterWidget(ScatterBaseWidget):
 
     def __init__(self, napari_viewer: napari.viewer.Viewer):
         super().__init__(napari_viewer)
+
         self._key_selection_widget = magicgui(
             self._set_axis_keys,
             x_axis_key={"choices": self._get_valid_axis_keys},
             y_axis_key={"choices": self._get_valid_axis_keys},
             call_button="plot",
         )
+        self._x_axis_key = None
+        self._y_axis_key = None
 
         self.layout().addWidget(self._key_selection_widget.native)
 
@@ -216,9 +231,28 @@ class FeaturesScatterWidget(ScatterBaseWidget):
         This is called when the layer selection changes by
         ``self.update_layers()``.
         """
-        if hasattr(self, "_key_selection_widget"):
-            self._key_selection_widget.reset_choices()
+        # if hasattr(self, "_key_selection_widget"):
+        self._key_selection_widget.reset_choices()
 
         # reset the axis keys
         self._x_axis_key = None
         self._y_axis_key = None
+
+
+class FeatureScatterWidgetLayerListSelection(
+    FeaturesScatterWidget, LayerListSelection
+):
+    def __init__(self, napari_viewer=napari.viewer.Viewer):
+        super().__init__(napari_viewer)
+        self.setup_selection_callbacks()
+        self.update_layers(None)
+
+
+class FeatureScatterWidgetComboBoxSelection(
+    FeaturesScatterWidget, LayerComboBoxSelection
+):
+    def __init__(self, napari_viewer=napari.viewer.Viewer):
+        super().__init__(napari_viewer)
+        self.add_layer_combo_box()
+        self._key_selection_widget.reset_choices()
+        # self.update_layers(None)
