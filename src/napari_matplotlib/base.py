@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from typing import List, Tuple
+from typing import List, Protocol, Tuple
 
 import matplotlib as mpl
 import napari
@@ -26,6 +26,10 @@ mpl.rc("ytick", color="white")
 # https://github.com/matplotlib/matplotlib/tree/main/lib/matplotlib/mpl-data/images
 ICON_ROOT = Path(__file__).parent / "icons"
 __all__ = ["NapariMPLWidget"]
+
+
+class PlotWidgetProtocol(Protocol, QWidget):
+    viewer: napari.viewer.Viewer
 
 
 class NapariMPLWidget(QWidget):
@@ -62,7 +66,7 @@ class NapariMPLWidget(QWidget):
         self.toolbar = NapariNavigationToolbar(self.canvas, self)
         self._replace_toolbar_icons()
 
-        self._layers = []
+        self._layers = []  # type: List[napari.layers.Layer]
 
         self.setLayout(QVBoxLayout())
         self.layout().addWidget(self.toolbar)
@@ -76,11 +80,11 @@ class NapariMPLWidget(QWidget):
     input_layer_types: Tuple[napari.layers.Layer, ...] = (napari.layers.Layer,)
 
     @property
-    def layers(self):
+    def layers(self) -> List[napari.layers.Layer]:
         return self._layers
 
     @layers.setter
-    def layers(self, layers: List[napari.layers.Layer]):
+    def layers(self, layers: List[napari.layers.Layer]) -> None:
         self._layers = layers
         self._draw()
 

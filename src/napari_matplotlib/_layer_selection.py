@@ -1,12 +1,13 @@
-import typing
+from typing import List, Optional
 
 import napari
 import napari.layers
 from magicgui import magicgui
 
+from .base import PlotWidgetProtocol
 
-@typing.no_type_check
-class LayerListSelection:
+
+class LayerListSelection(PlotWidgetProtocol):
     def setup_selection_callbacks(self) -> None:
         """
         Setup callbacks for:
@@ -22,7 +23,7 @@ class LayerListSelection:
         """
         Update the layers attribute with currently selected layers and re-draw.
         """
-        self.layers = list(self.viewer.layers.selection)
+        self.layers = list(self.viewer.layers.selection)  # type: ignore
         self._on_update_layers()
         self._draw()
 
@@ -35,9 +36,8 @@ class LayerListSelection:
         """
 
 
-@typing.no_type_check
-class LayerComboBoxSelection:
-    def add_layer_combo_box(self, widget_index: int = 0):
+class LayerComboBoxSelection(PlotWidgetProtocol):
+    def add_layer_combo_box(self, widget_index: int = 0) -> None:
         self._layer_combobox = magicgui(
             self._select_layer,
             layer={"choices": self._get_valid_layers},
@@ -46,11 +46,13 @@ class LayerComboBoxSelection:
         self._layer_combobox()
         self.layout().insertWidget(widget_index, self._layer_combobox.native)
 
-    def _select_layer(self, layer: napari.layers.Layer):
+    def _select_layer(self, layer: napari.layers.Layer) -> None:
         self.layers = [layer]
         self._on_update_layers()
 
-    def _get_valid_layers(self, combo_box):
+    def _get_valid_layers(
+        self, combo_box: Optional[int] = None
+    ) -> List[napari.layers.Layer]:
         return [
             layer
             for layer in self.viewer.layers

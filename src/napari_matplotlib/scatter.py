@@ -113,7 +113,9 @@ class ScatterWidget(ScatterBaseWidget):
         return data, x_axis_name, y_axis_name
 
 
-class ScatterWidgetLayerListSelection(ScatterWidget, LayerListSelection):
+class ScatterWidgetLayerListSelection(  # type: ignore
+    ScatterWidget, LayerListSelection
+):
     def __init__(self, napari_viewer: napari.viewer.Viewer):
         super().__init__(napari_viewer)
         self.setup_selection_callbacks()
@@ -140,8 +142,8 @@ class FeaturesScatterWidget(ScatterBaseWidget):
             y_axis_key={"choices": self._get_valid_axis_keys},
             call_button="plot",
         )
-        self._x_axis_key = None
-        self._y_axis_key = None
+        self._x_axis_key: Optional[str] = None
+        self._y_axis_key: Optional[str] = None
 
         self.layout().addWidget(self._key_selection_widget.native)
 
@@ -239,16 +241,16 @@ class FeaturesScatterWidget(ScatterBaseWidget):
         self._y_axis_key = None
 
 
-class FeatureScatterWidgetLayerListSelection(
+class FeatureScatterWidgetLayerListSelection(  # type: ignore
     FeaturesScatterWidget, LayerListSelection
-):
+):  # type: ignore
     def __init__(self, napari_viewer=napari.viewer.Viewer):
         super().__init__(napari_viewer)
         self.setup_selection_callbacks()
         self.update_layers(None)
 
 
-class FeatureScatterWidgetComboBoxSelection(
+class FeatureScatterWidgetComboBoxSelection(  # type: ignore
     FeaturesScatterWidget, LayerComboBoxSelection
 ):
     def __init__(self, napari_viewer=napari.viewer.Viewer):
