@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from typing import Tuple
+from typing import List, Tuple
 
 import matplotlib as mpl
 import napari
@@ -67,6 +67,7 @@ class NapariMPLWidget(QWidget):
         self.layout().addWidget(self.canvas)
 
         self.setup_callbacks()
+        self.layers: List[napari.layers.Layer] = []
 
     # Accept any number of input layers by default
     n_layers_input = Interval(None, None)
