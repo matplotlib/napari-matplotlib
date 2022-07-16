@@ -11,6 +11,7 @@ from matplotlib.backends.backend_qt5agg import (
 from qtpy.QtGui import QIcon
 from qtpy.QtWidgets import QVBoxLayout, QWidget
 
+from .layer_selectors import LayerListSelector
 from .util import Interval
 
 mpl.rc("axes", edgecolor="white")
@@ -66,13 +67,22 @@ class NapariMPLWidget(QWidget):
         self.layout().addWidget(self.toolbar)
         self.layout().addWidget(self.canvas)
 
+        # set up the selector
+        self.layer_selector = LayerListSelector(
+            viewer=napari_viewer, parent_widget=self
+        )
+
         self.setup_callbacks()
-        self.layers: List[napari.layers.Layer] = []
+        # self.layers: List[napari.layers.Layer] = []
 
     # Accept any number of input layers by default
     n_layers_input = Interval(None, None)
     # Accept any type of input layer by default
     input_layer_types: Tuple[napari.layers.Layer, ...] = (napari.layers.Layer,)
+
+    @property
+    def layers(self) -> List[napari.layers.Layer]:
+        return self.layer_selector.selected_layers
 
     @property
     def n_selected_layers(self) -> int:
@@ -97,13 +107,13 @@ class NapariMPLWidget(QWidget):
         # z-step changed in viewer
         self.viewer.dims.events.current_step.connect(self._draw)
         # Layer selection changed in viewer
-        self.viewer.layers.selection.events.changed.connect(self.update_layers)
+        # self.viewer.layers.selection.events.changed.connect(self.update_layers)
 
     def update_layers(self, event: napari.utils.events.Event) -> None:
         """
         Update the layers attribute with currently selected layers and re-draw.
         """
-        self.layers = list(self.viewer.layers.selection)
+        # self.layers = list(self.viewer.layers.selection)
         self._on_update_layers()
         self._draw()
 
