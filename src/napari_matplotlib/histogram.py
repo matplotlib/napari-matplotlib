@@ -1,6 +1,7 @@
 import numpy as np
 
 from .base import NapariMPLWidget
+from .layer_selectors import LayerListSelector, LayerSelector
 
 __all__ = ["HistogramWidget"]
 
@@ -19,8 +20,12 @@ class HistogramWidget(NapariMPLWidget):
     n_layers_input = Interval(1, 1)
     input_layer_types = (napari.layers.Image,)
 
-    def __init__(self, napari_viewer: napari.viewer.Viewer):
-        super().__init__(napari_viewer)
+    def __init__(
+        self,
+        napari_viewer: napari.viewer.Viewer,
+        layer_selector: LayerSelector = LayerListSelector,
+    ):
+        super().__init__(napari_viewer, layer_selector)
         self.axes = self.canvas.figure.subplots()
         self.update_layers(None)
 

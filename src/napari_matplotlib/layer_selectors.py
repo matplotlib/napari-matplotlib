@@ -1,40 +1,117 @@
-from typing import List, Protocol, Union
+import abc
+from typing import List, Optional, Tuple, Type, Union
 
 import napari
+from magicgui import magicgui
+from napari.utils.events.event import EmitterGroup, Event
 from qtpy.QtWidgets import QWidget
-from typing_extensions import runtime_checkable
 
 
-@runtime_checkable
-class LayerSelector(Protocol):
-    @property
+class BaseLayerSelector(abc.ABC):
+    def __init__(
+        self,
+        napari_viewer: napari.Viewer,
+        parent_widget: QWidget,
+        valid_layer_types: Tuple[napari.layers.Layer, ...],
+    ):
+        self.viewer = napari_viewer
+        self.parent_widget = parent_widget
+        self.valid_layer_types = valid_layer_types
+
+        self.events = EmitterGroup(source=self, selected_layer=Event)
+
+    @abc.abstractmethod
     def selected_layers(self) -> List[napari.layers.Layer]:
-        ...
+        raise NotImplementedError
 
 
-class LayerListSelector(LayerSelector):
-    def __init__(self, viewer: napari.Viewer, parent_widget: QWidget):
-        self.viewer = viewer
+class LayerListSelector(BaseLayerSelector):
+    def __init__(
+        self,
+        napari_viewer: napari.Viewer,
+        parent_widget: QWidget,
+        valid_layer_types: Tuple[napari.layers.Layer, ...],
+    ):
+        super().__init__(
+            napari_viewer=napari_viewer,
+            parent_widget=parent_widget,
+            valid_layer_types=valid_layer_types,
+        )
         self.viewer.layers.selection.events.changed.connect(self.update_layers)
 
         self.update_layers()
 
     def update_layers(self, event: napari.utils.events.Event = None) -> None:
         self._selected_layers = list(self.viewer.layers.selection)
+        self.events.selected_layer()
 
     @property
     def selected_layers(self) -> List[napari.layers.Layer]:
         return self._selected_layers
 
 
-def get_layer_selector(selector: Union[str, LayerSelector]) -> LayerSelector:
+class LayerWidgetSelector(BaseLayerSelector):
+    def __init__(
+        self,
+        napari_viewer: napari.Viewer,
+        parent_widget: QWidget,
+        valid_layer_types: Tuple[napari.layers.Layer, ...],
+    ):
+        super().__init__(
+            napari_viewer=napari_viewer,
+            parent_widget=parent_widget,
+            valid_layer_types=valid_layer_types,
+        )
+
+        # initialize the selected layers list
+        self._selected_layers: List[napari.layers.Layer] = []
+
+        # create the combobox
+        self.add_layer_combo_box()
+
+    @property
+    def selected_layers(self) -> List[napari.layers.Layer]:
+        return self._selected_layers
+
+    def add_layer_combo_box(self, widget_index: int = 0) -> None:
+        self._layer_combobox = magicgui(
+            self._select_layer,
+            layer={"choices": self._get_valid_layers},
+            auto_call=True,
+        )
+        self._layer_combobox()
+        self.parent_widget.layout().insertWidget(
+            widget_index, self._layer_combobox.native
+        )
+
+    def _select_layer(self, layer: napari.layers.Layer) -> None:
+        self._selected_layers = [layer]
+        self.events.selected_layer()
+
+    def _get_valid_layers(
+        self, combo_box: Optional[int] = None
+    ) -> List[napari.layers.Layer]:
+        return [
+            layer
+            for layer in self.viewer.layers
+            if type(layer) in self.valid_layer_types
+        ]
+
+
+def get_layer_selector(
+    selector: Union[str, BaseLayerSelector]
+) -> BaseLayerSelector:
     if isinstance(selector, str):
         return globals()[selector]
 
-    elif isinstance(selector, LayerSelector):
+    elif isinstance(selector, BaseLayerSelector):
         # passthrough if already a LayerSelector
         return selector
     else:
         raise TypeError(
             "selector should be a string or LayerSelector subclass"
         )
+
+
+# Type for annotating variables that accept all layer selectors
+LayerSelector = Union[Type[LayerListSelector], Type[LayerWidgetSelector]]

@@ -11,7 +11,7 @@ from matplotlib.backends.backend_qt5agg import (
 from qtpy.QtGui import QIcon
 from qtpy.QtWidgets import QVBoxLayout, QWidget
 
-from .layer_selectors import LayerListSelector
+from .layer_selectors import LayerListSelector, LayerSelector
 from .util import Interval
 
 mpl.rc("axes", edgecolor="white")
@@ -53,7 +53,16 @@ class NapariMPLWidget(QWidget):
         List of currently selected napari layers.
     """
 
-    def __init__(self, napari_viewer: napari.viewer.Viewer):
+    # Accept any number of input layers by default
+    n_layers_input = Interval(None, None)
+    # Accept any type of input layer by default
+    input_layer_types: Tuple[napari.layers.Layer, ...] = (napari.layers.Layer,)
+
+    def __init__(
+        self,
+        napari_viewer: napari.viewer.Viewer,
+        layer_selector: LayerSelector = LayerListSelector,
+    ):
         super().__init__()
 
         self.viewer = napari_viewer
@@ -68,17 +77,13 @@ class NapariMPLWidget(QWidget):
         self.layout().addWidget(self.canvas)
 
         # set up the selector
-        self.layer_selector = LayerListSelector(
-            viewer=napari_viewer, parent_widget=self
+        self.layer_selector = layer_selector(
+            napari_viewer=napari_viewer,
+            parent_widget=self,
+            valid_layer_types=self.input_layer_types,
         )
 
         self.setup_callbacks()
-        # self.layers: List[napari.layers.Layer] = []
-
-    # Accept any number of input layers by default
-    n_layers_input = Interval(None, None)
-    # Accept any type of input layer by default
-    input_layer_types: Tuple[napari.layers.Layer, ...] = (napari.layers.Layer,)
 
     @property
     def layers(self) -> List[napari.layers.Layer]:
@@ -106,14 +111,14 @@ class NapariMPLWidget(QWidget):
         """
         # z-step changed in viewer
         self.viewer.dims.events.current_step.connect(self._draw)
-        # Layer selection changed in viewer
-        # self.viewer.layers.selection.events.changed.connect(self.update_layers)
+
+        # update the plot when the layer selector has a new selection
+        self.layer_selector.events.selected_layer.connect(self.update_layers)
 
     def update_layers(self, event: napari.utils.events.Event) -> None:
         """
         Update the layers attribute with currently selected layers and re-draw.
         """
-        # self.layers = list(self.viewer.layers.selection)
         self._on_update_layers()
         self._draw()
 

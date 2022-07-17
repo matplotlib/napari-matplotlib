@@ -7,6 +7,7 @@ from magicgui import magicgui
 from magicgui.widgets import ComboBox
 
 from .base import NapariMPLWidget
+from .layer_selectors import LayerListSelector, LayerSelector
 from .util import Interval
 
 __all__ = ["ScatterWidget", "FeaturesScatterWidget"]
@@ -24,8 +25,12 @@ class ScatterBaseWidget(NapariMPLWidget):
     # the scatter is plotted as a 2dhist
     _threshold_to_switch_to_histogram = 500
 
-    def __init__(self, napari_viewer: napari.viewer.Viewer):
-        super().__init__(napari_viewer)
+    def __init__(
+        self,
+        napari_viewer: napari.viewer.Viewer,
+        layer_selector: LayerSelector = LayerListSelector,
+    ):
+        super().__init__(napari_viewer, layer_selector)
 
         self.axes = self.canvas.figure.subplots()
         self.update_layers(None)
@@ -119,8 +124,12 @@ class FeaturesScatterWidget(ScatterBaseWidget):
         napari.layers.Vectors,
     )
 
-    def __init__(self, napari_viewer: napari.viewer.Viewer):
-        super().__init__(napari_viewer)
+    def __init__(
+        self,
+        napari_viewer: napari.viewer.Viewer,
+        layer_selector: LayerSelector = LayerListSelector,
+    ):
+        super().__init__(napari_viewer, layer_selector)
         self._key_selection_widget = magicgui(
             self._set_axis_keys,
             x_axis_key={"choices": self._get_valid_axis_keys},

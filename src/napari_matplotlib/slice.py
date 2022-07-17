@@ -5,6 +5,7 @@ import numpy as np
 from qtpy.QtWidgets import QComboBox, QHBoxLayout, QLabel, QSpinBox
 
 from .base import NapariMPLWidget
+from .layer_selectors import LayerListSelector, LayerSelector
 from .util import Interval
 
 __all__ = ["SliceWidget"]
@@ -21,9 +22,13 @@ class SliceWidget(NapariMPLWidget):
     n_layers_input = Interval(1, 1)
     input_layer_types = (napari.layers.Image,)
 
-    def __init__(self, napari_viewer: napari.viewer.Viewer):
+    def __init__(
+        self,
+        napari_viewer: napari.viewer.Viewer,
+        layer_selector: LayerSelector = LayerListSelector,
+    ):
         # Setup figure/axes
-        super().__init__(napari_viewer)
+        super().__init__(napari_viewer, layer_selector)
         self.axes = self.canvas.figure.subplots()
 
         button_layout = QHBoxLayout()
