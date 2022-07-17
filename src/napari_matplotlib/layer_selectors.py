@@ -7,7 +7,7 @@ from napari.utils.events.event import EmitterGroup, Event
 from qtpy.QtWidgets import QWidget
 
 
-class BaseLayerSelector:
+class BaseLayerSelector(abc.ABC):
     """Base class for creating layer selectors.
 
     Layer selectors provide the interactive elements for selecting which
@@ -119,20 +119,18 @@ class LayerWidgetSelector(BaseLayerSelector):
         ]
 
 
-def get_layer_selector(
-    selector: Union[str, BaseLayerSelector]
-) -> BaseLayerSelector:
+# Type for annotating variables that accept all layer selectors
+LayerSelector = Union[Type[LayerListSelector], Type[LayerWidgetSelector]]
+
+
+def get_layer_selector(selector: Union[str, LayerSelector]) -> LayerSelector:
     if isinstance(selector, str):
         return globals()[selector]
 
-    elif isinstance(selector, BaseLayerSelector):
+    elif issubclass(selector, BaseLayerSelector):
         # passthrough if already a LayerSelector
         return selector
     else:
         raise TypeError(
             "selector should be a string or LayerSelector subclass"
         )
-
-
-# Type for annotating variables that accept all layer selectors
-LayerSelector = Union[Type[LayerListSelector], Type[LayerWidgetSelector]]
