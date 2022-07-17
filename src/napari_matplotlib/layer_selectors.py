@@ -7,7 +7,28 @@ from napari.utils.events.event import EmitterGroup, Event
 from qtpy.QtWidgets import QWidget
 
 
-class BaseLayerSelector(abc.ABC):
+class BaseLayerSelector:
+    """Base class for creating layer selectors.
+
+    Layer selectors provide the interactive elements for selecting which
+    layer(s) to plot from.
+
+    To satisfy the API, layer selectors must take the following arguments
+        napari_viewer : napari.Viewer
+            The napari viewer from which to select layers from.
+        parent_widget : QWidget
+            The widget to which any GUI elements will be added.
+        valid_layer_types : Tuple[napari.layers.Layer, ...]
+            A tuple of the napari layer types the layer selector can select
+
+    Further, the layer selector most have a `selected_layers` property that
+    returns the list of currently selected layers.
+
+    To allow actions to be performed when the selectino changes, the base class
+    has a `LayerSelector.events.selected_layers()` event that can be connected
+    to.
+    """
+
     def __init__(
         self,
         napari_viewer: napari.Viewer,
