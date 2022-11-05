@@ -2,6 +2,10 @@ name: napari-matplotlib
 display_name: napari Matplotlib
 contributions:
   commands:
+    - id: napari-matplotlib.feature_histogram
+      python_name: napari_matplotlib:FeatureHistogramWidget
+      title: Make a feature histogram
+
     - id: napari-matplotlib.histogram
       python_name: napari_matplotlib:HistogramWidget
       title: Make a histogram
@@ -19,6 +23,9 @@ contributions:
       title: Plot a 1D slice
 
   widgets:
+    - command: napari-matplotlib.feature_histogram
+      display_name: Feature Histogram
+
     - command: napari-matplotlib.histogram
       display_name: Histogram
 
