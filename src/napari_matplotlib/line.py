@@ -133,6 +133,7 @@ class MetadataLine2DWidget(Line2DBaseWidget):
     def _set_plugin_name(self, plugin_name: str) -> None:
         """Set plugin name from layer metadata"""
         self._plugin_name_key = plugin_name
+        self._key_selection_widget.reset_choices()
     
     def _get_plugin_metadata_key(
             self, combo_widget: Optional[ComboBox] = None
@@ -221,9 +222,9 @@ class MetadataLine2DWidget(Line2DBaseWidget):
         This is called when the layer selection changes by
         ``self.update_layers()``.
         """
-        # if hasattr(self, "_key_selection_widget"):
-        #     self._plugin_name_widget.reset_choices()
-        #     self._key_selection_widget.reset_choices()
+        if hasattr(self, "_key_selection_widget"):
+            self._plugin_name_widget.reset_choices()
+            self._key_selection_widget.reset_choices()
         
         # reset the axis keys
         self._x_axis_key = None
