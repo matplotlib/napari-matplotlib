@@ -15,6 +15,7 @@ from .util import Interval
 # Icons modified from
 # https://github.com/matplotlib/matplotlib/tree/main/lib/matplotlib/mpl-data/images
 ICON_ROOT = Path(__file__).parent / "icons"
+NAPARI_WINDOW_COLOR = "#262930"
 __all__ = ["NapariMPLWidget"]
 
 
@@ -48,7 +49,7 @@ class NapariMPLWidget(QWidget):
         self.viewer = napari_viewer
         self.canvas = FigureCanvas()
         self.canvas.figure.set_tight_layout(True)
-        self.canvas.figure.patch.set_facecolor("#262930")
+        self.canvas.figure.patch.set_facecolor(NAPARI_WINDOW_COLOR)
         self.toolbar = NapariNavigationToolbar(self.canvas, self)
         self._replace_toolbar_icons()
 
@@ -130,10 +131,10 @@ class NapariMPLWidget(QWidget):
         if self.axes is None:
             return
         # changing color of axes background to napari main window color
-        self.canvas.figure.patch.set_facecolor("#262930")
+        self.canvas.figure.patch.set_facecolor(NAPARI_WINDOW_COLOR)
 
         # changing color of plot background to napari main window color
-        self.axes.set_facecolor("#262930")
+        self.axes.set_facecolor(NAPARI_WINDOW_COLOR)
 
         # changing colors of all axes
         [self.axes.spines[spine].set_color("white") for spine in self.axes.spines]
