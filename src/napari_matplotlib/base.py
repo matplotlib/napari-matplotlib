@@ -136,10 +136,7 @@ class NapariMPLWidget(QWidget):
         self.axes.set_facecolor("#262930")
 
         # changing colors of all axes
-        self.axes.spines["bottom"].set_color("white")
-        self.axes.spines["top"].set_color("white")
-        self.axes.spines["right"].set_color("white")
-        self.axes.spines["left"].set_color("white")
+        [self.axes.spines[spine].set_color("white") for spine in self.axes.spines]
         self.axes.xaxis.label.set_color("white")
         self.axes.yaxis.label.set_color("white")
 
