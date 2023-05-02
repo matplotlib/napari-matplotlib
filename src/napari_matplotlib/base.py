@@ -130,7 +130,7 @@ class NapariMPLWidget(QWidget):
         """
         if self.axes is None:
             return
-                # changing color of axes background to napari main window color
+        # changing color of axes background to napari main window color
         self.canvas.figure.patch.set_facecolor("#262930")
 
         # changing color of plot background to napari main window color
