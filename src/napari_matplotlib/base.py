@@ -2,7 +2,6 @@ import os
 from pathlib import Path
 from typing import List, Tuple
 
-import matplotlib as mpl
 import napari
 from matplotlib.backends.backend_qt5agg import (
     FigureCanvas,
@@ -13,18 +12,10 @@ from qtpy.QtWidgets import QVBoxLayout, QWidget
 
 from .util import Interval
 
-mpl.rc("axes", edgecolor="white")
-mpl.rc("axes", facecolor="#262930")
-mpl.rc("axes", labelcolor="white")
-mpl.rc("savefig", facecolor="#262930")
-mpl.rc("text", color="white")
-
-mpl.rc("xtick", color="white")
-mpl.rc("ytick", color="white")
-
 # Icons modified from
 # https://github.com/matplotlib/matplotlib/tree/main/lib/matplotlib/mpl-data/images
 ICON_ROOT = Path(__file__).parent / "icons"
+NAPARI_WINDOW_COLOR = "#262930"
 __all__ = ["NapariMPLWidget"]
 
 
@@ -57,8 +48,9 @@ class NapariMPLWidget(QWidget):
 
         self.viewer = napari_viewer
         self.canvas = FigureCanvas()
+
+        self.canvas.figure.patch.set_facecolor(NAPARI_WINDOW_COLOR)
         self.canvas.figure.set_layout_engine("constrained")
-        self.canvas.figure.patch.set_facecolor("#262930")
         self.toolbar = NapariNavigationToolbar(self.canvas, self)
         self._replace_toolbar_icons()
 
@@ -132,6 +124,30 @@ class NapariMPLWidget(QWidget):
 
         This is a no-op, and is intended for derived classes to override.
         """
+
+    def apply_napari_colorscheme(self):
+        """
+        Apply napari-compatible colorscheme to the axes object.
+        """
+        if self.axes is None:
+            return
+        # changing color of axes background to napari main window color
+        self.canvas.figure.patch.set_facecolor(NAPARI_WINDOW_COLOR)
+
+        # changing color of plot background to napari main window color
+        self.axes.set_facecolor(NAPARI_WINDOW_COLOR)
+
+        # changing colors of all axes
+        [
+            self.axes.spines[spine].set_color("white")
+            for spine in self.axes.spines
+        ]
+        self.axes.xaxis.label.set_color("white")
+        self.axes.yaxis.label.set_color("white")
+
+        # changing colors of axes labels
+        self.axes.tick_params(axis="x", colors="white")
+        self.axes.tick_params(axis="y", colors="white")
 
     def _on_update_layers(self) -> None:
         """

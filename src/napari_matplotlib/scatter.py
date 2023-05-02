@@ -28,6 +28,7 @@ class ScatterBaseWidget(NapariMPLWidget):
         super().__init__(napari_viewer)
 
         self.axes = self.canvas.figure.subplots()
+        self.apply_napari_colorscheme()
         self.update_layers(None)
 
     def clear(self) -> None:
