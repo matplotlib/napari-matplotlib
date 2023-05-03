@@ -21,8 +21,7 @@ __all__ = ["NapariMPLWidget"]
 
 class NapariMPLWidget(QWidget):
     """
-    Base widget that can be embedded as a napari widget and contains a
-    Matplotlib canvas.
+    Base Matplotlib canvas. widget that can be embedded as a napari widget.
 
     This creates a single FigureCanvas, which contains a single Figure.
 
@@ -82,7 +81,9 @@ class NapariMPLWidget(QWidget):
 
     def setup_callbacks(self) -> None:
         """
-        Setup callbacks for:
+        Sets up callbacks.
+
+        Sets up callbacks for:
         - Layer selection changing
         - z-step changing
         """
@@ -151,7 +152,7 @@ class NapariMPLWidget(QWidget):
 
     def _on_update_layers(self) -> None:
         """
-        This function is called when self.layers is updated via
+        Function is called when self.layers is updated via
         ``self.update_layers()``.
 
         This is a no-op, and is intended for derived classes to override.
