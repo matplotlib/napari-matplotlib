@@ -12,4 +12,4 @@ def test_interval():
     assert 10 not in interval
 
     with pytest.raises(ValueError, match="must be an integer"):
-        "string" in interval
+        "string" in interval  # type: ignore

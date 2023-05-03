@@ -49,7 +49,7 @@ class SliceWidget(NapariMPLWidget):
         self.update_layers(None)
 
     @property
-    def layer(self):
+    def layer(self) -> napari.layers.Layer:
         """
         Layer being plotted.
         """

@@ -125,7 +125,7 @@ class NapariMPLWidget(QWidget):
         This is a no-op, and is intended for derived classes to override.
         """
 
-    def apply_napari_colorscheme(self):
+    def apply_napari_colorscheme(self) -> None:
         """Apply napari-compatible colorscheme to the axes object."""
         if self.axes is None:
             return
@@ -153,7 +153,7 @@ class NapariMPLWidget(QWidget):
         This is a no-op, and is intended for derived classes to override.
         """
 
-    def _replace_toolbar_icons(self):
+    def _replace_toolbar_icons(self) -> None:
         # Modify toolbar icons and some tooltips
         for action in self.toolbar.actions():
             text = action.text()
@@ -175,7 +175,7 @@ class NapariMPLWidget(QWidget):
 class NapariNavigationToolbar(NavigationToolbar2QT):
     """Custom Toolbar style for Napari."""
 
-    def _update_buttons_checked(self):
+    def _update_buttons_checked(self) -> None:
         """Update toggle tool icons when selected/unselected."""
         super()._update_buttons_checked()
         # changes pan/zoom icons depending on state (checked or not)
