@@ -1,3 +1,8 @@
+"""
+Scattering features
+===================
+"""
+
 import napari
 import numpy as np
 from skimage.measure import regionprops_table
