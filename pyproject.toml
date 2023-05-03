@@ -34,3 +34,7 @@ fix = true
 
 [tool.ruff.pydocstyle]
 convention = "numpy"
+
+[tool.mypy]
+disallow_incomplete_defs = true
+ignore_missing_imports = true
