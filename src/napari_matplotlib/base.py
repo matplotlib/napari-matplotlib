@@ -15,7 +15,6 @@ from .util import Interval
 # Icons modified from
 # https://github.com/matplotlib/matplotlib/tree/main/lib/matplotlib/mpl-data/images
 ICON_ROOT = Path(__file__).parent / "icons"
-NAPARI_WINDOW_COLOR = "#262930"
 __all__ = ["NapariMPLWidget"]
 
 
@@ -49,7 +48,7 @@ class NapariMPLWidget(QWidget):
         self.viewer = napari_viewer
         self.canvas = FigureCanvas()
 
-        self.canvas.figure.patch.set_facecolor(NAPARI_WINDOW_COLOR)
+        self.canvas.figure.patch.set_facecolor("none")
         self.canvas.figure.set_layout_engine("constrained")
         self.toolbar = NapariNavigationToolbar(self.canvas, self)
         self._replace_toolbar_icons()
@@ -126,16 +125,12 @@ class NapariMPLWidget(QWidget):
         """
 
     def apply_napari_colorscheme(self):
-        """
-        Apply napari-compatible colorscheme to the axes object.
-        """
+        """Apply napari-compatible colorscheme to the axes object."""
         if self.axes is None:
             return
-        # changing color of axes background to napari main window color
-        self.canvas.figure.patch.set_facecolor(NAPARI_WINDOW_COLOR)
-
-        # changing color of plot background to napari main window color
-        self.axes.set_facecolor(NAPARI_WINDOW_COLOR)
+        # changing color of axes background to transparent
+        self.canvas.figure.patch.set_facecolor("none")
+        self.axes.set_facecolor("none")
 
         # changing colors of all axes
         [
