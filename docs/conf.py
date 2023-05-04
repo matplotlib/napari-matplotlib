@@ -30,6 +30,7 @@ author = "David Stansby"
 extensions = [
     "numpydoc",
     "sphinx_gallery.gen_gallery",
+    "qtgallery",
     "sphinx_automodapi.automodapi",
     "sphinx_automodapi.smart_resolver",
     "sphinx.ext.intersphinx",
