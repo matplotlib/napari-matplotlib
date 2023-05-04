@@ -43,6 +43,7 @@ sphinx_gallery_conf = {
 }
 
 numpydoc_show_class_members = False
+automodapi_inheritance_diagram = False
 
 intersphinx_mapping = {
     "napari": ("https://napari.org/", None),
