@@ -41,6 +41,13 @@ sphinx_gallery_conf = {
     "reset_modules": (qtgallery.reset_qapp,),
 }
 
+qtgallery_conf = {
+    "xvfb_size": (640, 480),
+    "xvfb_color_depth": 24,
+    "xfvb_use_xauth": False,
+    "xfvb_extra_args": [],
+}
+
 numpydoc_show_class_members = False
 
 intersphinx_mapping = {
