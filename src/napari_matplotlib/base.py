@@ -21,7 +21,7 @@ __all__ = ["NapariMPLWidget"]
 
 class NapariMPLWidget(QWidget):
     """
-    Base Matplotlib canvas. widget that can be embedded as a napari widget.
+    Base Matplotlib canvas. Widget that can be embedded as a napari widget.
 
     This creates a single FigureCanvas, which contains a single Figure.
 
