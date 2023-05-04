@@ -12,5 +12,4 @@ build:
   tools:
     python: "3.10"
   apt_packages:
-    - qtbase5-dev
     - xvfb
