@@ -50,6 +50,9 @@ class SliceWidget(NapariMPLWidget):
 
     @property
     def layer(self):
+        """
+        Layer being plotted.
+        """
         return self.layers[0]
 
     @property
@@ -70,6 +73,9 @@ class SliceWidget(NapariMPLWidget):
 
     @property
     def selector_values(self) -> Dict[str, int]:
+        """
+        Values of the slice selectors.
+        """
         return {d: self.slice_selectors[d].value() for d in _dims_sel}
 
     def update_slice_selectors(self) -> None:
@@ -107,6 +113,9 @@ class SliceWidget(NapariMPLWidget):
         return x, y
 
     def clear(self) -> None:
+        """
+        Clear the axes.
+        """
         self.axes.cla()
 
     def draw(self) -> None:

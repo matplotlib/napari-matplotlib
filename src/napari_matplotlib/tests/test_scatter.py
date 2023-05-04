@@ -34,7 +34,7 @@ def make_labels_layer_with_features():
 
 
 def test_features_scatter_get_data(make_napari_viewer):
-    """test the get data method"""
+    """Test the get data method"""
     # make the label image
     label_image, feature_table = make_labels_layer_with_features()
 
@@ -59,7 +59,7 @@ def test_features_scatter_get_data(make_napari_viewer):
 
 
 def test_get_valid_axis_keys(make_napari_viewer):
-    """test the values returned from
+    """Test the values returned from
     FeaturesScatterWidget._get_valid_keys() when there
     are valid keys.
     """
@@ -76,7 +76,7 @@ def test_get_valid_axis_keys(make_napari_viewer):
 
 
 def test_get_valid_axis_keys_no_valid_keys(make_napari_viewer):
-    """test the values returned from
+    """Test the values returned from
     FeaturesScatterWidget._get_valid_keys() when there
     are not valid keys.
     """

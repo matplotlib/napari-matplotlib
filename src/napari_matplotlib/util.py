@@ -2,6 +2,10 @@ from typing import Optional
 
 
 class Interval:
+    """
+    An integer interval.
+    """
+
     def __init__(self, lower_bound: Optional[int], upper_bound: Optional[int]):
         """
         Parameters
@@ -19,7 +23,10 @@ class Interval:
         self.lower = lower_bound
         self.upper = upper_bound
 
-    def __contains__(self, val):
+    def __contains__(self, val: int) -> bool:
+        """
+        Return True if val is in the current interval.
+        """
         if not isinstance(val, int):
             raise ValueError("variable must be an integer")
         if self.lower is not None and val < self.lower:

@@ -13,6 +13,10 @@ __all__ = ["ScatterWidget", "FeaturesScatterWidget"]
 
 
 class ScatterBaseWidget(NapariMPLWidget):
+    """
+    Base class for widgets that scatter two datasets against each other.
+    """
+
     # opacity value for the markers
     _marker_alpha = 0.5
 
@@ -91,7 +95,8 @@ class ScatterWidget(ScatterBaseWidget):
     input_layer_types = (napari.layers.Image,)
 
     def _get_data(self) -> Tuple[List[np.ndarray], str, str]:
-        """Get the plot data.
+        """
+        Get the plot data.
 
         Returns
         -------
@@ -110,6 +115,10 @@ class ScatterWidget(ScatterBaseWidget):
 
 
 class FeaturesScatterWidget(ScatterBaseWidget):
+    """
+    Widget to scatter data stored in two layer feature attributes.
+    """
+
     n_layers_input = Interval(1, 1)
     # All layers that have a .features attributes
     input_layer_types = (
@@ -133,7 +142,9 @@ class FeaturesScatterWidget(ScatterBaseWidget):
 
     @property
     def x_axis_key(self) -> Optional[str]:
-        """Key to access x axis data from the FeaturesTable"""
+        """
+        Key to access x axis data from the FeaturesTable.
+        """
         return self._x_axis_key
 
     @x_axis_key.setter
@@ -143,16 +154,23 @@ class FeaturesScatterWidget(ScatterBaseWidget):
 
     @property
     def y_axis_key(self) -> Optional[str]:
-        """Key to access y axis data from the FeaturesTable"""
+        """
+        Key to access y axis data from the FeaturesTable.
+        """
         return self._y_axis_key
 
     @y_axis_key.setter
     def y_axis_key(self, key: Optional[str]) -> None:
+        """
+        Set the y-axis key.
+        """
         self._y_axis_key = key
         self._draw()
 
     def _set_axis_keys(self, x_axis_key: str, y_axis_key: str) -> None:
-        """Set both axis keys and then redraw the plot"""
+        """
+        Set both axis keys and then redraw the plot.
+        """
         self._x_axis_key = x_axis_key
         self._y_axis_key = y_axis_key
         self._draw()
@@ -175,7 +193,8 @@ class FeaturesScatterWidget(ScatterBaseWidget):
             return self.layers[0].features.keys()
 
     def _get_data(self) -> Tuple[List[np.ndarray], str, str]:
-        """Get the plot data.
+        """
+        Get the plot data.
 
         Returns
         -------
@@ -214,8 +233,7 @@ class FeaturesScatterWidget(ScatterBaseWidget):
 
     def _on_update_layers(self) -> None:
         """
-        This is called when the layer selection changes by
-        ``self.update_layers()``.
+        Called when the layer selection changes by ``self.update_layers()``.
         """
         if hasattr(self, "_key_selection_widget"):
             self._key_selection_widget.reset_choices()

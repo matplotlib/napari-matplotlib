@@ -26,6 +26,9 @@ class HistogramWidget(NapariMPLWidget):
         self.update_layers(None)
 
     def clear(self) -> None:
+        """
+        Clear the axes.
+        """
         self.axes.clear()
 
     def draw(self) -> None:
