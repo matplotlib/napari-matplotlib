@@ -25,7 +25,6 @@ repos:
     rev: v1.2.0
     hooks:
      - id: mypy
-       args: ["--disallow-incomplete-defs", "--ignore-missing-imports"]
 
   - repo: https://github.com/charliermarsh/ruff-pre-commit
     # Ruff version.
