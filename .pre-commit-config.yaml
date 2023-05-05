@@ -31,3 +31,6 @@ repos:
     rev: 'v0.0.264'
     hooks:
       - id: ruff
+
+ci:
+  autofix_prs: false
