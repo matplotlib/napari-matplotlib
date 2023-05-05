@@ -3,10 +3,12 @@ from pathlib import Path
 from typing import List, Tuple
 
 import napari
+from matplotlib.axes import Axes
 from matplotlib.backends.backend_qt5agg import (
     FigureCanvas,
     NavigationToolbar2QT,
 )
+from matplotlib.figure import Figure
 from qtpy.QtGui import QIcon
 from qtpy.QtWidgets import QVBoxLayout, QWidget
 
@@ -23,6 +25,8 @@ class NapariMPLWidget(QWidget):
     Base Matplotlib canvas. Widget that can be embedded as a napari widget.
 
     This creates a single FigureCanvas, which contains a single Figure.
+    It is not responsible for creating any Axes, because different widgets
+    may want to implement different subplot layouts.
 
     This class also handles callbacks to automatically update figures when
     the layer selection or z-step is changed in the napari viewer. To take
@@ -33,8 +37,6 @@ class NapariMPLWidget(QWidget):
     ----------
     viewer : `napari.Viewer`
         Main napari viewer.
-    figure : `matplotlib.figure.Figure`
-        Matplotlib figure.
     canvas : matplotlib.backends.backend_qt5agg.FigureCanvas
         Matplotlib canvas.
     layers : `list`
@@ -63,6 +65,11 @@ class NapariMPLWidget(QWidget):
     n_layers_input = Interval(None, None)
     # Accept any type of input layer by default
     input_layer_types: Tuple[napari.layers.Layer, ...] = (napari.layers.Layer,)
+
+    @property
+    def figure(self) -> Figure:
+        """Matplotlib figure."""
+        return self.canvas.figure
 
     @property
     def n_selected_layers(self) -> int:
@@ -125,25 +132,31 @@ class NapariMPLWidget(QWidget):
         This is a no-op, and is intended for derived classes to override.
         """
 
-    def apply_napari_colorscheme(self) -> None:
-        """Apply napari-compatible colorscheme to the axes object."""
-        if self.axes is None:
-            return
+    def add_single_axes(self) -> None:
+        """
+        Add a single Axes to the figure.
+
+        The Axes is saved on the ``.axes`` attribute for later access.
+        """
+        self.axes = self.figure.subplots()
+        self.apply_napari_colorscheme(self.axes)
+
+    @staticmethod
+    def apply_napari_colorscheme(ax: Axes) -> None:
+        """Apply napari-compatible colorscheme to an axes object."""
         # changing color of axes background to transparent
-        self.canvas.figure.patch.set_facecolor("none")
-        self.axes.set_facecolor("none")
+        ax.set_facecolor("none")
 
         # changing colors of all axes
-        [
-            self.axes.spines[spine].set_color("white")
-            for spine in self.axes.spines
-        ]
-        self.axes.xaxis.label.set_color("white")
-        self.axes.yaxis.label.set_color("white")
+        for spine in ax.spines:
+            ax.spines[spine].set_color("white")
+
+        ax.xaxis.label.set_color("white")
+        ax.yaxis.label.set_color("white")
 
         # changing colors of axes labels
-        self.axes.tick_params(axis="x", colors="white")
-        self.axes.tick_params(axis="y", colors="white")
+        ax.tick_params(axis="x", colors="white")
+        ax.tick_params(axis="y", colors="white")
 
     def _on_update_layers(self) -> None:
         """

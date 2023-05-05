@@ -21,8 +21,7 @@ class HistogramWidget(NapariMPLWidget):
 
     def __init__(self, napari_viewer: napari.viewer.Viewer):
         super().__init__(napari_viewer)
-        self.axes = self.canvas.figure.subplots()
-        self.apply_napari_colorscheme()
+        self.add_single_axes()
         self.update_layers(None)
 
     def clear(self) -> None:

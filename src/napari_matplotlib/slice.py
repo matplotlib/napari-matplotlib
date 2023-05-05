@@ -24,7 +24,7 @@ class SliceWidget(NapariMPLWidget):
     def __init__(self, napari_viewer: napari.viewer.Viewer):
         # Setup figure/axes
         super().__init__(napari_viewer)
-        self.axes = self.canvas.figure.subplots()
+        self.add_single_axes()
 
         button_layout = QHBoxLayout()
         self.layout().addLayout(button_layout)
