@@ -12,7 +12,7 @@ from matplotlib.figure import Figure
 from qtpy.QtGui import QIcon
 from qtpy.QtWidgets import QVBoxLayout, QWidget
 
-from .util import Interval
+from .util import Interval, from_css_get_size_of
 
 # Icons modified from
 # https://github.com/matplotlib/matplotlib/tree/main/lib/matplotlib/mpl-data/images
@@ -52,7 +52,9 @@ class NapariMPLWidget(QWidget):
 
         self.canvas.figure.patch.set_facecolor("none")
         self.canvas.figure.set_layout_engine("constrained")
-        self.toolbar = NapariNavigationToolbar(self.canvas, self)
+        self.toolbar = NapariNavigationToolbar(
+            self.canvas, self
+        )  # type: ignore[no-untyped-call]
         self._replace_toolbar_icons()
 
         self.setLayout(QVBoxLayout())
@@ -188,6 +190,12 @@ class NapariMPLWidget(QWidget):
 
 class NapariNavigationToolbar(NavigationToolbar2QT):
     """Custom Toolbar style for Napari."""
+
+    def __init__(self, *args, **kwargs):  # type: ignore[no-untyped-def]
+        super().__init__(*args, **kwargs)
+        self.setIconSize(
+            from_css_get_size_of("QtViewerPushButton", fallback=(28, 28))
+        )
 
     def _update_buttons_checked(self) -> None:
         """Update toggle tool icons when selected/unselected."""
