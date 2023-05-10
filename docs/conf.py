@@ -37,7 +37,9 @@ extensions = [
 ]
 
 sphinx_gallery_conf = {
-    "filename_pattern": ".",
+    # Don't run any gallery examples, because they're not working on
+    # readthedocs at the moment
+    "filename_pattern": "a^",
     "image_scrapers": (qtgallery.qtscraper,),
     "reset_modules": (qtgallery.reset_qapp,),
 }
