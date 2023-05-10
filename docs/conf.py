@@ -13,7 +13,7 @@
 # import os
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
-import qtgallery
+# import qtgallery
 
 # -- Project information -----------------------------------------------------
 
@@ -30,18 +30,30 @@ author = "David Stansby"
 extensions = [
     "numpydoc",
     "sphinx_gallery.gen_gallery",
+    # "qtgallery",
     "sphinx_automodapi.automodapi",
     "sphinx_automodapi.smart_resolver",
     "sphinx.ext.intersphinx",
 ]
 
 sphinx_gallery_conf = {
-    "filename_pattern": ".",
-    "image_scrapers": (qtgallery.qtscraper,),
-    "reset_modules": (qtgallery.reset_qapp,),
+    # Don't run any gallery examples, because they're not working on
+    # readthedocs at the moment
+    "filename_pattern": "a^",
+    # "image_scrapers": (qtgallery.qtscraper,),
+    # "reset_modules": (qtgallery.reset_qapp,),
 }
 
+
+# qtgallery_conf = {
+#     "xvfb_size": (640, 480),
+#     "xvfb_color_depth": 24,
+#     "xfvb_use_xauth": False,
+#     "xfvb_extra_args": [],
+# }
+
 numpydoc_show_class_members = False
+automodapi_inheritance_diagram = False
 
 intersphinx_mapping = {
     "napari": ("https://napari.org/", None),
