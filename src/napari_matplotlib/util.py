@@ -93,5 +93,6 @@ def from_css_get_size_of(
         if _has_id(rule.prelude, qt_element_name):
             w = _get_dimension(rule.content, "max-width")
             h = _get_dimension(rule.content, "max-height")
-            return QSize(w, h)
+            if w and h:
+                return QSize(w, h)
     return QSize(*fallback)

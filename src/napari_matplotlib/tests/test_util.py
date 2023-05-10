@@ -29,3 +29,17 @@ def test_get_size_from_css(mocker):
         """
     mocker.patch("napari.qt.get_current_stylesheet").return_value = test_css
     assert from_css_get_size_of("Flibble", (1, 1)) == QSize(123, 456)
+
+
+def test_fallback_if_missing_dimensions(mocker):
+    """Test fallback if given something that doesn't have dimensions"""
+    test_css = " Flobble { background-color: rgb(0, 97, 163); } "
+    mocker.patch("napari.qt.get_current_stylesheet").return_value = test_css
+    assert from_css_get_size_of("Flobble", (1, 1)) == QSize(1, 1)
+
+
+def test_fallback_if_prelude_not_in_css():
+    """Test fallback if given something not in the css"""
+    assert from_css_get_size_of("AQButtonThatDoesntExist", (1, 1)) == QSize(
+        1, 1
+    )
