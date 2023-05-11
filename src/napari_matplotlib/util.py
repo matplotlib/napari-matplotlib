@@ -72,7 +72,7 @@ def _get_dimension(
     return None
 
 
-def from_css_get_size_of(
+def from_napari_css_get_size_of(
     qt_element_name: str, fallback: Tuple[int, int]
 ) -> QSize:
     """

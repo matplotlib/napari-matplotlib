@@ -1,7 +1,7 @@
 import pytest
 from qtpy.QtCore import QSize
 
-from napari_matplotlib.util import Interval, from_css_get_size_of
+from napari_matplotlib.util import Interval, from_napari_css_get_size_of
 
 
 def test_interval():
@@ -28,7 +28,7 @@ def test_get_size_from_css(mocker):
         }
         """
     mocker.patch("napari.qt.get_current_stylesheet").return_value = test_css
-    assert from_css_get_size_of("Flibble", (1, 2)) == QSize(123, 456)
+    assert from_napari_css_get_size_of("Flibble", (1, 2)) == QSize(123, 456)
 
 
 def test_fallback_if_missing_dimensions(mocker):
@@ -36,11 +36,11 @@ def test_fallback_if_missing_dimensions(mocker):
     test_css = " Flobble { background-color: rgb(0, 97, 163); } "
     mocker.patch("napari.qt.get_current_stylesheet").return_value = test_css
     with pytest.warns(RuntimeWarning, match="Unable to find DimensionToken"):
-        assert from_css_get_size_of("Flobble", (1, 2)) == QSize(1, 2)
+        assert from_napari_css_get_size_of("Flobble", (1, 2)) == QSize(1, 2)
 
 
 def test_fallback_if_prelude_not_in_css():
     """Test fallback if given something not in the css"""
     doesntexist = "AQButtonThatDoesntExist"
     with pytest.warns(RuntimeWarning, match=f"Unable to find {doesntexist}"):
-        assert from_css_get_size_of(doesntexist, (1, 2)) == QSize(1, 2)
+        assert from_napari_css_get_size_of(doesntexist, (1, 2)) == QSize(1, 2)

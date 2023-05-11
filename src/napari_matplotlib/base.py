@@ -12,7 +12,7 @@ from matplotlib.figure import Figure
 from qtpy.QtGui import QIcon
 from qtpy.QtWidgets import QVBoxLayout, QWidget
 
-from .util import Interval, from_css_get_size_of
+from .util import Interval, from_napari_css_get_size_of
 
 # Icons modified from
 # https://github.com/matplotlib/matplotlib/tree/main/lib/matplotlib/mpl-data/images
@@ -194,7 +194,9 @@ class NapariNavigationToolbar(NavigationToolbar2QT):
     def __init__(self, *args, **kwargs):  # type: ignore[no-untyped-def]
         super().__init__(*args, **kwargs)
         self.setIconSize(
-            from_css_get_size_of("QtViewerPushButton", fallback=(28, 28))
+            from_napari_css_get_size_of(
+                "QtViewerPushButton", fallback=(28, 28)
+            )
         )
 
     def _update_buttons_checked(self) -> None:
