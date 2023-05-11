@@ -1,4 +1,4 @@
-from typing import List, Optional, Tuple, Union
+from typing import Generator, List, Optional, Tuple, Union
 from warnings import warn
 
 import napari.qt
@@ -47,6 +47,21 @@ class Interval:
         return True
 
 
+def _logical_lines(
+    nodes: List[tinycss2.ast.Node],
+) -> Generator[Tuple[tinycss2.ast.Node, tinycss2.ast.Node], None, None]:
+    """Generator to provide logical lines (thing: value) of css (terminated by ';')"""
+    ident, dimension = None, None
+    for node in nodes:
+        if node == ";":
+            yield (ident, dimension)
+            ident, dimension = None, None
+        elif node.type == "ident":
+            ident = node
+        elif node.type == "dimension":
+            dimension = node
+
+
 def _has_id(nodes: List[tinycss2.ast.Node], id_name: str) -> bool:
     """
     Is `id_name` in IdentTokens in the list of CSS `nodes`?
@@ -66,13 +81,8 @@ def _get_dimension(
     -------
         None if no IdentToken is found.
     """
-    cleaned_nodes = [node for node in nodes if node.type != "whitespace"]
-    for name, _, value, _ in zip(*(iter(cleaned_nodes),) * 4):
-        if (
-            name.type == "ident"
-            and value.type == "dimension"
-            and name.value == id_name
-        ):
+    for name, value in _logical_lines(nodes):
+        if name.value == id_name:
             return value.int_value
     warn(f"Unable to find DimensionToken for {id_name}", RuntimeWarning)
     return None
