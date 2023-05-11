@@ -1,7 +1,8 @@
-from typing import Dict, Tuple
+from typing import Any, Dict, Tuple
 
 import napari
 import numpy as np
+import numpy.typing as npt
 from qtpy.QtWidgets import QComboBox, QHBoxLayout, QLabel, QSpinBox
 
 from .base import NapariMPLWidget
@@ -87,7 +88,7 @@ class SliceWidget(NapariMPLWidget):
         for i, dim in enumerate(_dims_sel):
             self.slice_selectors[dim].setRange(0, self.layer.data.shape[i])
 
-    def get_xy(self) -> Tuple[np.ndarray, np.ndarray]:
+    def get_xy(self) -> Tuple[npt.NDArray[Any], npt.NDArray[Any]]:
         """
         Get data for plotting.
         """

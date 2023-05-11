@@ -1,6 +1,7 @@
 from typing import Any, Dict, Tuple
 
 import numpy as np
+import numpy.typing as npt
 
 from napari_matplotlib import FeaturesScatterWidget, ScatterWidget
 
@@ -22,7 +23,7 @@ def test_features_scatter_widget(make_napari_viewer):
 
 
 def make_labels_layer_with_features() -> (
-    Tuple[np.ndarray, Dict[str, Tuple[Any]]]
+    Tuple[npt.NDArray[np.uint16], Dict[str, Any]]
 ):
     label_image = np.zeros((100, 100), dtype=np.uint16)
     for label_value, start_index in enumerate([10, 30, 50], start=1):
