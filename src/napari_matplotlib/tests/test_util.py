@@ -18,17 +18,21 @@ def test_interval():
 
 def test_get_size_from_css(mocker):
     """Test getting the max-width and max-height from something in css"""
+    # some weird (but valid) css to check we can skip things correctly
     test_css = """
         Flibble {
+            padding: 0 0 1px 2px;
+            color: rgb(3, 4, 555);
             min-width : 0;
             max-width : 123px;
-            min-height : 0px;
+            min-height : 0%;
             max-height : 456px;
-            padding: 0px;
         }
         """
     mocker.patch("napari.qt.get_current_stylesheet").return_value = test_css
-    assert from_napari_css_get_size_of("Flibble", (1, 2)) == QSize(123, 456)
+    assert from_napari_css_get_size_of("Flibble", fallback=(1, 2)) == QSize(
+        123, 456
+    )
 
 
 def test_fallback_if_missing_dimensions(mocker):
@@ -36,11 +40,15 @@ def test_fallback_if_missing_dimensions(mocker):
     test_css = " Flobble { background-color: rgb(0, 97, 163); } "
     mocker.patch("napari.qt.get_current_stylesheet").return_value = test_css
     with pytest.warns(RuntimeWarning, match="Unable to find DimensionToken"):
-        assert from_napari_css_get_size_of("Flobble", (1, 2)) == QSize(1, 2)
+        assert from_napari_css_get_size_of(
+            "Flobble", fallback=(1, 2)
+        ) == QSize(1, 2)
 
 
 def test_fallback_if_prelude_not_in_css():
     """Test fallback if given something not in the css"""
     doesntexist = "AQButtonThatDoesntExist"
     with pytest.warns(RuntimeWarning, match=f"Unable to find {doesntexist}"):
-        assert from_napari_css_get_size_of(doesntexist, (1, 2)) == QSize(1, 2)
+        assert from_napari_css_get_size_of(
+            doesntexist, fallback=(1, 2)
+        ) == QSize(1, 2)
