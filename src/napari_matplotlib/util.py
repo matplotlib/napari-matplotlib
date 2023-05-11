@@ -1,4 +1,5 @@
 from typing import List, Optional, Tuple, Union
+from warnings import warn
 
 import napari.qt
 import tinycss2
@@ -67,6 +68,7 @@ def _get_dimension(
             and name.value == id_name
         ):
             return value.int_value
+    warn(f"Unable to find DimensionToken for {id_name}", RuntimeWarning)
     return None
 
 
@@ -95,4 +97,9 @@ def from_css_get_size_of(
             h = _get_dimension(rule.content, "max-height")
             if w and h:
                 return QSize(w, h)
+    warn(
+        f"Unable to find {qt_element_name} or unable to find its size in "
+        f"the current Napari stylesheet, falling back to {fallback}",
+        RuntimeWarning,
+    )
     return QSize(*fallback)
