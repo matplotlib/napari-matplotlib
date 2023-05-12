@@ -1,8 +1,8 @@
-from typing import List, Optional, Tuple
+from typing import Any, List, Optional, Tuple
 
 import matplotlib.colors as mcolor
 import napari
-import numpy as np
+import numpy.typing as npt
 from magicgui import magicgui
 from magicgui.widgets import ComboBox
 
@@ -65,7 +65,7 @@ class ScatterBaseWidget(NapariMPLWidget):
         self.axes.set_xlabel(x_axis_name)
         self.axes.set_ylabel(y_axis_name)
 
-    def _get_data(self) -> Tuple[List[np.ndarray], str, str]:
+    def _get_data(self) -> Tuple[List[npt.NDArray[Any]], str, str]:
         """Get the plot data.
 
         This must be implemented on the subclass.
@@ -93,7 +93,7 @@ class ScatterWidget(ScatterBaseWidget):
     n_layers_input = Interval(2, 2)
     input_layer_types = (napari.layers.Image,)
 
-    def _get_data(self) -> Tuple[List[np.ndarray], str, str]:
+    def _get_data(self) -> Tuple[List[npt.NDArray[Any]], str, str]:
         """
         Get the plot data.
 
@@ -191,7 +191,7 @@ class FeaturesScatterWidget(ScatterBaseWidget):
         else:
             return self.layers[0].features.keys()
 
-    def _get_data(self) -> Tuple[List[np.ndarray], str, str]:
+    def _get_data(self) -> Tuple[List[npt.NDArray[Any]], str, str]:
         """
         Get the plot data.
 

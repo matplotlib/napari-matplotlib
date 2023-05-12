@@ -25,6 +25,7 @@ repos:
     rev: v1.2.0
     hooks:
      - id: mypy
+       additional_dependencies: [numpy, matplotlib]
 
   - repo: https://github.com/charliermarsh/ruff-pre-commit
     # Ruff version.
