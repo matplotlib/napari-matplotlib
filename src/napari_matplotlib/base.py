@@ -4,7 +4,7 @@ from typing import List, Tuple
 
 import napari
 from matplotlib.axes import Axes
-from matplotlib.backends.backend_qt5agg import (
+from matplotlib.backends.backend_qtagg import (
     FigureCanvas,
     NavigationToolbar2QT,
 )
