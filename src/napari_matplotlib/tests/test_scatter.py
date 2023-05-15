@@ -6,11 +6,11 @@ import numpy.typing as npt
 from napari_matplotlib import FeaturesScatterWidget, ScatterWidget
 
 
-def test_scatter(make_napari_viewer):
+def test_scatter(make_napari_viewer, astronaut_data):
     # Smoke test adding a scatter widget
     viewer = make_napari_viewer()
-    viewer.add_image(np.random.random((100, 100)))
-    viewer.add_image(np.random.random((100, 100)))
+    viewer.add_image(astronaut_data[0], **astronaut_data[1])
+    viewer.add_image(astronaut_data[0] * -1, **astronaut_data[1])
     ScatterWidget(viewer)
 
 
