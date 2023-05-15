@@ -38,7 +38,6 @@ pip-delete-this-directory.txt
 htmlcov/
 .tox/
 report/
-src/napari_matplotlib/tests/baseline/
 .coverage
 .coverage.*
 .cache
