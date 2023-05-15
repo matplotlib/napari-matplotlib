@@ -1,9 +1,9 @@
-from typing import Any, Dict, Tuple
+from typing import Any, Dict, Optional, Tuple
 
 import napari
 import numpy as np
 import numpy.typing as npt
-from qtpy.QtWidgets import QComboBox, QHBoxLayout, QLabel, QSpinBox
+from qtpy.QtWidgets import QComboBox, QHBoxLayout, QLabel, QSpinBox, QWidget
 
 from .base import NapariMPLWidget
 from .util import Interval
@@ -22,9 +22,13 @@ class SliceWidget(NapariMPLWidget):
     n_layers_input = Interval(1, 1)
     input_layer_types = (napari.layers.Image,)
 
-    def __init__(self, napari_viewer: napari.viewer.Viewer):
+    def __init__(
+        self,
+        napari_viewer: napari.viewer.Viewer,
+        parent: Optional[QWidget] = None,
+    ):
         # Setup figure/axes
-        super().__init__(napari_viewer)
+        super().__init__(napari_viewer, parent=parent)
         self.add_single_axes()
 
         button_layout = QHBoxLayout()

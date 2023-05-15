@@ -4,6 +4,7 @@ import napari
 import numpy.typing as npt
 from magicgui import magicgui
 from magicgui.widgets import ComboBox
+from qtpy.QtWidgets import QWidget
 
 from .base import NapariMPLWidget
 from .util import Interval
@@ -20,8 +21,12 @@ class ScatterBaseWidget(NapariMPLWidget):
     # the scatter is plotted as a 2D histogram
     _threshold_to_switch_to_histogram = 500
 
-    def __init__(self, napari_viewer: napari.viewer.Viewer):
-        super().__init__(napari_viewer)
+    def __init__(
+        self,
+        napari_viewer: napari.viewer.Viewer,
+        parent: Optional[QWidget] = None,
+    ):
+        super().__init__(napari_viewer, parent=parent)
 
         self.add_single_axes()
         self.update_layers(None)
@@ -113,16 +118,21 @@ class FeaturesScatterWidget(ScatterBaseWidget):
         napari.layers.Vectors,
     )
 
-    def __init__(self, napari_viewer: napari.viewer.Viewer):
-        super().__init__(napari_viewer)
-        self._key_selection_widget = magicgui(
+    def __init__(
+        self,
+        napari_viewer: napari.viewer.Viewer,
+        parent: Optional[QWidget] = None,
+    ):
+        super().__init__(napari_viewer, parent=parent)
+        self._key_selection_function_gui = magicgui(
             self._set_axis_keys,
             x_axis_key={"choices": self._get_valid_axis_keys},
             y_axis_key={"choices": self._get_valid_axis_keys},
             call_button="plot",
         )
-
-        self.layout().addWidget(self._key_selection_widget.native)
+        _key_selection_widget = self._key_selection_function_gui.native
+        _key_selection_widget.setParent(self)
+        self.layout().addWidget(_key_selection_widget)
 
     @property
     def x_axis_key(self) -> Optional[str]:
@@ -231,7 +241,7 @@ class FeaturesScatterWidget(ScatterBaseWidget):
         Called when the layer selection changes by ``self.update_layers()``.
         """
         if hasattr(self, "_key_selection_widget"):
-            self._key_selection_widget.reset_choices()
+            self._key_selection_function_gui.reset_choices()
 
         # reset the axis keys
         self._x_axis_key = None

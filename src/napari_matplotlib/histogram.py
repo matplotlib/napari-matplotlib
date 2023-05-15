@@ -1,12 +1,13 @@
-import numpy as np
-
-from .base import NapariMPLWidget
-
-__all__ = ["HistogramWidget"]
+from typing import Optional
 
 import napari
+import numpy as np
+from qtpy.QtWidgets import QWidget
 
+from .base import NapariMPLWidget
 from .util import Interval
+
+__all__ = ["HistogramWidget"]
 
 _COLORS = {"r": "tab:red", "g": "tab:green", "b": "tab:blue"}
 
@@ -19,8 +20,12 @@ class HistogramWidget(NapariMPLWidget):
     n_layers_input = Interval(1, 1)
     input_layer_types = (napari.layers.Image,)
 
-    def __init__(self, napari_viewer: napari.viewer.Viewer):
-        super().__init__(napari_viewer)
+    def __init__(
+        self,
+        napari_viewer: napari.viewer.Viewer,
+        parent: Optional[QWidget] = None,
+    ):
+        super().__init__(napari_viewer, parent=parent)
         self.add_single_axes()
         self.update_layers(None)
 
