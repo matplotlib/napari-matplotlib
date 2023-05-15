@@ -16,12 +16,3 @@ map one or more Image layers on to a 1D histogram plot.
 
    auto_examples/index
    api
-
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
