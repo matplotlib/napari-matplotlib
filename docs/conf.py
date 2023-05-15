@@ -17,7 +17,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = "matplotlib-napari"
+project = "napari-matplotlib"
 copyright = "2022, David Stansby"
 author = "David Stansby"
 
