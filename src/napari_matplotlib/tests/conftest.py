@@ -17,3 +17,8 @@ def image_data(request):
 @pytest.fixture
 def astronaut_data():
     return data.astronaut(), {"rgb": True}
+
+
+@pytest.fixture
+def brain_data():
+    return data.brain(), {"rgb": False}
