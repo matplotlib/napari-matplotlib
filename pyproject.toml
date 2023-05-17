@@ -36,6 +36,7 @@ fix = true
 convention = "numpy"
 
 [tool.mypy]
+python_version = "3.8"
 # Block below are checks that form part of mypy 'strict' mode
 warn_unused_configs = true
 warn_redundant_casts = true
