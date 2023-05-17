@@ -48,7 +48,6 @@ class NapariMPLWidget(QWidget):
 
         self.viewer = napari_viewer
         self.canvas = FigureCanvas()
-        self.canvas.widget = self
 
         self.canvas.figure.patch.set_facecolor("none")
         self.canvas.figure.set_layout_engine("constrained")
