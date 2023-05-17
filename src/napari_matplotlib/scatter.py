@@ -1,10 +1,8 @@
-from typing import Any, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import napari
 import numpy.typing as npt
-from magicgui import magicgui
-from magicgui.widgets import ComboBox
-from qtpy.QtWidgets import QWidget
+from qtpy.QtWidgets import QComboBox, QLabel, QVBoxLayout, QWidget
 
 from .base import NapariMPLWidget
 from .util import Interval
@@ -27,9 +25,7 @@ class ScatterBaseWidget(NapariMPLWidget):
         parent: Optional[QWidget] = None,
     ):
         super().__init__(napari_viewer, parent=parent)
-
         self.add_single_axes()
-        self.update_layers(None)
 
     def clear(self) -> None:
         """
@@ -124,54 +120,51 @@ class FeaturesScatterWidget(ScatterBaseWidget):
         parent: Optional[QWidget] = None,
     ):
         super().__init__(napari_viewer, parent=parent)
-        self._key_selection_function_gui = magicgui(
-            self._set_axis_keys,
-            x_axis_key={"choices": self._get_valid_axis_keys},
-            y_axis_key={"choices": self._get_valid_axis_keys},
-            call_button="plot",
-        )
-        _key_selection_widget = self._key_selection_function_gui.native
-        _key_selection_widget.setParent(self)
-        self.layout().addWidget(_key_selection_widget)
+
+        self.layout().addLayout(QVBoxLayout())
+
+        self._selectors: Dict[str, QComboBox] = {}
+        for dim in ["x", "y"]:
+            self._selectors[dim] = QComboBox()
+            # Re-draw when combo boxes are updated
+            self._selectors[dim].currentTextChanged.connect(self._draw)
+
+            self.layout().addWidget(QLabel(f"{dim}-axis:"))
+            self.layout().addWidget(self._selectors[dim])
+
+        self.update_layers(None)
 
     @property
-    def x_axis_key(self) -> Optional[str]:
+    def x_axis_key(self) -> Union[str, None]:
         """
         Key to access x axis data from the FeaturesTable.
         """
-        return self._x_axis_key
+        if self._selectors["x"].count() == 0:
+            return None
+        else:
+            return self._selectors["x"].currentText()
 
     @x_axis_key.setter
-    def x_axis_key(self, key: Optional[str]) -> None:
-        self._x_axis_key = key
+    def x_axis_key(self, key: str) -> None:
+        self._selectors["x"].setCurrentText(key)
         self._draw()
 
     @property
-    def y_axis_key(self) -> Optional[str]:
+    def y_axis_key(self) -> Union[str, None]:
         """
         Key to access y axis data from the FeaturesTable.
         """
-        return self._y_axis_key
+        if self._selectors["y"].count() == 0:
+            return None
+        else:
+            return self._selectors["y"].currentText()
 
     @y_axis_key.setter
-    def y_axis_key(self, key: Optional[str]) -> None:
-        """
-        Set the y-axis key.
-        """
-        self._y_axis_key = key
+    def y_axis_key(self, key: str) -> None:
+        self._selectors["y"].setCurrentText(key)
         self._draw()
 
-    def _set_axis_keys(self, x_axis_key: str, y_axis_key: str) -> None:
-        """
-        Set both axis keys and then redraw the plot.
-        """
-        self._x_axis_key = x_axis_key
-        self._y_axis_key = y_axis_key
-        self._draw()
-
-    def _get_valid_axis_keys(
-        self, combo_widget: Optional[ComboBox] = None
-    ) -> List[str]:
+    def _get_valid_axis_keys(self) -> List[str]:
         """
         Get the valid axis keys from the layer FeatureTable.
 
@@ -195,11 +188,12 @@ class FeaturesScatterWidget(ScatterBaseWidget):
             return False
 
         feature_table = self.layers[0].features
+        valid_keys = self._get_valid_axis_keys()
         return (
             feature_table is not None
             and len(feature_table) > 0
-            and self.x_axis_key is not None
-            and self.y_axis_key is not None
+            and self.x_axis_key in valid_keys
+            and self.y_axis_key in valid_keys
         )
 
     def draw(self) -> None:
@@ -240,9 +234,9 @@ class FeaturesScatterWidget(ScatterBaseWidget):
         """
         Called when the layer selection changes by ``self.update_layers()``.
         """
-        if hasattr(self, "_key_selection_widget"):
-            self._key_selection_function_gui.reset_choices()
-
-        # reset the axis keys
-        self._x_axis_key = None
-        self._y_axis_key = None
+        # Clear combobox
+        for dim in ["x", "y"]:
+            while self._selectors[dim].count() > 0:
+                self._selectors[dim].removeItem(0)
+            # Add keys for newly selected layer
+            self._selectors[dim].addItems(self._get_valid_axis_keys())
