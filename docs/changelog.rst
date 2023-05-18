@@ -1,8 +1,11 @@
+Changelog
+=========
+
 0.4.0
-=====
+-----
 
 Changes
--------
+~~~~~~~
 - The scatter widgets no longer use a LogNorm() for 2D histogram scaling.
   This is to move the widget in line with the philosophy of using Matplotlib default
   settings throughout ``napari-matplotlib``. This still leaves open the option of
