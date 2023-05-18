@@ -28,6 +28,12 @@ class Interval:
         self.lower = lower_bound
         self.upper = upper_bound
 
+    def __repr__(self) -> str:
+        """
+        Get string representation.
+        """
+        return f"Interval({self.lower}, {self.upper})"
+
     def __contains__(self, val: int) -> bool:
         """
         Return True if val is in the current interval.
