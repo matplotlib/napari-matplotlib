@@ -7,7 +7,7 @@ from qtpy.QtWidgets import QComboBox, QLabel, QVBoxLayout, QWidget
 from .base import NapariMPLWidget
 from .util import Interval
 
-__all__ = ["ScatterWidget", "FeaturesScatterWidget"]
+__all__ = ["ScatterBaseWidget", "ScatterWidget", "FeaturesScatterWidget"]
 
 
 class ScatterBaseWidget(NapariMPLWidget):
@@ -69,7 +69,7 @@ class ScatterBaseWidget(NapariMPLWidget):
 
 class ScatterWidget(ScatterBaseWidget):
     """
-    Widget to display scatter plot of two similarly shaped image layers.
+    Scatter data in two similarly shaped layers.
 
     If there are more than 500 data points, a 2D histogram is displayed instead
     of a scatter plot, to avoid too many scatter points.
@@ -137,7 +137,7 @@ class FeaturesScatterWidget(ScatterBaseWidget):
     @property
     def x_axis_key(self) -> Union[str, None]:
         """
-        Key to access x axis data from the FeaturesTable.
+        Key for the x-axis data.
         """
         if self._selectors["x"].count() == 0:
             return None
@@ -152,7 +152,7 @@ class FeaturesScatterWidget(ScatterBaseWidget):
     @property
     def y_axis_key(self) -> Union[str, None]:
         """
-        Key to access y axis data from the FeaturesTable.
+        Key for the y-axis data.
         """
         if self._selectors["y"].count() == 0:
             return None
