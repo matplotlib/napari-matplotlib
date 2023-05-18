@@ -8,7 +8,7 @@ from magicgui.widgets import ComboBox
 from .base import NapariMPLWidget
 from .util import Interval
 
-__all__ = ["ScatterWidget", "FeaturesScatterWidget"]
+__all__ = ["ScatterBaseWidget", "ScatterWidget", "FeaturesScatterWidget"]
 
 
 class ScatterBaseWidget(NapariMPLWidget):
