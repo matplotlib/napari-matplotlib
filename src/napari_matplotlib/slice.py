@@ -50,7 +50,7 @@ class SliceWidget(NapariMPLWidget):
         self.update_layers(None)
 
     @property
-    def layer(self) -> napari.layers.Layer:
+    def _layer(self) -> napari.layers.Layer:
         """
         Layer being plotted.
         """
@@ -73,28 +73,19 @@ class SliceWidget(NapariMPLWidget):
         return _dims[::-1].index(self.current_dim)
 
     @property
-    def selector_values(self) -> Dict[str, int]:
+    def _selector_values(self) -> Dict[str, int]:
         """
         Values of the slice selectors.
         """
         return {d: self.slice_selectors[d].value() for d in _dims_sel}
 
-    def update_slice_selectors(self) -> None:
-        """
-        Update range and enabled status of the slice selectors, and the value
-        of the z slice selector.
-        """
-        # Update min/max
-        for i, dim in enumerate(_dims_sel):
-            self.slice_selectors[dim].setRange(0, self.layer.data.shape[i])
-
-    def get_xy(self) -> Tuple[npt.NDArray[Any], npt.NDArray[Any]]:
+    def _get_xy(self) -> Tuple[npt.NDArray[Any], npt.NDArray[Any]]:
         """
         Get data for plotting.
         """
-        x = np.arange(self.layer.data.shape[self.current_dim_index])
+        x = np.arange(self._layer.data.shape[self.current_dim_index])
 
-        vals = self.selector_values
+        vals = self._selector_values
         vals.update({"z": self.current_z})
 
         slices = []
@@ -109,7 +100,7 @@ class SliceWidget(NapariMPLWidget):
 
         # Reverse since z is the first axis in napari
         slices = slices[::-1]
-        y = self.layer.data[tuple(slices)].ravel()
+        y = self._layer.data[tuple(slices)].ravel()
 
         return x, y
 
@@ -123,8 +114,8 @@ class SliceWidget(NapariMPLWidget):
         """
         Clear axes and draw a 1D plot.
         """
-        x, y = self.get_xy()
+        x, y = self._get_xy()
 
         self.axes.plot(x, y)
         self.axes.set_xlabel(self.current_dim)
-        self.axes.set_title(self.layer.name)
+        self.axes.set_title(self._layer.name)
