@@ -18,7 +18,6 @@ def test_scatter(make_napari_viewer, astronaut_data):
     )
     viewer.layers.selection.add(viewer.layers[0])
     viewer.layers.selection.add(viewer.layers[1])
-    print(list(viewer.layers.selection))
     fig = ScatterWidget(viewer).figure
     # Need to return a copy, as original figure is too eagerley garbage
     # collected by the widget

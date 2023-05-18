@@ -75,6 +75,14 @@ class ScatterWidget(ScatterBaseWidget):
     of a scatter plot, to avoid too many scatter points.
     """
 
+    def __init__(
+        self,
+        napari_viewer: napari.viewer.Viewer,
+        parent: Optional[QWidget] = None,
+    ):
+        super().__init__(napari_viewer, parent=parent)
+        self.update_layers(None)
+
     n_layers_input = Interval(2, 2)
     input_layer_types = (napari.layers.Image,)
 
