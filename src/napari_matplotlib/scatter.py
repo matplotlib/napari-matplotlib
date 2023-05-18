@@ -127,7 +127,7 @@ class FeaturesScatterWidget(ScatterBaseWidget):
     @property
     def x_axis_key(self) -> Optional[str]:
         """
-        Key to access x axis data from the FeaturesTable.
+        Key for the x-axis data.
         """
         return self._x_axis_key
 
@@ -139,7 +139,7 @@ class FeaturesScatterWidget(ScatterBaseWidget):
     @property
     def y_axis_key(self) -> Optional[str]:
         """
-        Key to access y axis data from the FeaturesTable.
+        Key for the y-axis data.
         """
         return self._y_axis_key
 
