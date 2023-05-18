@@ -56,7 +56,9 @@ numpydoc_show_class_members = False
 automodapi_inheritance_diagram = False
 
 intersphinx_mapping = {
+    "python": ("https://docs.python.org/3/", None),
     "napari": ("https://napari.org/", None),
+    "numpy": ("https://numpy.org/doc/stable/", None),
     "matplotlib": ("https://matplotlib.org/", None),
 }
 
