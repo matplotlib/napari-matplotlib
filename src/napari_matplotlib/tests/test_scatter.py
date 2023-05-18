@@ -10,17 +10,14 @@ from napari_matplotlib import FeaturesScatterWidget, ScatterWidget
 
 @pytest.mark.mpl_image_compare
 def test_scatter(make_napari_viewer, astronaut_data):
-    # Smoke test adding a scatter widget
     viewer = make_napari_viewer()
     viewer.add_image(astronaut_data[0], **astronaut_data[1], name="astronaut")
     viewer.add_image(
         astronaut_data[0] * -1, **astronaut_data[1], name="astronaut_reversed"
     )
     viewer.layers.selection.add(viewer.layers[0])
-    viewer.layers.selection.add(viewer.layers[1])
+    viewer.layers.selection.add(viewer.layers[1])  # images need to be selected
     fig = ScatterWidget(viewer).figure
-    # Need to return a copy, as original figure is too eagerley garbage
-    # collected by the widget
     return deepcopy(fig)
 
 
