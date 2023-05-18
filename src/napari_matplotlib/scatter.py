@@ -68,7 +68,7 @@ class ScatterBaseWidget(NapariMPLWidget):
 
 class ScatterWidget(ScatterBaseWidget):
     """
-    Widget to display scatter plot of two similarly shaped image layers.
+    Scatter data in two similarly shaped layers.
 
     If there are more than 500 data points, a 2D histogram is displayed instead
     of a scatter plot, to avoid too many scatter points.
