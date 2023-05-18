@@ -1,9 +1,11 @@
+import pdb
 from copy import deepcopy
 from typing import Any, Dict, Tuple
 
 import numpy as np
 import numpy.typing as npt
 import pytest
+from skimage.measure import regionprops_table
 
 from napari_matplotlib import FeaturesScatterWidget, ScatterWidget
 
@@ -24,12 +26,35 @@ def test_scatter(make_napari_viewer, astronaut_data):
     return deepcopy(fig)
 
 
-def test_features_scatter_widget(make_napari_viewer):
+@pytest.mark.mpl_image_compare
+def test_features_scatter_widget(make_napari_viewer, astronaut_data):
     # Smoke test adding a features scatter widget
     viewer = make_napari_viewer()
-    viewer.add_image(np.random.random((100, 100)))
-    viewer.add_labels(np.random.randint(0, 5, (100, 100)))
-    FeaturesScatterWidget(viewer)
+    pdb.set_trace()
+    viewer.add_image(astronaut_data[0], **astronaut_data[1], name="astronaut")
+    # make a test label image
+    label_image = np.zeros((100, 100), dtype=np.uint16)
+
+    label_image[10:20, 10:20] = 1
+    label_image[50:70, 50:70] = 2
+
+    feature_table_1 = regionprops_table(
+        label_image, properties=("label", "area", "perimeter")
+    )
+    feature_table_1["index"] = feature_table_1["label"]
+
+    pdb.set_trace()
+    viewer.add_labels(
+        label_image, name="label+features", features=feature_table_1
+    )
+    viewer.layers.selection.remove(
+        viewer.layers[1]
+    )  # images need to be de-selected
+    # viewer.layers.selection.add(viewer.layers[0])
+    viewer.layers.selection.add(viewer.layers[1])  # images need to be selected
+    fig = FeaturesScatterWidget(viewer).figure
+    pdb.set_trace()
+    return deepcopy(fig)
 
 
 def make_labels_layer_with_features() -> (
