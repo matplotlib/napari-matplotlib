@@ -15,6 +15,9 @@ def test_scatter(make_napari_viewer, astronaut_data):
     viewer.add_image(
         astronaut_data[0] * -1, **astronaut_data[1], name="astronaut_reversed"
     )
+    viewer.layers.selection.remove(
+        viewer.layers[1]
+    )  # images need to be de-selected
     viewer.layers.selection.add(viewer.layers[0])
     viewer.layers.selection.add(viewer.layers[1])  # images need to be selected
     fig = ScatterWidget(viewer).figure
