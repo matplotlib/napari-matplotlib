@@ -22,11 +22,12 @@ __all__ = ["NapariMPLWidget"]
 
 class NapariMPLWidget(QWidget):
     """
-    Base Matplotlib canvas. Widget that can be embedded as a napari widget.
+    Widget containing a Matplotlib canvas and toolbar.
 
-    This creates a single FigureCanvas, which contains a single Figure.
-    It is not responsible for creating any Axes, because different widgets
-    may want to implement different subplot layouts.
+    This creates a single FigureCanvas, which contains a single
+    `~matplotlib.figure.Figure`, and an associated toolbar.
+    It is not responsible for creating any Axes, because different
+    widgets may want to implement different subplot layouts.
 
     This class also handles callbacks to automatically update figures when
     the layer selection or z-step is changed in the napari viewer. To take
@@ -60,12 +61,12 @@ class NapariMPLWidget(QWidget):
         self.layout().addWidget(self.toolbar)
         self.layout().addWidget(self.canvas)
 
-        self.setup_callbacks()
+        self._setup_callbacks()
         self.layers: List[napari.layers.Layer] = []
 
-    # Accept any number of input layers by default
+    #: Number of layers taken as input
     n_layers_input = Interval(None, None)
-    # Accept any type of input layer by default
+    #: Type of layer taken as input
     input_layer_types: Tuple[napari.layers.Layer, ...] = (napari.layers.Layer,)
 
     @property
@@ -83,17 +84,17 @@ class NapariMPLWidget(QWidget):
     @property
     def current_z(self) -> int:
         """
-        Current z-step of the viewer.
+        Current z-step of the napari viewer.
         """
         return self.viewer.dims.current_step[0]
 
-    def setup_callbacks(self) -> None:
+    def _setup_callbacks(self) -> None:
         """
         Sets up callbacks.
 
-        Sets up callbacks for:
-        - Layer selection changing
-        - z-step changing
+        Sets up callbacks for when:
+        - Layer selection is changed
+        - z-step is changed
         """
         # z-step changed in viewer
         self.viewer.dims.events.current_step.connect(self._draw)
@@ -102,7 +103,7 @@ class NapariMPLWidget(QWidget):
 
     def update_layers(self, event: napari.utils.events.Event) -> None:
         """
-        Update the layers attribute with currently selected layers and re-draw.
+        Update the ``layers`` attribute with currently selected layers and re-draw.
         """
         self.layers = list(self.viewer.layers.selection)
         self._on_update_layers()
@@ -145,7 +146,7 @@ class NapariMPLWidget(QWidget):
 
     @staticmethod
     def apply_napari_colorscheme(ax: Axes) -> None:
-        """Apply napari-compatible colorscheme to an axes object."""
+        """Apply napari-compatible colorscheme to an Axes."""
         # changing color of axes background to transparent
         ax.set_facecolor("none")
 
