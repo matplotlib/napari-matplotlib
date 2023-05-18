@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
 import napari
 from matplotlib.axes import Axes
@@ -43,8 +43,12 @@ class NapariMPLWidget(QWidget):
         List of currently selected napari layers.
     """
 
-    def __init__(self, napari_viewer: napari.viewer.Viewer):
-        super().__init__()
+    def __init__(
+        self,
+        napari_viewer: napari.viewer.Viewer,
+        parent: Optional[QWidget] = None,
+    ):
+        super().__init__(parent=parent)
 
         self.viewer = napari_viewer
         self.canvas = FigureCanvas()
@@ -52,7 +56,7 @@ class NapariMPLWidget(QWidget):
         self.canvas.figure.patch.set_facecolor("none")
         self.canvas.figure.set_layout_engine("constrained")
         self.toolbar = NapariNavigationToolbar(
-            self.canvas, self
+            self.canvas, parent=self
         )  # type: ignore[no-untyped-call]
         self._replace_toolbar_icons()
 
