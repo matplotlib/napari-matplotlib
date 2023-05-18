@@ -1,17 +1,23 @@
+from copy import deepcopy
 from typing import Any, Dict, Tuple
 
 import numpy as np
 import numpy.typing as npt
+import pytest
 
 from napari_matplotlib import FeaturesScatterWidget, ScatterWidget
 
 
+@pytest.mark.mpl_image_compare
 def test_scatter(make_napari_viewer, astronaut_data):
     # Smoke test adding a scatter widget
     viewer = make_napari_viewer()
     viewer.add_image(astronaut_data[0], **astronaut_data[1])
     viewer.add_image(astronaut_data[0] * -1, **astronaut_data[1])
-    ScatterWidget(viewer)
+    fig = ScatterWidget(viewer).figure
+    # Need to return a copy, as original figure is too eagerley garbage
+    # collected by the widget
+    return deepcopy(fig)
 
 
 def test_features_scatter_widget(make_napari_viewer):
