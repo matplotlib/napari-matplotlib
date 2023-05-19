@@ -23,6 +23,9 @@ Changes
   you would be interested in please open an issue at https://github.com/matplotlib/napari-matplotlib.
 - Labels plotting with the features scatter widget no longer have underscores
   replaced with spaces.
+- ``NapariMPLWidget.update_layers()`` has been removed as it is intended to be
+  private API. Use `NapariMPLWidget.on_update_layers` instead to implement
+  funcitonality when layer selection is changed.
 
 Bug fixes
 ~~~~~~~~~

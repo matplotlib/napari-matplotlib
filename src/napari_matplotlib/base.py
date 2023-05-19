@@ -108,6 +108,12 @@ class NapariMPLWidget(MPLWidget):
     is changed in the napari viewer. To take advantage of this sub-classes
     should implement the ``clear()`` and ``draw()`` methods.
 
+        When both the z-step and layer selection is changed, ``clear()`` is called
+    and if the number a type of selected layers are valid for the widget
+    ``draw()`` is then called. When layer selection is changed ``on_update_layers()``
+    is also called, which can be useful e.g. for updating a layer list in a
+    selection widget.
+
     Attributes
     ----------
     viewer : `napari.Viewer`
@@ -157,14 +163,16 @@ class NapariMPLWidget(MPLWidget):
         # z-step changed in viewer
         self.viewer.dims.events.current_step.connect(self._draw)
         # Layer selection changed in viewer
-        self.viewer.layers.selection.events.changed.connect(self.update_layers)
+        self.viewer.layers.selection.events.changed.connect(
+            self._update_layers
+        )
 
-    def update_layers(self, event: napari.utils.events.Event) -> None:
+    def _update_layers(self, event: napari.utils.events.Event) -> None:
         """
         Update the ``layers`` attribute with currently selected layers and re-draw.
         """
         self.layers = list(self.viewer.layers.selection)
-        self._on_update_layers()
+        self.on_update_layers()
         self._draw()
 
     def _draw(self) -> None:
@@ -193,10 +201,9 @@ class NapariMPLWidget(MPLWidget):
         This is a no-op, and is intended for derived classes to override.
         """
 
-    def _on_update_layers(self) -> None:
+    def on_update_layers(self) -> None:
         """
-        Function is called when self.layers is updated via
-        ``self.update_layers()``.
+        Called when the selected layers are updated.
 
         This is a no-op, and is intended for derived classes to override.
         """
