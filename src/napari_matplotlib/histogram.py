@@ -27,7 +27,7 @@ class HistogramWidget(NapariMPLWidget):
     ):
         super().__init__(napari_viewer, parent=parent)
         self.add_single_axes()
-        self.update_layers(None)
+        self._update_layers(None)
 
     def clear(self) -> None:
         """
