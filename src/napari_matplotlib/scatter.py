@@ -112,7 +112,7 @@ class FeaturesScatterWidget(ScatterBaseWidget):
     Widget to scatter data stored in two layer feature attributes.
     """
 
-    n_layers_input = Interval(1, 1)
+    n_layers_input = Interval(2, 2)
     # All layers that have a .features attributes
     input_layer_types = (
         napari.layers.Labels,

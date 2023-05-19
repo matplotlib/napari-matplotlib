@@ -30,7 +30,6 @@ def test_scatter(make_napari_viewer, astronaut_data):
 def test_features_scatter_widget(make_napari_viewer, astronaut_data):
     # Smoke test adding a features scatter widget
     viewer = make_napari_viewer()
-    pdb.set_trace()
     viewer.add_image(astronaut_data[0], **astronaut_data[1], name="astronaut")
     # make a test label image
     label_image = np.zeros((100, 100), dtype=np.uint16)
@@ -38,22 +37,46 @@ def test_features_scatter_widget(make_napari_viewer, astronaut_data):
     label_image[10:20, 10:20] = 1
     label_image[50:70, 50:70] = 2
 
+    label_image * -1
+
     feature_table_1 = regionprops_table(
         label_image, properties=("label", "area", "perimeter")
     )
     feature_table_1["index"] = feature_table_1["label"]
 
-    pdb.set_trace()
+    # make the points data
+    n_points = 100
+    points_data = 100 * np.random.random((100, 2))
+    points_features = {
+        "feature_0": np.random.random((n_points,)),
+        "feature_1": np.random.random((n_points,)),
+        "feature_2": np.random.random((n_points,)),
+    }
+
     viewer.add_labels(
         label_image, name="label+features", features=feature_table_1
     )
-    viewer.layers.selection.remove(
-        viewer.layers[1]
-    )  # images need to be de-selected
-    # viewer.layers.selection.add(viewer.layers[0])
-    viewer.layers.selection.add(viewer.layers[1])  # images need to be selected
-    fig = FeaturesScatterWidget(viewer).figure
+    viewer.layers.selection.remove(viewer.layers["label+features"])
+    # viewer.add_labels(
+    #     label_image2, name="label+features", features=feature_table_1
+    # )
+    # pdb.set_trace()
+    viewer.add_points(points_data, features=points_features)
+    viewer.layers.selection.remove(viewer.layers["points_data"])
+    # pdb.set_trace()
+    viewer.layers.selection.add(
+        viewer.layers["points_data"]
+    )  # images need to be selected
+    viewer.layers.selection.add(viewer.layers["label+features"])
+
     pdb.set_trace()
+    scatter_widget = FeaturesScatterWidget(viewer)
+    x_column = "feature_0"
+    scatter_widget.x_axis_key = x_column
+    y_column = "feature_1"
+    scatter_widget.y_axis_key = y_column
+    fig = scatter_widget.figure
+
     return deepcopy(fig)
 
 
