@@ -17,10 +17,10 @@ from .util import Interval, from_napari_css_get_size_of
 # Icons modified from
 # https://github.com/matplotlib/matplotlib/tree/main/lib/matplotlib/mpl-data/images
 ICON_ROOT = Path(__file__).parent / "icons"
-__all__ = ["NapariMPLWidget"]
+__all__ = ["MPLWidget", "NapariMPLWidget"]
 
 
-class NapariMPLWidget(QWidget):
+class MPLWidget(QWidget):
     """
     Widget containing a Matplotlib canvas and toolbar.
 
@@ -28,30 +28,14 @@ class NapariMPLWidget(QWidget):
     `~matplotlib.figure.Figure`, and an associated toolbar.
     It is not responsible for creating any Axes, because different
     widgets may want to implement different subplot layouts.
-
-    This class also handles callbacks to automatically update figures when
-    the layer selection or z-step is changed in the napari viewer. To take
-    advantage of this sub-classes should implement the ``clear()`` and
-    ``draw()`` methods.
-
-    Attributes
-    ----------
-    viewer : `napari.Viewer`
-        Main napari viewer.
-    canvas : matplotlib.backends.backend_qt5agg.FigureCanvas
-        Matplotlib canvas.
-    layers : `list`
-        List of currently selected napari layers.
     """
 
     def __init__(
         self,
-        napari_viewer: napari.viewer.Viewer,
         parent: Optional[QWidget] = None,
     ):
         super().__init__(parent=parent)
 
-        self.viewer = napari_viewer
         self.canvas = FigureCanvas()
 
         self.canvas.figure.patch.set_facecolor("none")
@@ -65,6 +49,81 @@ class NapariMPLWidget(QWidget):
         self.layout().addWidget(self.toolbar)
         self.layout().addWidget(self.canvas)
 
+    @property
+    def figure(self) -> Figure:
+        """Matplotlib figure."""
+        return self.canvas.figure
+
+    def add_single_axes(self) -> None:
+        """
+        Add a single Axes to the figure.
+
+        The Axes is saved on the ``.axes`` attribute for later access.
+        """
+        self.axes = self.figure.subplots()
+        self.apply_napari_colorscheme(self.axes)
+
+    @staticmethod
+    def apply_napari_colorscheme(ax: Axes) -> None:
+        """Apply napari-compatible colorscheme to an Axes."""
+        # changing color of axes background to transparent
+        ax.set_facecolor("none")
+
+        # changing colors of all axes
+        for spine in ax.spines:
+            ax.spines[spine].set_color("white")
+
+        ax.xaxis.label.set_color("white")
+        ax.yaxis.label.set_color("white")
+
+        # changing colors of axes labels
+        ax.tick_params(axis="x", colors="white")
+        ax.tick_params(axis="y", colors="white")
+
+    def _replace_toolbar_icons(self) -> None:
+        # Modify toolbar icons and some tooltips
+        for action in self.toolbar.actions():
+            text = action.text()
+            if text == "Pan":
+                action.setToolTip(
+                    "Pan/Zoom: Left button pans; Right button zooms; "
+                    "Click once to activate; Click again to deactivate"
+                )
+            if text == "Zoom":
+                action.setToolTip(
+                    "Zoom to rectangle; Click once to activate; "
+                    "Click again to deactivate"
+                )
+            if len(text) > 0:  # i.e. not a separator item
+                icon_path = os.path.join(ICON_ROOT, text + ".png")
+                action.setIcon(QIcon(icon_path))
+
+
+class NapariMPLWidget(MPLWidget):
+    """
+    Widget containing a Matplotlib canvas and toolbar.
+
+    In addition to `BaseNapariMPLWidget`, this class handles callbacks
+    to automatically update figures when the layer selection or z-step
+    is changed in the napari viewer. To take advantage of this sub-classes
+    should implement the ``clear()`` and ``draw()`` methods.
+
+    Attributes
+    ----------
+    viewer : `napari.Viewer`
+        Main napari viewer.
+    layers : `list`
+        List of currently selected napari layers.
+    """
+
+    def __init__(
+        self,
+        napari_viewer: napari.viewer.Viewer,
+        parent: Optional[QWidget] = None,
+    ):
+        super().__init__(parent=parent)
+
+        self.viewer = napari_viewer
         self._setup_callbacks()
         self.layers: List[napari.layers.Layer] = []
 
@@ -72,11 +131,6 @@ class NapariMPLWidget(QWidget):
     n_layers_input = Interval(None, None)
     #: Type of layer taken as input
     input_layer_types: Tuple[napari.layers.Layer, ...] = (napari.layers.Layer,)
-
-    @property
-    def figure(self) -> Figure:
-        """Matplotlib figure."""
-        return self.canvas.figure
 
     @property
     def n_selected_layers(self) -> int:
@@ -139,32 +193,6 @@ class NapariMPLWidget(QWidget):
         This is a no-op, and is intended for derived classes to override.
         """
 
-    def add_single_axes(self) -> None:
-        """
-        Add a single Axes to the figure.
-
-        The Axes is saved on the ``.axes`` attribute for later access.
-        """
-        self.axes = self.figure.subplots()
-        self.apply_napari_colorscheme(self.axes)
-
-    @staticmethod
-    def apply_napari_colorscheme(ax: Axes) -> None:
-        """Apply napari-compatible colorscheme to an Axes."""
-        # changing color of axes background to transparent
-        ax.set_facecolor("none")
-
-        # changing colors of all axes
-        for spine in ax.spines:
-            ax.spines[spine].set_color("white")
-
-        ax.xaxis.label.set_color("white")
-        ax.yaxis.label.set_color("white")
-
-        # changing colors of axes labels
-        ax.tick_params(axis="x", colors="white")
-        ax.tick_params(axis="y", colors="white")
-
     def _on_update_layers(self) -> None:
         """
         Function is called when self.layers is updated via
@@ -172,24 +200,6 @@ class NapariMPLWidget(QWidget):
 
         This is a no-op, and is intended for derived classes to override.
         """
-
-    def _replace_toolbar_icons(self) -> None:
-        # Modify toolbar icons and some tooltips
-        for action in self.toolbar.actions():
-            text = action.text()
-            if text == "Pan":
-                action.setToolTip(
-                    "Pan/Zoom: Left button pans; Right button zooms; "
-                    "Click once to activate; Click again to deactivate"
-                )
-            if text == "Zoom":
-                action.setToolTip(
-                    "Zoom to rectangle; Click once to activate; "
-                    "Click again to deactivate"
-                )
-            if len(text) > 0:  # i.e. not a separator item
-                icon_path = os.path.join(ICON_ROOT, text + ".png")
-                action.setIcon(QIcon(icon_path))
 
 
 class NapariNavigationToolbar(NavigationToolbar2QT):

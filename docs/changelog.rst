@@ -4,6 +4,11 @@ Changelog
 0.3.0
 -----
 
+New features
+~~~~~~~~~~~~
+- Added `MPLWidget` as a widget containing just a Matplotlib canvas
+  without any association with a napari viewer.
+
 Visual improvements
 ~~~~~~~~~~~~~~~~~~~
 - The background of ``napari-matplotlib`` figures and axes is now transparent.
