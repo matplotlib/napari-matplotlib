@@ -103,7 +103,7 @@ class NapariMPLWidget(MPLWidget):
     """
     Widget containing a Matplotlib canvas and toolbar.
 
-    In addition to `BaseNapariMPLWidget`, this class handles callbacks
+    In addition to ``BaseNapariMPLWidget``, this class handles callbacks
     to automatically update figures when the layer selection or z-step
     is changed in the napari viewer. To take advantage of this sub-classes
     should implement the ``clear()`` and ``draw()`` methods.
