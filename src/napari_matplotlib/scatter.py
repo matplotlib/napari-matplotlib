@@ -132,7 +132,7 @@ class FeaturesScatterWidget(ScatterBaseWidget):
             self.layout().addWidget(QLabel(f"{dim}-axis:"))
             self.layout().addWidget(self._selectors[dim])
 
-        self.update_layers(None)
+        self._update_layers(None)
 
     @property
     def x_axis_key(self) -> Union[str, None]:
@@ -230,7 +230,7 @@ class FeaturesScatterWidget(ScatterBaseWidget):
 
         return x, y, x_axis_name, y_axis_name
 
-    def _on_update_layers(self) -> None:
+    def on_update_layers(self) -> None:
         """
         Called when the layer selection changes by ``self.update_layers()``.
         """

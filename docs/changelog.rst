@@ -4,6 +4,11 @@ Changelog
 0.3.0
 -----
 
+New features
+~~~~~~~~~~~~
+- Added `MPLWidget` as a widget containing just a Matplotlib canvas
+  without any association with a napari viewer.
+
 Visual improvements
 ~~~~~~~~~~~~~~~~~~~
 - The background of ``napari-matplotlib`` figures and axes is now transparent.
@@ -18,6 +23,9 @@ Changes
   you would be interested in please open an issue at https://github.com/matplotlib/napari-matplotlib.
 - Labels plotting with the features scatter widget no longer have underscores
   replaced with spaces.
+- ``NapariMPLWidget.update_layers()`` has been removed as it is intended to be
+  private API. Use `NapariMPLWidget.on_update_layers` instead to implement
+  funcitonality when layer selection is changed.
 
 Bug fixes
 ~~~~~~~~~

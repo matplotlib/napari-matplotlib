@@ -51,7 +51,7 @@ class SliceWidget(NapariMPLWidget):
         for d in _dims_sel:
             self.slice_selectors[d].textChanged.connect(self._draw)
 
-        self.update_layers(None)
+        self._update_layers(None)
 
     @property
     def _layer(self) -> napari.layers.Layer:
