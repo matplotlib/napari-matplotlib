@@ -21,8 +21,7 @@ __all__ = ["NapariMPLWidget"]
 
 
 class NapariMPLWidget(QWidget):
-    """
-    Widget containing a Matplotlib canvas and toolbar.
+    """Widget containing a Matplotlib canvas and toolbar.
 
     This creates a single FigureCanvas, which contains a single
     `~matplotlib.figure.Figure`, and an associated toolbar.
