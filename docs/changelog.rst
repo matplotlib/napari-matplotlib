@@ -6,7 +6,7 @@ Changelog
 
 New features
 ~~~~~~~~~~~~
-- Added `MPLWidget` as a widget containing just a Matplotlib canvas
+- Added ``MPLWidget`` as a widget containing just a Matplotlib canvas
   without any association with a napari viewer.
 
 Visual improvements
@@ -24,7 +24,7 @@ Changes
 - Labels plotting with the features scatter widget no longer have underscores
   replaced with spaces.
 - ``NapariMPLWidget.update_layers()`` has been removed as it is intended to be
-  private API. Use `NapariMPLWidget.on_update_layers` instead to implement
+  private API. Use ``NapariMPLWidget.on_update_layers`` instead to implement
   funcitonality when layer selection is changed.
 
 Bug fixes
