@@ -64,7 +64,7 @@ nitpicky = True
 # TODO: fix at some point
 nitpick_ignore = [
     ("py:class", "PyQt6.QtWidgets.QWidget"),
-    ("py:class", "PyQt5.QtWidgets.QWidget")
+    ("py:class", "PyQt5.QtWidgets.QWidget"),
 ]
 
 # Add any paths that contain templates here, relative to this directory.
