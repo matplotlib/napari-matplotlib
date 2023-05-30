@@ -17,15 +17,16 @@ from .util import Interval, from_napari_css_get_size_of
 # Icons modified from
 # https://github.com/matplotlib/matplotlib/tree/main/lib/matplotlib/mpl-data/images
 ICON_ROOT = Path(__file__).parent / "icons"
-__all__ = ["MPLWidget", "NapariMPLWidget"]
+__all__ = ["BaseNapariMPLWidget", "NapariMPLWidget"]
 
 
-class MPLWidget(QWidget):
+class BaseNapariMPLWidget(QWidget):
     """
-    Widget containing a Matplotlib canvas and toolbar.
+    Widget containing Matplotlib canvas and toolbar themed to match napari.
 
     This creates a single FigureCanvas, which contains a single
-    `~matplotlib.figure.Figure`, and an associated toolbar.
+    `~matplotlib.figure.Figure`, and an associated toolbar. Both of these
+    are customised to match the visual style of the main napari window.
     It is not responsible for creating any Axes, because different
     widgets may want to implement different subplot layouts.
     """
@@ -99,7 +100,7 @@ class MPLWidget(QWidget):
                 action.setIcon(QIcon(icon_path))
 
 
-class NapariMPLWidget(MPLWidget):
+class NapariMPLWidget(BaseNapariMPLWidget):
     """
     Widget containing a Matplotlib canvas and toolbar.
 
