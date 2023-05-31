@@ -215,6 +215,7 @@ class NapariMPLWidget(BaseNapariMPLWidget):
         Update the ``layers`` attribute with currently selected layers and re-draw.
         """
         self.layers = list(self.viewer.layers.selection)
+        self.layers = sorted(self.layers, key=lambda layer: layer.name)
         self.on_update_layers()
         self._draw()
 
