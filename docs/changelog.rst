@@ -11,7 +11,7 @@ New features
 
 Visual improvements
 ~~~~~~~~~~~~~~~~~~~
-- The background of ``napari-matplotlib`` figures and axes is now transparent, and the text and axis colour respects the `napari.utils.theme`.
+- The background of ``napari-matplotlib`` figures and axes is now transparent, and the text and axis colour respects the ``napari`` theme.
 - The icons in the Matplotlib toolbar are now the same size as icons in the napari window.
 
 Changes
