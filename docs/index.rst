@@ -12,8 +12,12 @@ map one or more Image layers on to a 1D histogram plot.
 
 .. toctree::
    :maxdepth: 1
-   :caption: Contents:
 
-   auto_examples/index
-   changelog
+   guide/index
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Reference
+
    api
+   changelog
