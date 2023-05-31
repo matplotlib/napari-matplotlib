@@ -95,10 +95,10 @@ class BaseNapariMPLWidget(QWidget):
         ax.tick_params(axis="y", colors=tx)
 
     def _on_theme_change(self) -> None:
-        """
-        Update the MPL toolbar and axis styling when the `napari.Viewer.theme` is changed.
+        """Update MPL toolbar and axis styling when `napari.Viewer.theme` is changed.
 
-        Note: At the moment we only recognise the default 'light' and 'dark' napari themes.
+        Note:
+            At the moment we only handle the default 'light' and 'dark' napari themes.
         """
         self._replace_toolbar_icons()
         if self.figure.gca():

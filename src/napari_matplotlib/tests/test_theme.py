@@ -1,4 +1,5 @@
 import pytest
+
 from napari_matplotlib.base import NapariMPLWidget
 
 
