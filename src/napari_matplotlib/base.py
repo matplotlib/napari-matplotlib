@@ -29,6 +29,11 @@ class BaseNapariMPLWidget(QWidget):
     are customised to match the visual style of the main napari window.
     It is not responsible for creating any Axes, because different
     widgets may want to implement different subplot layouts.
+
+    See Also
+    --------
+    NapariMPLWidget : A child class that also contains helpful attributes and
+        methods for working with napari layers.
     """
 
     def __init__(
@@ -121,6 +126,11 @@ class NapariMPLWidget(BaseNapariMPLWidget):
         Main napari viewer.
     layers : `list`
         List of currently selected napari layers.
+
+    See Also
+    --------
+    BaseNapariMPLWidget : The parent class of this widget. Contains helpful methods
+        for creating and working with the Matplotlib figure and any axes.
     """
 
     def __init__(
