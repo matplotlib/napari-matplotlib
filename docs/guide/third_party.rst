@@ -6,7 +6,7 @@ This page explains how ``napari-matplotlib`` can be used within third party plug
 This widget is customised to match the theme of the main napari window.
 
 The widget can be found at `napari_matplotlib.base.NapariMPLWidget`.
-This class inherits from `~PyQt6.QtWidgets.QWidget`.
+This class inherits from `QWidget <https://doc.qt.io/qtforpython-5/PySide2/QtWidgets/QWidget.html>`_.
 
 The recommended way to use `~napari_matplotlib.base.NapariMPLWidget` is inside a new widget, adding it to the layout.
 This means you can add additional elements to your plugin layout alongside the Matplotlib figure.
