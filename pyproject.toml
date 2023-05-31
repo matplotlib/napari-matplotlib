@@ -2,9 +2,18 @@
 requires = ["setuptools", "wheel", "setuptools_scm"]
 build-backend = "setuptools.build_meta"
 
-
 [tool.setuptools_scm]
 write_to = "src/napari_matplotlib/_version.py"
+
+[tool.pytest.ini_options]
+qt_api = "pyqt6"
+addopts = "--mpl"
+filterwarnings = [
+    "error",
+    # Coming from vispy
+    "ignore:distutils Version classes are deprecated:DeprecationWarning",
+    "ignore:`np.bool8` is a deprecated alias for `np.bool_`:DeprecationWarning",
+]
 
 [tool.black]
 line-length = 79
