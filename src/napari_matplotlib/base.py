@@ -88,6 +88,7 @@ class BaseNapariMPLWidget(QWidget):
 
         ax.xaxis.label.set_color(text_colour)
         ax.yaxis.label.set_color(text_colour)
+        # ax.set_xlabel(ax.get_xlabel, color=text_colour)
 
         # changing colors of axes labels
         ax.tick_params(axis="x", colors=text_colour)
