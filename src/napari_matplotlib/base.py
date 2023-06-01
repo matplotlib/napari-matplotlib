@@ -14,9 +14,6 @@ from qtpy.QtWidgets import QLabel, QVBoxLayout, QWidget
 
 from .util import Interval, from_napari_css_get_size_of
 
-# Icons modified from
-# https://github.com/matplotlib/matplotlib/tree/main/lib/matplotlib/mpl-data/images
-ICON_ROOT = Path(__file__).parent / "icons"
 __all__ = ["BaseNapariMPLWidget", "NapariMPLWidget"]
 
 
@@ -122,11 +119,15 @@ class BaseNapariMPLWidget(QWidget):
     def _get_path_to_icon(self) -> Path:
         """
         Get the icons directory (which is theme-dependent).
+
+        Icons modified from
+        https://github.com/matplotlib/matplotlib/tree/main/lib/matplotlib/mpl-data/images
         """
+        icon_root = Path(__file__).parent / "icons"
         if self._theme_has_light_bg():
-            return ICON_ROOT / "black"
+            return icon_root / "black"
         else:
-            return ICON_ROOT / "white"
+            return icon_root / "white"
 
     def _replace_toolbar_icons(self) -> None:
         """
