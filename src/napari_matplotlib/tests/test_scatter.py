@@ -9,7 +9,7 @@ from napari_matplotlib import FeaturesScatterWidget, ScatterWidget
 
 
 @pytest.mark.mpl_image_compare
-def test_scatter(make_napari_viewer, astronaut_data):
+def test_scatter_2D(make_napari_viewer, astronaut_data):
     viewer = make_napari_viewer()
     widget = ScatterWidget(viewer)
     fig = widget.figure
@@ -25,16 +25,38 @@ def test_scatter(make_napari_viewer, astronaut_data):
     # Select images
     viewer.layers.selection.add(viewer.layers[0])
     viewer.layers.selection.add(viewer.layers[1])
-
     return deepcopy(fig)
 
 
-def test_features_scatter_widget(make_napari_viewer):
-    # Smoke test adding a features scatter widget
+@pytest.mark.mpl_image_compare
+def test_features_scatter_widget_2D(make_napari_viewer):
     viewer = make_napari_viewer()
-    viewer.add_image(np.random.random((100, 100)))
-    viewer.add_labels(np.random.randint(0, 5, (100, 100)))
-    FeaturesScatterWidget(viewer)
+    widget = FeaturesScatterWidget(viewer)
+
+    # make the points data
+    n_points = 100
+    np.random.seed(10)
+    points_data = 100 * np.random.random((100, 2))
+    points_features = {
+        "feature_0": np.random.random((n_points,)),
+        "feature_1": np.random.random((n_points,)),
+        "feature_2": np.random.random((n_points,)),
+    }
+
+    viewer.add_points(points_data, features=points_features)
+    # De-select existing selection
+    viewer.layers.selection.clear()
+
+    # Select points data and chosen features
+    viewer.layers.selection.add(
+        viewer.layers["points_data"]
+    )  # images need to be selected
+    widget.x_axis_key = "feature_0"
+    widget.y_axis_key = "feature_1"
+
+    fig = widget.figure
+
+    return deepcopy(fig)
 
 
 def make_labels_layer_with_features() -> (
