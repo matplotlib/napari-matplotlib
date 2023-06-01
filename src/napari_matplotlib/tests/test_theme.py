@@ -34,7 +34,9 @@ def _mock_up_theme() -> None:
 
 
 def test_theme_background_check(make_napari_viewer):
-    """Check that the hue, saturation, lightness can distinguish dark and light backgrounds."""
+    """
+    Check that the hue saturation lightness can distinguish dark and light backgrounds.
+    """
     viewer = make_napari_viewer()
     widget = NapariMPLWidget(viewer)
 
