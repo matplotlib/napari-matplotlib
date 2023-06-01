@@ -1,7 +1,20 @@
+import importlib
+import sys
+
 import pytest
 from qtpy.QtCore import QSize
 
 from napari_matplotlib.util import Interval, from_napari_css_get_size_of
+
+
+def test_version_fallback(mocker):
+    """Test the versioning fallback (in case setuptools_scm didn't work)"""
+    import napari_matplotlib  # fmt: skip
+    assert napari_matplotlib.__version__ != "unknown"  # type: ignore[attr-defined]
+
+    mocker.patch.dict(sys.modules, {"napari_matplotlib._version": None})
+    importlib.reload(napari_matplotlib)
+    assert napari_matplotlib.__version__ == "unknown"  # type: ignore[attr-defined]
 
 
 def test_interval():
