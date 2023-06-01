@@ -1,11 +1,12 @@
 from io import BytesIO
 
 import numpy as np
+import numpy.typing as npt
 import pytest
 from matplotlib.figure import Figure
 
 
-def fig_to_array(fig: Figure) -> np.ndarray:
+def fig_to_array(fig: Figure) -> npt.NDArray[np.uint8]:
     """
     Convert a figure to an RGB array.
     """
