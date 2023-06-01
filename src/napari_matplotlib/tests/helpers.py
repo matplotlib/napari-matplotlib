@@ -1,9 +1,8 @@
 from io import BytesIO
 
 import numpy as np
-from matplotlib.figure import Figure
-
 import pytest
+from matplotlib.figure import Figure
 
 
 def fig_to_array(fig: Figure) -> np.ndarray:
