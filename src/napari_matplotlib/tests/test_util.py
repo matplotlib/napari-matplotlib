@@ -16,6 +16,23 @@ def test_interval():
         "string" in interval  # type: ignore
 
 
+@pytest.mark.parametrize(
+    "lower, upper, text",
+    [
+        (None, None, None),
+        (1, None, "Select at least 1 layer to generate plot"),
+        (4, None, "Select at least 4 layers to generate plot"),
+        (None, 1, "Select at most 1 layer to generate plot"),
+        (None, 5939, "Select at most 5939 layers to generate plot"),
+        (1, 1, "Select 1 layer to generate plot"),
+        (2, 2, "Select 2 layers to generate plot"),
+        (1, 2, "Select between 1 and 2 layers to generate plot"),
+    ],
+)
+def test_interval_helper_text(lower, upper, text):
+    assert Interval(lower, upper)._helper_text == text
+
+
 def test_get_size_from_css(mocker):
     """Test getting the max-width and max-height from something in css"""
     test_css = """
