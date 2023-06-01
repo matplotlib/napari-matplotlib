@@ -46,6 +46,35 @@ class Interval:
             return False
         return True
 
+    @property
+    def _helper_text(self) -> Optional[str]:
+        """
+        Helper text for widgets.
+        """
+        if self.lower is None and self.upper is None:
+            helper_text = None
+        elif self.lower is not None and self.upper is None:
+            helper_text = (
+                f"Select at least {self.lower} layers to generate plot"
+            )
+        elif self.lower is None and self.upper is not None:
+            helper_text = (
+                f"Select at most {self.upper} layers to generate plot"
+            )
+        elif self.lower == self.upper:
+            helper_text = f"Select {self.lower} layers to generate plot"
+
+        else:
+            helper_text = (
+                f"Select between {self.lower} and "
+                f"{self.upper} layers to generate plot"
+            )
+
+        if helper_text is not None:
+            helper_text = helper_text.replace("1 layers", "1 layer")
+
+        return helper_text
+
 
 def _has_id(nodes: List[tinycss2.ast.Node], id_name: str) -> bool:
     """

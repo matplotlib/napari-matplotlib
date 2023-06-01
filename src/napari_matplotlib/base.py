@@ -10,7 +10,7 @@ from matplotlib.backends.backend_qtagg import (
 )
 from matplotlib.figure import Figure
 from qtpy.QtGui import QIcon
-from qtpy.QtWidgets import QVBoxLayout, QWidget
+from qtpy.QtWidgets import QLabel, QVBoxLayout, QWidget
 
 from .util import Interval, from_napari_css_get_size_of
 
@@ -133,6 +133,11 @@ class NapariMPLWidget(BaseNapariMPLWidget):
         for creating and working with the Matplotlib figure and any axes.
     """
 
+    #: Number of layers taken as input
+    n_layers_input = Interval(None, None)
+    #: Type of layer taken as input
+    input_layer_types: Tuple[napari.layers.Layer, ...] = (napari.layers.Layer,)
+
     def __init__(
         self,
         napari_viewer: napari.viewer.Viewer,
@@ -144,10 +149,9 @@ class NapariMPLWidget(BaseNapariMPLWidget):
         self._setup_callbacks()
         self.layers: List[napari.layers.Layer] = []
 
-    #: Number of layers taken as input
-    n_layers_input = Interval(None, None)
-    #: Type of layer taken as input
-    input_layer_types: Tuple[napari.layers.Layer, ...] = (napari.layers.Layer,)
+        helper_text = self.n_layers_input._helper_text
+        if helper_text is not None:
+            self.layout().insertWidget(0, QLabel(helper_text))
 
     @property
     def n_selected_layers(self) -> int:

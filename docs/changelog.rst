@@ -8,6 +8,8 @@ New features
 ~~~~~~~~~~~~
 - Added ``MPLWidget`` as a widget containing just a Matplotlib canvas
   without any association with a napari viewer.
+- Added text to each widget indicating how many layers need to be selected
+  for the widget to plot something.
 
 Visual improvements
 ~~~~~~~~~~~~~~~~~~~
