@@ -9,6 +9,9 @@ from napari_matplotlib import SliceWidget
 def test_slice_3D(make_napari_viewer, brain_data):
     viewer = make_napari_viewer()
     viewer.add_image(brain_data[0], **brain_data[1])
+    axis = viewer.dims.last_used
+    slice_no = 9
+    viewer.dims.set_current_step(axis, slice_no)
     fig = SliceWidget(viewer).figure
     # Need to return a copy, as original figure is too eagerley garbage
     # collected by the widget
