@@ -2,6 +2,7 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 
 import napari
 import numpy.typing as npt
+from numpy import array
 from qtpy.QtWidgets import QComboBox, QLabel, QVBoxLayout, QWidget
 
 from .base import NapariMPLWidget
@@ -93,6 +94,8 @@ class ScatterWidget(ScatterBaseWidget):
         """
         x = self.layers[0].data[self.current_z]
         y = self.layers[1].data[self.current_z]
+        print("x data size = ", array(x).shape)
+        print("y data size = ", array(y).shape)
         x_axis_name = self.layers[0].name
         y_axis_name = self.layers[1].name
 
