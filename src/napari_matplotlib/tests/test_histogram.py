@@ -23,6 +23,9 @@ def test_histogram_2D(make_napari_viewer, astronaut_data):
 def test_histogram_3D(make_napari_viewer, brain_data):
     viewer = make_napari_viewer()
     viewer.add_image(brain_data[0], **brain_data[1])
+    axis = viewer.dims.last_used
+    slice_no = brain_data[0].shape[0] - 1
+    viewer.dims.set_current_step(axis, slice_no)
     fig = HistogramWidget(viewer).figure
     # Need to return a copy, as original figure is too eagerley garbage
     # collected by the widget
