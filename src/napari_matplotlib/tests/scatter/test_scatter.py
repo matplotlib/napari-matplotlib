@@ -1,7 +1,7 @@
 from copy import deepcopy
 
 import pytest
-from numpy import array
+import numpy as np
 
 from napari_matplotlib import ScatterWidget
 
