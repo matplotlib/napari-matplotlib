@@ -88,7 +88,6 @@ class BaseNapariMPLWidget(QWidget):
 
         ax.xaxis.label.set_color(text_colour)
         ax.yaxis.label.set_color(text_colour)
-        # ax.set_xlabel(ax.get_xlabel, color=text_colour)
 
         # changing colors of axes labels
         ax.tick_params(axis="x", colors=text_colour)
@@ -246,9 +245,8 @@ class NapariMPLWidget(BaseNapariMPLWidget):
             isinstance(layer, self.input_layer_types) for layer in self.layers
         ):
             self.draw()
-        self.canvas.draw()
-        self.canvas.flush_events()
         self.apply_napari_colorscheme(self.figure.gca())
+        self.canvas.draw()
 
     def clear(self) -> None:
         """
