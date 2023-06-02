@@ -40,7 +40,7 @@ def test_scatter_3D(make_napari_viewer, brain_data):
     # De-select existing selection
     viewer.layers.selection.clear()
     axis = viewer.dims.last_used
-    slice_no = array(brain_data[0]).shape[0] - 1
+    slice_no = brain_data[0].shape[0] - 1
     viewer.dims.set_current_step(axis, slice_no)
     # Select images
     viewer.layers.selection.add(viewer.layers[0])
