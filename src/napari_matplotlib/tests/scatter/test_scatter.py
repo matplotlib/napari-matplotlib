@@ -1,6 +1,7 @@
 from copy import deepcopy
 
 import pytest
+from numpy import array
 
 from napari_matplotlib import ScatterWidget
 
@@ -40,7 +41,7 @@ def test_scatter_3D(make_napari_viewer, brain_data):
     viewer.layers.selection.clear()
     # pdb.set_trace()
     axis = viewer.dims.last_used
-    slice_no = 9
+    slice_no = array(brain_data[0]).shape[0] - 1
     viewer.dims.set_current_step(axis, slice_no)
     # Select images
     viewer.layers.selection.add(viewer.layers[0])
