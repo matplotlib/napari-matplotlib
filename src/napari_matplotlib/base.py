@@ -247,6 +247,8 @@ class NapariMPLWidget(BaseNapariMPLWidget):
         ):
             self.draw()
         self.canvas.draw()
+        self.canvas.flush_events()
+        self.apply_napari_colorscheme(self.figure.gca())
 
     def clear(self) -> None:
         """

@@ -55,7 +55,10 @@ def test_theme_background_check(make_napari_viewer):
 
 @pytest.mark.parametrize(
     "theme_name, expected_text_colour",
-    [("dark", "white"), ("light", "black")],
+    [
+        ("dark", "#f0f1f2"),  # #f0f1f2 is a light grey (almost white)
+        ("light", "#3b3a39"),  # #3b3a39 is a brownish dark grey (almost black)
+    ],
 )
 def test_titles_respect_theme(
     make_napari_viewer, theme_name, expected_text_colour
