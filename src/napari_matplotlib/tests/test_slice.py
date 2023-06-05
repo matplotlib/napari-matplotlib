@@ -8,6 +8,7 @@ from napari_matplotlib import SliceWidget
 @pytest.mark.mpl_image_compare
 def test_slice_3D(make_napari_viewer, brain_data):
     viewer = make_napari_viewer()
+    viewer.theme = "light"
     viewer.add_image(brain_data[0], **brain_data[1])
     axis = viewer.dims.last_used
     slice_no = brain_data[0].shape[0] - 1
@@ -21,6 +22,7 @@ def test_slice_3D(make_napari_viewer, brain_data):
 @pytest.mark.mpl_image_compare
 def test_slice_2D(make_napari_viewer, astronaut_data):
     viewer = make_napari_viewer()
+    viewer.theme = "light"
     viewer.add_image(astronaut_data[0], **astronaut_data[1])
     fig = SliceWidget(viewer).figure
     # Need to return a copy, as original figure is too eagerley garbage

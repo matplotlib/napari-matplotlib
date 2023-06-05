@@ -245,6 +245,7 @@ class NapariMPLWidget(BaseNapariMPLWidget):
             isinstance(layer, self.input_layer_types) for layer in self.layers
         ):
             self.draw()
+        self.apply_napari_colorscheme(self.figure.gca())
         self.canvas.draw()
 
     def clear(self) -> None:

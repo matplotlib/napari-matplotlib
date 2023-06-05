@@ -1,6 +1,8 @@
 import napari
+import numpy as np
 import pytest
 
+from napari_matplotlib import ScatterWidget
 from napari_matplotlib.base import NapariMPLWidget
 
 
@@ -49,3 +51,40 @@ def test_theme_background_check(make_napari_viewer):
     _mock_up_theme()
     viewer.theme = "blue"
     assert widget._theme_has_light_bg() is True
+
+
+@pytest.mark.parametrize(
+    "theme_name, expected_text_colour",
+    [
+        ("dark", "#f0f1f2"),  # #f0f1f2 is a light grey (almost white)
+        ("light", "#3b3a39"),  # #3b3a39 is a brownish dark grey (almost black)
+    ],
+)
+def test_titles_respect_theme(
+    make_napari_viewer, theme_name, expected_text_colour
+):
+    """
+    Test that the axis labels and titles are the correct color for the napari theme.
+    """
+    viewer = make_napari_viewer()
+    widget = ScatterWidget(viewer)
+    viewer.theme = theme_name
+
+    # make a scatter plot of two random layers
+    viewer.add_image(np.random.random((10, 10)), name="first test image")
+    viewer.add_image(np.random.random((10, 10)), name="second test image")
+    viewer.layers.selection.clear()
+    viewer.layers.selection.add(viewer.layers[0])
+    viewer.layers.selection.add(viewer.layers[1])
+
+    ax = widget.figure.gca()
+
+    # sanity test to make sure we've got the correct image names
+    assert ax.xaxis.label.get_text() == "first test image"
+    assert ax.yaxis.label.get_text() == "second test image"
+
+    # print(dir(ax.yaxis.label))
+    # TODO: put checks of the axis tick labels here
+
+    assert ax.xaxis.label.get_color() == expected_text_colour
+    assert ax.yaxis.label.get_color() == expected_text_colour

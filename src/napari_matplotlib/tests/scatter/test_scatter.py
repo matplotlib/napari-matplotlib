@@ -8,6 +8,7 @@ from napari_matplotlib import ScatterWidget
 @pytest.mark.mpl_image_compare
 def test_scatter_2D(make_napari_viewer, astronaut_data):
     viewer = make_napari_viewer()
+    viewer.theme = "light"
     widget = ScatterWidget(viewer)
     fig = widget.figure
 
@@ -28,6 +29,7 @@ def test_scatter_2D(make_napari_viewer, astronaut_data):
 @pytest.mark.mpl_image_compare
 def test_scatter_3D(make_napari_viewer, brain_data):
     viewer = make_napari_viewer()
+    viewer.theme = "light"
     widget = ScatterWidget(viewer)
     fig = widget.figure
 

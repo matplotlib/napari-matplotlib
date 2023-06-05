@@ -11,6 +11,7 @@ from napari_matplotlib import FeaturesScatterWidget
 @pytest.mark.mpl_image_compare
 def test_features_scatter_widget_2D(make_napari_viewer):
     viewer = make_napari_viewer()
+    viewer.theme = "light"
     widget = FeaturesScatterWidget(viewer)
 
     # make the points data
