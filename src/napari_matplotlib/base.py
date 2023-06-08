@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 from typing import List, Optional, Tuple
 
+import matplotlib.style
 import napari
 from matplotlib.axes import Axes
 from matplotlib.backends.backend_qtagg import (
@@ -41,9 +42,11 @@ class BaseNapariMPLWidget(QWidget):
         super().__init__(parent=parent)
         self.viewer = napari_viewer
 
+        has_mpl_stylesheet = self._apply_user_stylesheet_if_present()
         self.canvas = FigureCanvas()
 
-        self.canvas.figure.patch.set_facecolor("none")
+        if not has_mpl_stylesheet:
+            self.canvas.figure.patch.set_facecolor("none")
         self.canvas.figure.set_layout_engine("constrained")
         self.toolbar = NapariNavigationToolbar(
             self.canvas, parent=self
@@ -70,10 +73,16 @@ class BaseNapariMPLWidget(QWidget):
         The Axes is saved on the ``.axes`` attribute for later access.
         """
         self.axes = self.figure.subplots()
-        self.apply_napari_colorscheme(self.axes)
+        self.apply_style(self.axes)
 
-    def apply_napari_colorscheme(self, ax: Axes) -> None:
-        """Apply napari-compatible colorscheme to an Axes."""
+    def apply_style(self, ax: Axes) -> None:
+        """
+        Use the user-supplied stylesheet if present, otherwise apply the
+        napari-compatible colorscheme (theme-dependent) to an Axes.
+        """
+        if self._apply_user_stylesheet_if_present():
+            return
+
         # get the foreground colours from current theme
         theme = napari.utils.theme.get_theme(self.viewer.theme, as_dict=False)
         fg_colour = theme.foreground.as_hex()  # fg is a muted contrast to bg
@@ -93,6 +102,20 @@ class BaseNapariMPLWidget(QWidget):
         ax.tick_params(axis="x", colors=text_colour)
         ax.tick_params(axis="y", colors=text_colour)
 
+    def _apply_user_stylesheet_if_present(self) -> bool:
+        """
+        Apply the user-supplied stylesheet if present.
+
+        Returns
+        -------
+        True if the stylesheet was present and applied.
+        False otherwise.
+        """
+        if (Path.cwd() / "user.mplstyle").exists():
+            matplotlib.style.use("./user.mplstyle")
+            return True
+        return False
+
     def _on_theme_change(self) -> None:
         """Update MPL toolbar and axis styling when `napari.Viewer.theme` is changed.
 
@@ -101,7 +124,7 @@ class BaseNapariMPLWidget(QWidget):
         """
         self._replace_toolbar_icons()
         if self.figure.gca():
-            self.apply_napari_colorscheme(self.figure.gca())
+            self.apply_style(self.figure.gca())
 
     def _theme_has_light_bg(self) -> bool:
         """
@@ -245,7 +268,7 @@ class NapariMPLWidget(BaseNapariMPLWidget):
             isinstance(layer, self.input_layer_types) for layer in self.layers
         ):
             self.draw()
-        self.apply_napari_colorscheme(self.figure.gca())
+        self.apply_style(self.figure.gca())
         self.canvas.draw()
 
     def clear(self) -> None:
