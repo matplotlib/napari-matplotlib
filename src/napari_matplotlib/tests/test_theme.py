@@ -1,8 +1,13 @@
+import shutil
+from pathlib import Path
+
+import matplotlib
 import napari
 import numpy as np
 import pytest
+from matplotlib.colors import to_rgba
 
-from napari_matplotlib import ScatterWidget
+from napari_matplotlib import HistogramWidget, ScatterWidget
 from napari_matplotlib.base import NapariMPLWidget
 
 
@@ -88,3 +93,34 @@ def test_titles_respect_theme(
 
     assert ax.xaxis.label.get_color() == expected_text_colour
     assert ax.yaxis.label.get_color() == expected_text_colour
+
+
+def find_mpl_stylesheet(name: str) -> Path:
+    """Find the built-in matplotlib stylesheet."""
+    return Path(matplotlib.__path__[0]) / f"mpl-data/stylelib/{name}.mplstyle"
+
+
+def test_stylesheet_in_cwd(tmpdir, make_napari_viewer, image_data):
+    """
+    Test that a stylesheet in the current directory is given precidence.
+
+    Do this by copying over a stylesheet from matplotlib's built in styles,
+    naming it correctly, and checking the colours are as expected.
+    """
+    with tmpdir.as_cwd():
+        # Copy Solarize_Light2 to current dir as if it was a user-overriden stylesheet.
+        shutil.copy(find_mpl_stylesheet("Solarize_Light2"), "./user.mplstyle")
+        viewer = make_napari_viewer()
+        viewer.add_image(image_data[0], **image_data[1])
+        widget = HistogramWidget(viewer)
+        ax = widget.figure.gca()
+
+        # The axes should have a light brownish grey background:
+        assert ax.get_facecolor() == to_rgba("#eee8d5")
+        assert ax.patch.get_facecolor() == to_rgba("#eee8d5")
+
+        # The figure background and axis gridlines are light yellow:
+        assert widget.figure.patch.get_facecolor() == to_rgba("#fdf6e3")
+        for gridline in ax.get_xgridlines() + ax.get_ygridlines():
+            assert gridline.get_visible() is True
+            assert gridline.get_color() == "#fdf6e3"
