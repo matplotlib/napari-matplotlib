@@ -54,8 +54,23 @@ def test_theme_background_check(make_napari_viewer):
     assert widget._theme_has_light_bg() is True
 
     _mock_up_theme()
+    with pytest.warns(UserWarning, match="theme 'blue' is not supported"):
+        viewer.theme = "blue"
+        assert widget._theme_has_light_bg() is True
+
+
+def test_unknown_theme_raises_warning(make_napari_viewer):
+    """
+    Check that widget construction warns if it doesn't recognise napari's theme.
+
+    Note that testing for the expected warning when theme is changed _after_ the
+    widget is created is part of ``test_theme_background_check``.
+    """
+    viewer = make_napari_viewer()
+    _mock_up_theme()  # creates the 'blue' theme which is not a standard napari theme
     viewer.theme = "blue"
-    assert widget._theme_has_light_bg() is True
+    with pytest.warns(UserWarning, match="theme 'blue' is not supported"):
+        HistogramWidget(viewer)
 
 
 @pytest.mark.parametrize(

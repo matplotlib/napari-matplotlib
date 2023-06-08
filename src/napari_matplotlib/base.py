@@ -1,10 +1,10 @@
 import os
+import warnings
 from pathlib import Path
 from typing import List, Optional, Tuple
 
 import matplotlib.style
 import napari
-from matplotlib.axes import Axes
 from matplotlib.backends.backend_qtagg import (
     FigureCanvas,
     NavigationToolbar2QT,
@@ -41,12 +41,8 @@ class BaseNapariMPLWidget(QWidget):
     ):
         super().__init__(parent=parent)
         self.viewer = napari_viewer
-
-        has_mpl_stylesheet = self._apply_user_stylesheet_if_present()
+        self.apply_style()
         self.canvas = FigureCanvas()
-
-        if not has_mpl_stylesheet:
-            self.canvas.figure.patch.set_facecolor("none")
         self.canvas.figure.set_layout_engine("constrained")
         self.toolbar = NapariNavigationToolbar(
             self.canvas, parent=self
@@ -73,34 +69,27 @@ class BaseNapariMPLWidget(QWidget):
         The Axes is saved on the ``.axes`` attribute for later access.
         """
         self.axes = self.figure.subplots()
-        self.apply_style(self.axes)
 
-    def apply_style(self, ax: Axes) -> None:
+    def apply_style(self) -> None:
         """
-        Use the user-supplied stylesheet if present, otherwise apply the
-        napari-compatible colorscheme (theme-dependent) to an Axes.
+        Any user-supplied stylesheet takes highest precidence, otherwise apply
+        the napari-compatible colorscheme (depends on the napari theme).
         """
         if self._apply_user_stylesheet_if_present():
             return
 
-        # get the foreground colours from current theme
-        theme = napari.utils.theme.get_theme(self.viewer.theme, as_dict=False)
-        fg_colour = theme.foreground.as_hex()  # fg is a muted contrast to bg
-        text_colour = theme.text.as_hex()  # text is high contrast to bg
-
-        # changing color of axes background to transparent
-        ax.set_facecolor("none")
-
-        # changing colors of all axes
-        for spine in ax.spines:
-            ax.spines[spine].set_color(fg_colour)
-
-        ax.xaxis.label.set_color(text_colour)
-        ax.yaxis.label.set_color(text_colour)
-
-        # changing colors of axes labels
-        ax.tick_params(axis="x", colors=text_colour)
-        ax.tick_params(axis="y", colors=text_colour)
+        stylesheet_dir = self._get_path_to_mpl_stylesheets()
+        if self.viewer.theme == "dark":
+            matplotlib.style.use(stylesheet_dir / "napari-dark.mplstyle")
+        elif self.viewer.theme == "light":
+            matplotlib.style.use(stylesheet_dir / "napari-light.mplstyle")
+        else:
+            warnings.warn(
+                f"Napari theme '{self.viewer.theme}' is not supported by"
+                " napari-matplotlib. Will fall back to the matplotlib default."
+            )
+            matplotlib.style.use("default")
+        return
 
     def _apply_user_stylesheet_if_present(self) -> bool:
         """
@@ -108,12 +97,14 @@ class BaseNapariMPLWidget(QWidget):
 
         Returns
         -------
-        True if the stylesheet was present and applied.
-        False otherwise.
+            True if the stylesheet was present and applied.
+            False otherwise.
         """
         if (Path.cwd() / "user.mplstyle").exists():
             matplotlib.style.use("./user.mplstyle")
             return True
+            # TODO: can put more complicated stuff in here. Like a config dir,
+            # or take a given named file from the matplotlib user styles
         return False
 
     def _on_theme_change(self) -> None:
@@ -123,8 +114,8 @@ class BaseNapariMPLWidget(QWidget):
             At the moment we only handle the default 'light' and 'dark' napari themes.
         """
         self._replace_toolbar_icons()
-        if self.figure.gca():
-            self.apply_style(self.figure.gca())
+        self.apply_style()
+        # self.canvas.reload()
 
     def _theme_has_light_bg(self) -> bool:
         """
@@ -138,6 +129,9 @@ class BaseNapariMPLWidget(QWidget):
         theme = napari.utils.theme.get_theme(self.viewer.theme, as_dict=False)
         _, _, bg_lightness = theme.background.as_hsl_tuple()
         return bg_lightness > 0.5
+
+    def _get_path_to_mpl_stylesheets(self) -> Path:
+        return Path(__file__).parent / "stylesheets"
 
     def _get_path_to_icon(self) -> Path:
         """
@@ -268,7 +262,7 @@ class NapariMPLWidget(BaseNapariMPLWidget):
             isinstance(layer, self.input_layer_types) for layer in self.layers
         ):
             self.draw()
-        self.apply_style(self.figure.gca())
+        self.apply_style()
         self.canvas.draw()
 
     def clear(self) -> None:
