@@ -2,7 +2,7 @@ from copy import deepcopy
 
 import pytest
 
-from napari_matplotlib import ScatterWidget
+from napari_matplotlib import ScatterBaseWidget, ScatterWidget
 
 
 @pytest.mark.mpl_image_compare
@@ -48,3 +48,10 @@ def test_scatter_3D(make_napari_viewer, brain_data):
     viewer.layers.selection.add(viewer.layers[1])
 
     return deepcopy(fig)
+
+
+def test_get_data_notimplemented_on_base(make_napari_viewer):
+    viewer = make_napari_viewer()
+    widget = ScatterBaseWidget(viewer)
+    with pytest.raises(NotImplementedError):
+        widget._get_data()

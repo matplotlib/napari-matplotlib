@@ -28,6 +28,9 @@ def test_interval():
     with pytest.raises(ValueError, match="must be an integer"):
         "string" in interval  # type: ignore
 
+    with pytest.raises(ValueError, match="must be <= upper_bound"):
+        Interval(5, 3)
+
 
 @pytest.mark.parametrize(
     "lower, upper, text",
