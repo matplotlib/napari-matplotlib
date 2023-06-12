@@ -1,4 +1,5 @@
 import shutil
+from copy import deepcopy
 from pathlib import Path
 
 import matplotlib
@@ -124,3 +125,22 @@ def test_stylesheet_in_cwd(tmpdir, make_napari_viewer, image_data):
         for gridline in ax.get_xgridlines() + ax.get_ygridlines():
             assert gridline.get_visible() is True
             assert gridline.get_color() == "#fdf6e3"
+
+
+@pytest.mark.mpl_image_compare
+def test_theme_doesnt_leak(make_napari_viewer):
+    """Ensure that napari-matplotlib doesn't pollute the globally set style.
+
+    A MWE to guard aganst issue matplotlib/#64. Should always reproduce a plot
+    with the default matplotlib style.
+    """
+    import matplotlib.pyplot as plt
+
+    # should not affect global style
+    viewer = make_napari_viewer()
+    HistogramWidget(viewer)
+
+    np.random.seed(12345)
+    image = np.random.random((3, 3))
+    plot = plt.imshow(image)
+    return deepcopy(plot)
