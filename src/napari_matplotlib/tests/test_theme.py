@@ -88,3 +88,33 @@ def test_titles_respect_theme(
 
     assert ax.xaxis.label.get_color() == expected_text_colour
     assert ax.yaxis.label.get_color() == expected_text_colour
+
+
+@pytest.mark.mpl_image_compare
+def test_no_theme_side_effects(make_napari_viewer):
+    """Ensure that napari-matplotlib doesn't pollute the globally set style.
+
+    A MWE to guard aganst issue matplotlib/#64. Should always reproduce a plot
+    with the default matplotlib style.
+    """
+    import matplotlib.pyplot as plt
+
+    np.random.seed(12345)
+
+    # should not affect global matplotlib plot style
+    viewer = make_napari_viewer()
+    viewer.theme = "dark"
+    NapariMPLWidget(viewer)
+
+    # some plotting unrelated to napari-matplotlib
+    normal_dist = np.random.normal(size=1000)
+    unrelated_figure, ax = plt.subplots()
+    ax.hist(normal_dist, bins=100)
+    ax.set_xlabel("something unrelated to napari (x)")
+    ax.set_ylabel("something unrelated to napari (y)")
+    ax.set_title(
+        "this plot style should not change with napari styles or themes"
+    )
+    unrelated_figure.tight_layout()
+
+    return unrelated_figure
