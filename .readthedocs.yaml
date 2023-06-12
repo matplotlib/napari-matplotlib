@@ -13,3 +13,6 @@ build:
     python: "3.10"
   apt_packages:
     - xvfb
+  jobs:
+    pre_build:
+      - bash docs/start_xvfb.sh
