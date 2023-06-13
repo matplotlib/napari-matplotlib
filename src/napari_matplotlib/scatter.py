@@ -1,4 +1,4 @@
-from typing import Any, Optional, Tuple, Union
+from typing import Any, Optional, Tuple
 
 import napari
 import numpy.typing as npt
@@ -97,38 +97,8 @@ class FeaturesScatterWidget(ScatterBaseWidget, FeaturesMixin):
         parent: Optional[QWidget] = None,
     ):
         ScatterBaseWidget.__init__(self, napari_viewer, parent=parent)
-        FeaturesMixin.__init__(self)
+        FeaturesMixin.__init__(self, ndim=2)
         self._update_layers(None)
-
-    @property
-    def x_axis_key(self) -> Union[str, None]:
-        """
-        Key for the x-axis data.
-        """
-        if self._selectors["x"].count() == 0:
-            return None
-        else:
-            return self._selectors["x"].currentText()
-
-    @x_axis_key.setter
-    def x_axis_key(self, key: str) -> None:
-        self._selectors["x"].setCurrentText(key)
-        self._draw()
-
-    @property
-    def y_axis_key(self) -> Union[str, None]:
-        """
-        Key for the y-axis data.
-        """
-        if self._selectors["y"].count() == 0:
-            return None
-        else:
-            return self._selectors["y"].currentText()
-
-    @y_axis_key.setter
-    def y_axis_key(self, key: str) -> None:
-        self._selectors["y"].setCurrentText(key)
-        self._draw()
 
     def _ready_to_scatter(self) -> bool:
         """
@@ -143,8 +113,8 @@ class FeaturesScatterWidget(ScatterBaseWidget, FeaturesMixin):
         return (
             feature_table is not None
             and len(feature_table) > 0
-            and self.x_axis_key in valid_keys
-            and self.y_axis_key in valid_keys
+            and self.get_key("x") in valid_keys
+            and self.get_key("y") in valid_keys
         )
 
     def draw(self) -> None:
@@ -173,11 +143,11 @@ class FeaturesScatterWidget(ScatterBaseWidget, FeaturesMixin):
         """
         feature_table = self.layers[0].features
 
-        x = feature_table[self.x_axis_key]
-        y = feature_table[self.y_axis_key]
+        x = feature_table[self.get_key("x")]
+        y = feature_table[self.get_key("y")]
 
-        x_axis_name = str(self.x_axis_key)
-        y_axis_name = str(self.y_axis_key)
+        x_axis_name = str(self.get_key("x"))
+        y_axis_name = str(self.get_key("y"))
 
         return x, y, x_axis_name, y_axis_name
 

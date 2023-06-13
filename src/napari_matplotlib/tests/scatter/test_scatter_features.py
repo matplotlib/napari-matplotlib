@@ -25,8 +25,8 @@ def test_features_scatter_widget_2D(
 
     # Select points data and chosen features
     viewer.layers.selection.add(viewer.layers[0])  # images need to be selected
-    widget.x_axis_key = "feature_0"
-    widget.y_axis_key = "feature_1"
+    widget.set_key("x", "feature_0")
+    widget.set_key("y", "feature_1")
 
     fig = widget.figure
 
@@ -64,9 +64,9 @@ def test_features_scatter_get_data(make_napari_viewer):
     viewer.layers.selection = [labels_layer]
 
     x_column = "feature_0"
-    scatter_widget.x_axis_key = x_column
     y_column = "feature_2"
-    scatter_widget.y_axis_key = y_column
+    scatter_widget.set_key("x", x_column)
+    scatter_widget.set_key("y", y_column)
 
     x, y, x_axis_name, y_axis_name = scatter_widget._get_data()
     np.testing.assert_allclose(x, feature_table[x_column])

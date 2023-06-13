@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 import napari
 import napari.layers
@@ -12,12 +12,6 @@ class FeaturesMixin(NapariMPLWidget):
     """
     Mixin to help with widgets that plot data from a features table stored
     on a single layer.
-
-    Notes
-    -----
-    This currently only works for widgets that plot two quatities against each other
-    e.g., scatter plots. It is intended to be generalised in the future for widgets
-    that plot one quantity e.g., histograms.
     """
 
     n_layers_input = Interval(1, 1)
@@ -30,18 +24,36 @@ class FeaturesMixin(NapariMPLWidget):
         napari.layers.Vectors,
     )
 
-    def __init__(self) -> None:
+    def __init__(self, *, ndim: int) -> None:
+        assert ndim in [1, 2]
+        self.dims = ["x", "y"][:ndim]
         # Set up selection boxes
         self.layout().addLayout(QVBoxLayout())
 
         self._selectors: Dict[str, QComboBox] = {}
-        for dim in ["x", "y"]:
+        for dim in self.dims:
             self._selectors[dim] = QComboBox()
             # Re-draw when combo boxes are updated
             self._selectors[dim].currentTextChanged.connect(self._draw)
 
             self.layout().addWidget(QLabel(f"{dim}-axis:"))
             self.layout().addWidget(self._selectors[dim])
+
+    def get_key(self, dim: str) -> Optional[str]:
+        """
+        Get key for a given dimension.
+        """
+        if self._selectors[dim].count() == 0:
+            return None
+        else:
+            return self._selectors[dim].currentText()
+
+    def set_key(self, dim: str, value: str) -> None:
+        """
+        Set key for a given dimension.
+        """
+        self._selectors[dim].setCurrentText(value)
+        self._draw()
 
     def _get_valid_axis_keys(self) -> List[str]:
         """
