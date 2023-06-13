@@ -4,7 +4,7 @@ import napari
 import numpy as np
 from qtpy.QtWidgets import QWidget
 
-from .base import NapariMPLWidget
+from .base import SingleAxesWidget
 from .util import Interval
 
 __all__ = ["HistogramWidget"]
@@ -12,7 +12,7 @@ __all__ = ["HistogramWidget"]
 _COLORS = {"r": "tab:red", "g": "tab:green", "b": "tab:blue"}
 
 
-class HistogramWidget(NapariMPLWidget):
+class HistogramWidget(SingleAxesWidget):
     """
     Display a histogram of the currently selected layer.
     """
@@ -26,14 +26,7 @@ class HistogramWidget(NapariMPLWidget):
         parent: Optional[QWidget] = None,
     ):
         super().__init__(napari_viewer, parent=parent)
-        self.add_single_axes()
         self._update_layers(None)
-
-    def clear(self) -> None:
-        """
-        Clear the axes.
-        """
-        self.axes.clear()
 
     def draw(self) -> None:
         """

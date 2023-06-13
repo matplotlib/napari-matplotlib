@@ -5,7 +5,7 @@ import numpy as np
 import numpy.typing as npt
 from qtpy.QtWidgets import QComboBox, QHBoxLayout, QLabel, QSpinBox, QWidget
 
-from .base import NapariMPLWidget
+from .base import SingleAxesWidget
 from .util import Interval
 
 __all__ = ["SliceWidget"]
@@ -14,7 +14,7 @@ _dims_sel = ["x", "y"]
 _dims = ["x", "y", "z"]
 
 
-class SliceWidget(NapariMPLWidget):
+class SliceWidget(SingleAxesWidget):
     """
     Plot a 1D slice along a given dimension.
     """
@@ -29,7 +29,6 @@ class SliceWidget(NapariMPLWidget):
     ):
         # Setup figure/axes
         super().__init__(napari_viewer, parent=parent)
-        self.add_single_axes()
 
         button_layout = QHBoxLayout()
         self.layout().addLayout(button_layout)
@@ -107,12 +106,6 @@ class SliceWidget(NapariMPLWidget):
         y = self._layer.data[tuple(slices)].ravel()
 
         return x, y
-
-    def clear(self) -> None:
-        """
-        Clear the axes.
-        """
-        self.axes.cla()
 
     def draw(self) -> None:
         """
