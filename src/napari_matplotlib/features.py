@@ -70,6 +70,22 @@ class FeaturesMixin(NapariMPLWidget):
         else:
             return self.layers[0].features.keys()
 
+    def _ready_to_plot(self) -> bool:
+        """
+        Return True if selected layer has a feature table we can plot with,
+        and the columns to plot have been selected.
+        """
+        if not hasattr(self.layers[0], "features"):
+            return False
+
+        feature_table = self.layers[0].features
+        valid_keys = self._get_valid_axis_keys()
+        return (
+            feature_table is not None
+            and len(feature_table) > 0
+            and all([self.get_key(dim) in valid_keys for dim in self.dims])
+        )
+
     def on_update_layers(self) -> None:
         """
         Called when the layer selection changes by ``self.update_layers()``.

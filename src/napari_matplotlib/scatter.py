@@ -100,28 +100,11 @@ class FeaturesScatterWidget(ScatterBaseWidget, FeaturesMixin):
         FeaturesMixin.__init__(self, ndim=2)
         self._update_layers(None)
 
-    def _ready_to_scatter(self) -> bool:
-        """
-        Return True if selected layer has a feature table we can scatter with,
-        and the two columns to be scatterd have been selected.
-        """
-        if not hasattr(self.layers[0], "features"):
-            return False
-
-        feature_table = self.layers[0].features
-        valid_keys = self._get_valid_axis_keys()
-        return (
-            feature_table is not None
-            and len(feature_table) > 0
-            and self.get_key("x") in valid_keys
-            and self.get_key("y") in valid_keys
-        )
-
     def draw(self) -> None:
         """
         Scatter two features from the currently selected layer.
         """
-        if self._ready_to_scatter():
+        if self._ready_to_plot():
             super().draw()
 
     def _get_data(self) -> Tuple[npt.NDArray[Any], npt.NDArray[Any], str, str]:
