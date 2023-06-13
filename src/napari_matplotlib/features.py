@@ -69,3 +69,14 @@ class FeaturesMixin(NapariMPLWidget):
             return []
         else:
             return self.layers[0].features.keys()
+
+    def on_update_layers(self) -> None:
+        """
+        Called when the layer selection changes by ``self.update_layers()``.
+        """
+        # Clear combobox
+        for dim in self.dims:
+            while self._selectors[dim].count() > 0:
+                self._selectors[dim].removeItem(0)
+            # Add keys for newly selected layer
+            self._selectors[dim].addItems(self._get_valid_axis_keys())

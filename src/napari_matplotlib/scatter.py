@@ -150,14 +150,3 @@ class FeaturesScatterWidget(ScatterBaseWidget, FeaturesMixin):
         y_axis_name = str(self.get_key("y"))
 
         return x, y, x_axis_name, y_axis_name
-
-    def on_update_layers(self) -> None:
-        """
-        Called when the layer selection changes by ``self.update_layers()``.
-        """
-        # Clear combobox
-        for dim in ["x", "y"]:
-            while self._selectors[dim].count() > 0:
-                self._selectors[dim].removeItem(0)
-            # Add keys for newly selected layer
-            self._selectors[dim].addItems(self._get_valid_axis_keys())
