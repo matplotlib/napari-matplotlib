@@ -1,8 +1,8 @@
-from typing import Any, Dict, Optional, Tuple, Union
+from typing import Any, Optional, Tuple, Union
 
 import napari
 import numpy.typing as npt
-from qtpy.QtWidgets import QComboBox, QLabel, QVBoxLayout, QWidget
+from qtpy.QtWidgets import QWidget
 
 from .base import SingleAxesWidget
 from .features import FeaturesMixin
@@ -96,19 +96,8 @@ class FeaturesScatterWidget(ScatterBaseWidget, FeaturesMixin):
         napari_viewer: napari.viewer.Viewer,
         parent: Optional[QWidget] = None,
     ):
-        super().__init__(napari_viewer, parent=parent)
-
-        self.layout().addLayout(QVBoxLayout())
-
-        self._selectors: Dict[str, QComboBox] = {}
-        for dim in ["x", "y"]:
-            self._selectors[dim] = QComboBox()
-            # Re-draw when combo boxes are updated
-            self._selectors[dim].currentTextChanged.connect(self._draw)
-
-            self.layout().addWidget(QLabel(f"{dim}-axis:"))
-            self.layout().addWidget(self._selectors[dim])
-
+        ScatterBaseWidget.__init__(self, napari_viewer, parent=parent)
+        FeaturesMixin.__init__(self)
         self._update_layers(None)
 
     @property
