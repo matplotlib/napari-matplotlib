@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, Optional, Tuple, Union
 
 import napari
 import numpy.typing as npt
@@ -140,21 +140,6 @@ class FeaturesScatterWidget(ScatterBaseWidget, FeaturesMixin):
     def y_axis_key(self, key: str) -> None:
         self._selectors["y"].setCurrentText(key)
         self._draw()
-
-    def _get_valid_axis_keys(self) -> List[str]:
-        """
-        Get the valid axis keys from the layer FeatureTable.
-
-        Returns
-        -------
-        axis_keys : List[str]
-            The valid axis keys in the FeatureTable. If the table is empty
-            or there isn't a table, returns an empty list.
-        """
-        if len(self.layers) == 0 or not (hasattr(self.layers[0], "features")):
-            return []
-        else:
-            return self.layers[0].features.keys()
 
     def _ready_to_scatter(self) -> bool:
         """

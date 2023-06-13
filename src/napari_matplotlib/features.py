@@ -1,3 +1,5 @@
+from typing import List
+
 import napari.layers
 
 from napari_matplotlib.base import NapariMPLWidget
@@ -19,3 +21,18 @@ class FeaturesMixin(NapariMPLWidget):
         napari.layers.Tracks,
         napari.layers.Vectors,
     )
+
+    def _get_valid_axis_keys(self) -> List[str]:
+        """
+        Get the valid axis keys from the layer FeatureTable.
+
+        Returns
+        -------
+        axis_keys : List[str]
+            The valid axis keys in the FeatureTable. If the table is empty
+            or there isn't a table, returns an empty list.
+        """
+        if len(self.layers) == 0 or not (hasattr(self.layers[0], "features")):
+            return []
+        else:
+            return self.layers[0].features.keys()
