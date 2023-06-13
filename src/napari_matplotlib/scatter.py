@@ -108,28 +108,5 @@ class FeaturesScatterWidget(ScatterBaseWidget, FeaturesMixin):
             super().draw()
 
     def _get_data(self) -> Tuple[npt.NDArray[Any], npt.NDArray[Any], str, str]:
-        """
-        Get the plot data from the ``features`` attribute of the first
-        selected layer.
-
-        Returns
-        -------
-        data : List[np.ndarray]
-            List contains X and Y columns from the FeatureTable. Returns
-            an empty array if nothing to plot.
-        x_axis_name : str
-            The title to display on the x axis. Returns
-            an empty string if nothing to plot.
-        y_axis_name: str
-            The title to display on the y axis. Returns
-            an empty string if nothing to plot.
-        """
-        feature_table = self.layers[0].features
-
-        x = feature_table[self.get_key("x")]
-        y = feature_table[self.get_key("y")]
-
-        x_axis_name = str(self.get_key("x"))
-        y_axis_name = str(self.get_key("y"))
-
-        return x, y, x_axis_name, y_axis_name
+        data, names = self._get_data_names()
+        return data[0], data[1], names[0], names[1]

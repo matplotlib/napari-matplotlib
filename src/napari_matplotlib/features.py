@@ -1,7 +1,10 @@
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 import napari
 import napari.layers
+import numpy as np
+import numpy.typing as npt
+import pandas as pd
 from qtpy.QtWidgets import QComboBox, QLabel, QVBoxLayout
 
 from napari_matplotlib.base import NapariMPLWidget
@@ -85,6 +88,27 @@ class FeaturesMixin(NapariMPLWidget):
             and len(feature_table) > 0
             and all([self.get_key(dim) in valid_keys for dim in self.dims])
         )
+
+    def _get_data_names(
+        self,
+    ) -> Tuple[List[npt.NDArray[Any]], List[str]]:
+        """
+        Get the plot data from the ``features`` attribute of the first
+        selected layer.
+
+        Returns
+        -------
+        data : List[np.ndarray]
+            List contains X and Y columns from the FeatureTable. Returns
+            an empty array if nothing to plot.
+        names : List[str]
+            Names for each axis.
+        """
+        feature_table: pd.DataFrame = self.layers[0].features
+
+        names = [str(self.get_key(dim)) for dim in self.dims]
+        data = [np.array(feature_table[key]) for key in names]
+        return data, names
 
     def on_update_layers(self) -> None:
         """
