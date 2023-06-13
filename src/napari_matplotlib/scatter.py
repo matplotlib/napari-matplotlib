@@ -5,6 +5,7 @@ import numpy.typing as npt
 from qtpy.QtWidgets import QComboBox, QLabel, QVBoxLayout, QWidget
 
 from .base import SingleAxesWidget
+from .features import FeaturesMixin
 from .util import Interval
 
 __all__ = ["ScatterBaseWidget", "ScatterWidget", "FeaturesScatterWidget"]
@@ -85,20 +86,10 @@ class ScatterWidget(ScatterBaseWidget):
         return x, y, x_axis_name, y_axis_name
 
 
-class FeaturesScatterWidget(ScatterBaseWidget):
+class FeaturesScatterWidget(ScatterBaseWidget, FeaturesMixin):
     """
     Widget to scatter data stored in two layer feature attributes.
     """
-
-    n_layers_input = Interval(1, 1)
-    # All layers that have a .features attributes
-    input_layer_types = (
-        napari.layers.Labels,
-        napari.layers.Points,
-        napari.layers.Shapes,
-        napari.layers.Tracks,
-        napari.layers.Vectors,
-    )
 
     def __init__(
         self,
