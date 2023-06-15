@@ -61,7 +61,7 @@ intersphinx_mapping = {
 }
 
 nitpicky = True
-# Can't work out how to link this properley using intersphinx and the PyQT6 docs.
+# Can't work out how to link this properly using intersphinx and the PyQT6 docs.
 # TODO: fix at some point
 nitpick_ignore = [
     ("py:class", "PyQt5.QtWidgets.QWidget"),
