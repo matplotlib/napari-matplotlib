@@ -19,6 +19,7 @@ class FeaturesMixin(NapariMPLWidget):
     in a single napari layer.
 
     This provides:
+
     - Setup for one or two combo boxes to select features to be plotted.
     - An ``on_update_layers()`` callback that updates the combo box options
       when the napari layer selection changes.
