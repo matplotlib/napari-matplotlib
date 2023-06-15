@@ -50,6 +50,7 @@ qtgallery_conf = {
 
 numpydoc_show_class_members = False
 automodapi_inheritance_diagram = True
+inheritance_graph_attrs = {"rankdir": "TR"}
 
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3/", None),
