@@ -47,7 +47,8 @@ jobs:
     - uses: actions/download-artifact@v3
       with:
         name: docs
+    - run: ls
     - name: Deploy to GitHub Pages
       uses: JamesIves/github-pages-deploy-action@v4.4.2
       with:
-        folder: docs/_build/html
+        folder: html
