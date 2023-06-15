@@ -15,7 +15,7 @@ from qtpy.QtWidgets import QLabel, QVBoxLayout, QWidget
 
 from .util import Interval, from_napari_css_get_size_of
 
-__all__ = ["BaseNapariMPLWidget", "NapariMPLWidget"]
+__all__ = ["BaseNapariMPLWidget", "NapariMPLWidget", "SingleAxesWidget"]
 
 
 class BaseNapariMPLWidget(QWidget):
@@ -291,6 +291,27 @@ class NapariMPLWidget(BaseNapariMPLWidget):
 
         This is a no-op, and is intended for derived classes to override.
         """
+
+
+class SingleAxesWidget(NapariMPLWidget):
+    """
+    In addition to `NapariMPLWidget`, this sets up a single axes and
+    the callback to clear it.
+    """
+
+    def __init__(
+        self,
+        napari_viewer: napari.viewer.Viewer,
+        parent: Optional[QWidget] = None,
+    ):
+        super().__init__(napari_viewer=napari_viewer, parent=parent)
+        self.add_single_axes()
+
+    def clear(self) -> None:
+        """
+        Clear the axes.
+        """
+        self.axes.clear()
 
 
 class NapariNavigationToolbar(NavigationToolbar2QT):

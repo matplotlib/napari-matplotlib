@@ -1,5 +1,4 @@
 import shutil
-from copy import deepcopy
 from pathlib import Path
 
 import matplotlib
@@ -96,6 +95,36 @@ def test_titles_respect_theme(
     assert ax.yaxis.label.get_color() == expected_text_colour
 
 
+@pytest.mark.mpl_image_compare
+def test_no_theme_side_effects(make_napari_viewer):
+    """Ensure that napari-matplotlib doesn't pollute the globally set style.
+
+    A MWE to guard aganst issue matplotlib/#64. Should always reproduce a plot
+    with the default matplotlib style.
+    """
+    import matplotlib.pyplot as plt
+
+    np.random.seed(12345)
+
+    # should not affect global matplotlib plot style
+    viewer = make_napari_viewer()
+    viewer.theme = "dark"
+    NapariMPLWidget(viewer)
+
+    # some plotting unrelated to napari-matplotlib
+    normal_dist = np.random.normal(size=1000)
+    unrelated_figure, ax = plt.subplots()
+    ax.hist(normal_dist, bins=100)
+    ax.set_xlabel("something unrelated to napari (x)")
+    ax.set_ylabel("something unrelated to napari (y)")
+    ax.set_title(
+        "this plot style should not change with napari styles or themes"
+    )
+    unrelated_figure.tight_layout()
+
+    return unrelated_figure
+
+
 def find_mpl_stylesheet(name: str) -> Path:
     """Find the built-in matplotlib stylesheet."""
     return Path(matplotlib.__path__[0]) / f"mpl-data/stylelib/{name}.mplstyle"
@@ -125,22 +154,3 @@ def test_stylesheet_in_cwd(tmpdir, make_napari_viewer, image_data):
         for gridline in ax.get_xgridlines() + ax.get_ygridlines():
             assert gridline.get_visible() is True
             assert gridline.get_color() == "#fdf6e3"
-
-
-@pytest.mark.mpl_image_compare
-def test_theme_doesnt_leak(make_napari_viewer):
-    """Ensure that napari-matplotlib doesn't pollute the globally set style.
-
-    A MWE to guard aganst issue matplotlib/#64. Should always reproduce a plot
-    with the default matplotlib style.
-    """
-    import matplotlib.pyplot as plt
-
-    # should not affect global style
-    viewer = make_napari_viewer()
-    HistogramWidget(viewer)
-
-    np.random.seed(12345)
-    image = np.random.random((3, 3))
-    plot = plt.imshow(image)
-    return deepcopy(plot)
