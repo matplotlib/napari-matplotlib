@@ -10,6 +10,7 @@ from qtpy.QtWidgets import QComboBox, QLabel, QVBoxLayout
 from napari_matplotlib.base import NapariMPLWidget
 from napari_matplotlib.util import Interval
 
+__all__ = ["FeaturesMixin"]
 
 class FeaturesMixin(NapariMPLWidget):
     """
