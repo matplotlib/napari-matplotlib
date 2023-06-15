@@ -8,3 +8,5 @@ plots though the napari user interface.
 .. automodapi:: napari_matplotlib
 
 .. automodapi:: napari_matplotlib.base
+
+.. automodapi:: napari_matplotlib.features
