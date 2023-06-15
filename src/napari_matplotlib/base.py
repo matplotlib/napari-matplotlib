@@ -281,7 +281,9 @@ class SingleAxesWidget(NapariMPLWidget):
         napari_viewer: napari.viewer.Viewer,
         parent: Optional[QWidget] = None,
     ):
-        super().__init__(napari_viewer=napari_viewer, parent=parent)
+        NapariMPLWidget.__init__(
+            self, napari_viewer=napari_viewer, parent=parent
+        )
         self.add_single_axes()
 
     def clear(self) -> None:
