@@ -12,10 +12,16 @@ from napari_matplotlib.util import Interval
 
 __all__ = ["FeaturesMixin"]
 
+
 class FeaturesMixin(NapariMPLWidget):
     """
     Mixin to help with widgets that plot data from a features table stored
-    on a single layer.
+    in a single napari layer.
+
+    This provides:
+    - Setup for one or two combo boxes to select features to be plotted.
+    - An ``on_update_layers()`` callback that updates the combo box options
+      when the napari layer selection changes.
     """
 
     n_layers_input = Interval(1, 1)
@@ -29,6 +35,13 @@ class FeaturesMixin(NapariMPLWidget):
     )
 
     def __init__(self, *, ndim: int) -> None:
+        """
+        Parameters
+        ----------
+        ndim : int
+            Number of dimensions that are plotted by the widget.
+            Must be 1 or 2.
+        """
         assert ndim in [1, 2]
         self.dims = ["x", "y"][:ndim]
         # Set up selection boxes
@@ -46,6 +59,11 @@ class FeaturesMixin(NapariMPLWidget):
     def get_key(self, dim: str) -> Optional[str]:
         """
         Get key for a given dimension.
+
+        Parameters
+        ----------
+        dim : str
+            "x" or "y"
         """
         if self._selectors[dim].count() == 0:
             return None
@@ -55,13 +73,24 @@ class FeaturesMixin(NapariMPLWidget):
     def set_key(self, dim: str, value: str) -> None:
         """
         Set key for a given dimension.
+
+        Parameters
+        ----------
+        dim : str
+            "x" or "y"
+        value : str
+            Value to set.
         """
+        assert value in self._get_valid_axis_keys(), (
+            "value must be on of the columns "
+            "of the feature table on the currently seleted layer"
+        )
         self._selectors[dim].setCurrentText(value)
         self._draw()
 
     def _get_valid_axis_keys(self) -> List[str]:
         """
-        Get the valid axis keys from the layer FeatureTable.
+        Get the valid axis keys from the features table column names.
 
         Returns
         -------
