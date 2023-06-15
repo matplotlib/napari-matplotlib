@@ -48,4 +48,4 @@ jobs:
     - name: Push to GitHub pages
       uses: JamesIves/github-pages-deploy-action@v4
       with:
-        publish_dir: html
+        folder: html
