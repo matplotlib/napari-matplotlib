@@ -64,8 +64,11 @@ nitpicky = True
 # Can't work out how to link this properley using intersphinx and the PyQT6 docs.
 # TODO: fix at some point
 nitpick_ignore = [
-    ("py:class", "PyQt6.QtWidgets.QWidget"),
     ("py:class", "PyQt5.QtWidgets.QWidget"),
+    ("py:class", "PyQt5.QtCore.QObject"),
+    ("py:class", "PyQt5.QtGui.QPaintDevice"),
+    ("py:class", "sip.simplewrapper"),
+    ("py:class", "sip.wrapper"),
 ]
 
 # Add any paths that contain templates here, relative to this directory.
