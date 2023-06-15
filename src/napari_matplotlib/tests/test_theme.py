@@ -96,7 +96,7 @@ def test_titles_respect_theme(
 
 
 @pytest.mark.mpl_image_compare
-def test_no_theme_side_effects(make_napari_viewer):
+def test_no_theme_side_effects(tmpdir, make_napari_viewer):
     """Ensure that napari-matplotlib doesn't pollute the globally set style.
 
     A MWE to guard aganst issue matplotlib/#64. Should always reproduce a plot
@@ -107,9 +107,11 @@ def test_no_theme_side_effects(make_napari_viewer):
     np.random.seed(12345)
 
     # should not affect global matplotlib plot style
-    viewer = make_napari_viewer()
-    viewer.theme = "dark"
-    NapariMPLWidget(viewer)
+    with tmpdir.as_cwd():
+        shutil.copy(find_mpl_stylesheet("Solarize_Light2"), "./user.mplstyle")
+        viewer = make_napari_viewer()
+        viewer.theme = "dark"
+        NapariMPLWidget(viewer)
 
     # some plotting unrelated to napari-matplotlib
     normal_dist = np.random.normal(size=1000)
