@@ -1,8 +1,0 @@
-labels:
-  ontology: EDAM-BIOIMAGING:alpha06
-  terms:
-  - 2D Image
-  - 3D Image
-  - Plotting
-  - Slice rendering
-  - Scientific visualisation

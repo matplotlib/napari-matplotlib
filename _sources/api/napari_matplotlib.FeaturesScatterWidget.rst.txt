@@ -1,0 +1,35 @@
+FeaturesScatterWidget
+=====================
+
+.. currentmodule:: napari_matplotlib
+
+.. autoclass:: FeaturesScatterWidget
+   :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~FeaturesScatterWidget.input_layer_types
+      ~FeaturesScatterWidget.n_layers_input
+      ~FeaturesScatterWidget.x_axis_key
+      ~FeaturesScatterWidget.y_axis_key
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~FeaturesScatterWidget.draw
+      ~FeaturesScatterWidget.on_update_layers
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: input_layer_types
+   .. autoattribute:: n_layers_input
+   .. autoattribute:: x_axis_key
+   .. autoattribute:: y_axis_key
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: draw
+   .. automethod:: on_update_layers

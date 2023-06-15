@@ -1,0 +1,543 @@
+
+
+<!DOCTYPE html>
+
+
+<html >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>API reference &#8212; napari-matplotlib  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-binder.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-dataframe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-rendered-html.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="FeaturesScatterWidget" href="api/napari_matplotlib.FeaturesScatterWidget.html" />
+    <link rel="prev" title="Third-party plugins" href="guide/third_party.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="None"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  <div class="navbar-header-items__start">
+    
+      <div class="navbar-item">
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">napari-matplotlib  documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item"><nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="guide/index.html">
+                        Guide
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="#">
+                        API reference
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="changelog.html">
+                        Changelog
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+        </div>
+      
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+    </div>
+  
+
+  
+    <label class="sidebar-toggle secondary-toggle" for="__secondary">
+      <span class="fa-solid fa-outdent"></span>
+    </label>
+  
+</div>
+
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item"><nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="guide/index.html">
+                        Guide
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="#">
+                        API reference
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="changelog.html">
+                        Changelog
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item"><nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="api/napari_matplotlib.FeaturesScatterWidget.html">FeaturesScatterWidget</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/napari_matplotlib.HistogramWidget.html">HistogramWidget</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/napari_matplotlib.ScatterBaseWidget.html">ScatterBaseWidget</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/napari_matplotlib.ScatterWidget.html">ScatterWidget</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/napari_matplotlib.SliceWidget.html">SliceWidget</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="api/napari_matplotlib.base.BaseNapariMPLWidget.html">BaseNapariMPLWidget</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/napari_matplotlib.base.NapariMPLWidget.html">NapariMPLWidget</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/napari_matplotlib.base.SingleAxesWidget.html">SingleAxesWidget</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumbs">
+  <ul class="bd-breadcrumbs" role="navigation" aria-label="Breadcrumb">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">API reference</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="api-reference">
+<h1>API reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">#</a></h1>
+<p>This section documents the internal API of <code class="docutils literal notranslate"><span class="pre">napari-matplotlib</span></code> classes.
+Most users shouldn’t need this, and will just directly interact with the
+plots though the napari user interface.</p>
+<section id="module-napari_matplotlib">
+<span id="napari-matplotlib-package"></span><h2>napari_matplotlib Package<a class="headerlink" href="#module-napari_matplotlib" title="Permalink to this headline">#</a></h2>
+<section id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">#</a></h3>
+<table class="autosummary longtable table autosummary">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/napari_matplotlib.FeaturesScatterWidget.html#napari_matplotlib.FeaturesScatterWidget" title="napari_matplotlib.FeaturesScatterWidget"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FeaturesScatterWidget</span></code></a>(napari_viewer[, parent])</p></td>
+<td><p>Widget to scatter data stored in two layer feature attributes.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/napari_matplotlib.HistogramWidget.html#napari_matplotlib.HistogramWidget" title="napari_matplotlib.HistogramWidget"><code class="xref py py-obj docutils literal notranslate"><span class="pre">HistogramWidget</span></code></a>(napari_viewer[, parent])</p></td>
+<td><p>Display a histogram of the currently selected layer.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/napari_matplotlib.ScatterBaseWidget.html#napari_matplotlib.ScatterBaseWidget" title="napari_matplotlib.ScatterBaseWidget"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ScatterBaseWidget</span></code></a>(napari_viewer[, parent])</p></td>
+<td><p>Base class for widgets that scatter two datasets against each other.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/napari_matplotlib.ScatterWidget.html#napari_matplotlib.ScatterWidget" title="napari_matplotlib.ScatterWidget"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ScatterWidget</span></code></a>(napari_viewer[, parent])</p></td>
+<td><p>Scatter data in two similarly shaped layers.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/napari_matplotlib.SliceWidget.html#napari_matplotlib.SliceWidget" title="napari_matplotlib.SliceWidget"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SliceWidget</span></code></a>(napari_viewer[, parent])</p></td>
+<td><p>Plot a 1D slice along a given dimension.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="class-inheritance-diagram">
+<h3>Class Inheritance Diagram<a class="headerlink" href="#class-inheritance-diagram" title="Permalink to this headline">#</a></h3>
+<div class="graphviz"><img src="_images/inheritance-750f96349ce13fdda5d45219e3a78d33ac61bb4d.png" alt="Inheritance diagram of napari_matplotlib.scatter.FeaturesScatterWidget, napari_matplotlib.histogram.HistogramWidget, napari_matplotlib.scatter.ScatterBaseWidget, napari_matplotlib.scatter.ScatterWidget, napari_matplotlib.slice.SliceWidget" usemap="#inheritancef6934b37ac" class="inheritance graphviz" /></div>
+<map id="inheritancef6934b37ac" name="inheritancef6934b37ac">
+<area shape="rect" id="node1" href="api/napari_matplotlib.base.BaseNapariMPLWidget.html#napari_matplotlib.base.BaseNapariMPLWidget" target="_top" title="Widget containing Matplotlib canvas and toolbar themed to match napari." alt="" coords="254,299,423,324"/>
+<area shape="rect" id="node7" href="api/napari_matplotlib.base.NapariMPLWidget.html#napari_matplotlib.base.NapariMPLWidget" target="_top" title="Widget containing a Matplotlib canvas and toolbar." alt="" coords="270,372,407,397"/>
+<area shape="rect" id="node3" href="api/napari_matplotlib.FeaturesScatterWidget.html#napari_matplotlib.FeaturesScatterWidget" target="_top" title="Widget to scatter data stored in two layer feature attributes." alt="" coords="5,592,176,617"/>
+<area shape="rect" id="node4" href="api/napari_matplotlib.ScatterBaseWidget.html#napari_matplotlib.ScatterBaseWidget" target="_top" title="Base class for widgets that scatter two datasets against each other." alt="" coords="100,519,247,544"/>
+<area shape="rect" id="node12" href="api/napari_matplotlib.ScatterWidget.html#napari_matplotlib.ScatterWidget" target="_top" title="Scatter data in two similarly shaped layers." alt="" coords="200,592,315,617"/>
+<area shape="rect" id="node5" href="api/napari_matplotlib.HistogramWidget.html#napari_matplotlib.HistogramWidget" target="_top" title="Display a histogram of the currently selected layer." alt="" coords="271,519,407,544"/>
+<area shape="rect" id="node6" href="api/napari_matplotlib.base.SingleAxesWidget.html#napari_matplotlib.base.SingleAxesWidget" target="_top" title="In addition to `NapariMPLWidget`, this sets up a single axes and" alt="" coords="269,445,408,471"/>
+<area shape="rect" id="node13" href="api/napari_matplotlib.SliceWidget.html#napari_matplotlib.SliceWidget" target="_top" title="Plot a 1D slice along a given dimension." alt="" coords="431,519,529,544"/>
+</map></section>
+</section>
+<section id="module-napari_matplotlib.base">
+<span id="napari-matplotlib-base-module"></span><h2>napari_matplotlib.base Module<a class="headerlink" href="#module-napari_matplotlib.base" title="Permalink to this headline">#</a></h2>
+<section id="id1">
+<h3>Classes<a class="headerlink" href="#id1" title="Permalink to this headline">#</a></h3>
+<table class="autosummary longtable table autosummary">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/napari_matplotlib.base.BaseNapariMPLWidget.html#napari_matplotlib.base.BaseNapariMPLWidget" title="napari_matplotlib.base.BaseNapariMPLWidget"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BaseNapariMPLWidget</span></code></a>(napari_viewer[, parent])</p></td>
+<td><p>Widget containing Matplotlib canvas and toolbar themed to match napari.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/napari_matplotlib.base.NapariMPLWidget.html#napari_matplotlib.base.NapariMPLWidget" title="napari_matplotlib.base.NapariMPLWidget"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NapariMPLWidget</span></code></a>(napari_viewer[, parent])</p></td>
+<td><p>Widget containing a Matplotlib canvas and toolbar.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/napari_matplotlib.base.SingleAxesWidget.html#napari_matplotlib.base.SingleAxesWidget" title="napari_matplotlib.base.SingleAxesWidget"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SingleAxesWidget</span></code></a>(napari_viewer[, parent])</p></td>
+<td><p>In addition to <a class="reference internal" href="api/napari_matplotlib.base.NapariMPLWidget.html#napari_matplotlib.base.NapariMPLWidget" title="napari_matplotlib.base.NapariMPLWidget"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NapariMPLWidget</span></code></a>, this sets up a single axes and the callback to clear it.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="id2">
+<h3>Class Inheritance Diagram<a class="headerlink" href="#id2" title="Permalink to this headline">#</a></h3>
+<div class="graphviz"><img src="_images/inheritance-2166484d96ed7a3fdf70323a66ed5dbc90ce10d9.png" alt="Inheritance diagram of napari_matplotlib.base.BaseNapariMPLWidget, napari_matplotlib.base.NapariMPLWidget, napari_matplotlib.base.SingleAxesWidget" usemap="#inheritance760c7f1ea8" class="inheritance graphviz" /></div>
+<map id="inheritance760c7f1ea8" name="inheritance760c7f1ea8">
+<area shape="rect" id="node1" href="api/napari_matplotlib.base.BaseNapariMPLWidget.html#napari_matplotlib.base.BaseNapariMPLWidget" target="_top" title="Widget containing Matplotlib canvas and toolbar themed to match napari." alt="" coords="15,299,185,324"/>
+<area shape="rect" id="node3" href="api/napari_matplotlib.base.NapariMPLWidget.html#napari_matplotlib.base.NapariMPLWidget" target="_top" title="Widget containing a Matplotlib canvas and toolbar." alt="" coords="31,372,169,397"/>
+<area shape="rect" id="node8" href="api/napari_matplotlib.base.SingleAxesWidget.html#napari_matplotlib.base.SingleAxesWidget" target="_top" title="In addition to `NapariMPLWidget`, this sets up a single axes and" alt="" coords="31,445,169,471"/>
+</map></section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="guide/third_party.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Third-party plugins</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="api/napari_matplotlib.FeaturesScatterWidget.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">FeaturesScatterWidget</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-napari_matplotlib">napari_matplotlib Package</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#classes">Classes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#class-inheritance-diagram">Class Inheritance Diagram</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-napari_matplotlib.base">napari_matplotlib.base Module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Classes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Class Inheritance Diagram</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div class="tocsection sourcelink">
+    <a href="_sources/api.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+  <p class="copyright">
+    
+      © Copyright 2022, David Stansby.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.13.3.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,8 @@
+<map id="inheritance760c7f1ea8" name="inheritance760c7f1ea8">
+<area shape="rect" id="node1" href="api/napari_matplotlib.base.BaseNapariMPLWidget.html#napari_matplotlib.base.BaseNapariMPLWidget" target="_top" title="Widget containing Matplotlib canvas and toolbar themed to match napari." alt="" coords="15,299,185,324"/>
+<area shape="rect" id="node3" href="api/napari_matplotlib.base.NapariMPLWidget.html#napari_matplotlib.base.NapariMPLWidget" target="_top" title="Widget containing a Matplotlib canvas and toolbar." alt="" coords="31,372,169,397"/>
+<area shape="rect" id="node2" title="QWidget(parent: typing.Optional[QWidget] = None, flags: Union[Qt.WindowFlags, Qt.WindowType] = Qt.WindowFlags())" alt="" coords="61,225,139,251"/>
+<area shape="rect" id="node8" href="api/napari_matplotlib.base.SingleAxesWidget.html#napari_matplotlib.base.SingleAxesWidget" target="_top" title="In addition to `NapariMPLWidget`, this sets up a single axes and" alt="" coords="31,445,169,471"/>
+<area shape="rect" id="node4" title="QObject(parent: typing.Optional[QObject] = None)" alt="" coords="5,152,80,177"/>
+<area shape="rect" id="node6" title="QPaintDevice()" alt="" coords="104,152,213,177"/>
+</map>

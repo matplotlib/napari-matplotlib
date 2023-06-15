@@ -1,0 +1,13 @@
+<map id="inheritancef6934b37ac" name="inheritancef6934b37ac">
+<area shape="rect" id="node1" href="api/napari_matplotlib.base.BaseNapariMPLWidget.html#napari_matplotlib.base.BaseNapariMPLWidget" target="_top" title="Widget containing Matplotlib canvas and toolbar themed to match napari." alt="" coords="254,299,423,324"/>
+<area shape="rect" id="node7" href="api/napari_matplotlib.base.NapariMPLWidget.html#napari_matplotlib.base.NapariMPLWidget" target="_top" title="Widget containing a Matplotlib canvas and toolbar." alt="" coords="270,372,407,397"/>
+<area shape="rect" id="node2" title="QWidget(parent: typing.Optional[QWidget] = None, flags: Union[Qt.WindowFlags, Qt.WindowType] = Qt.WindowFlags())" alt="" coords="299,225,378,251"/>
+<area shape="rect" id="node3" href="api/napari_matplotlib.FeaturesScatterWidget.html#napari_matplotlib.FeaturesScatterWidget" target="_top" title="Widget to scatter data stored in two layer feature attributes." alt="" coords="5,592,176,617"/>
+<area shape="rect" id="node4" href="api/napari_matplotlib.ScatterBaseWidget.html#napari_matplotlib.ScatterBaseWidget" target="_top" title="Base class for widgets that scatter two datasets against each other." alt="" coords="100,519,247,544"/>
+<area shape="rect" id="node12" href="api/napari_matplotlib.ScatterWidget.html#napari_matplotlib.ScatterWidget" target="_top" title="Scatter data in two similarly shaped layers." alt="" coords="200,592,315,617"/>
+<area shape="rect" id="node5" href="api/napari_matplotlib.HistogramWidget.html#napari_matplotlib.HistogramWidget" target="_top" title="Display a histogram of the currently selected layer." alt="" coords="271,519,407,544"/>
+<area shape="rect" id="node6" href="api/napari_matplotlib.base.SingleAxesWidget.html#napari_matplotlib.base.SingleAxesWidget" target="_top" title="In addition to `NapariMPLWidget`, this sets up a single axes and" alt="" coords="269,445,408,471"/>
+<area shape="rect" id="node13" href="api/napari_matplotlib.SliceWidget.html#napari_matplotlib.SliceWidget" target="_top" title="Plot a 1D slice along a given dimension." alt="" coords="431,519,529,544"/>
+<area shape="rect" id="node8" title="QObject(parent: typing.Optional[QObject] = None)" alt="" coords="244,152,319,177"/>
+<area shape="rect" id="node10" title="QPaintDevice()" alt="" coords="343,152,452,177"/>
+</map>

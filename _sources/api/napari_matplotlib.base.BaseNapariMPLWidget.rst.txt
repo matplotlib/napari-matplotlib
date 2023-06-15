@@ -1,0 +1,29 @@
+BaseNapariMPLWidget
+===================
+
+.. currentmodule:: napari_matplotlib.base
+
+.. autoclass:: BaseNapariMPLWidget
+   :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~BaseNapariMPLWidget.figure
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~BaseNapariMPLWidget.add_single_axes
+      ~BaseNapariMPLWidget.apply_napari_colorscheme
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: figure
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: add_single_axes
+   .. automethod:: apply_napari_colorscheme

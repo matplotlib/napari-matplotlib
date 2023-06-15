@@ -1,0 +1,17 @@
+ScatterBaseWidget
+=================
+
+.. currentmodule:: napari_matplotlib
+
+.. autoclass:: ScatterBaseWidget
+   :show-inheritance:
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~ScatterBaseWidget.draw
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: draw

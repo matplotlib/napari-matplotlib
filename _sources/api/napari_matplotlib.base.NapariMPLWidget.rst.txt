@@ -1,0 +1,37 @@
+NapariMPLWidget
+===============
+
+.. currentmodule:: napari_matplotlib.base
+
+.. autoclass:: NapariMPLWidget
+   :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~NapariMPLWidget.current_z
+      ~NapariMPLWidget.input_layer_types
+      ~NapariMPLWidget.n_layers_input
+      ~NapariMPLWidget.n_selected_layers
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~NapariMPLWidget.clear
+      ~NapariMPLWidget.draw
+      ~NapariMPLWidget.on_update_layers
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: current_z
+   .. autoattribute:: input_layer_types
+   .. autoattribute:: n_layers_input
+   .. autoattribute:: n_selected_layers
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: clear
+   .. automethod:: draw
+   .. automethod:: on_update_layers

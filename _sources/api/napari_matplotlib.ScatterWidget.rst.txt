@@ -1,0 +1,19 @@
+ScatterWidget
+=============
+
+.. currentmodule:: napari_matplotlib
+
+.. autoclass:: ScatterWidget
+   :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~ScatterWidget.input_layer_types
+      ~ScatterWidget.n_layers_input
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: input_layer_types
+   .. autoattribute:: n_layers_input

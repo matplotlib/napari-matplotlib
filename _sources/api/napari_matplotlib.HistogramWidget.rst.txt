@@ -1,0 +1,29 @@
+HistogramWidget
+===============
+
+.. currentmodule:: napari_matplotlib
+
+.. autoclass:: HistogramWidget
+   :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~HistogramWidget.input_layer_types
+      ~HistogramWidget.n_layers_input
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~HistogramWidget.draw
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: input_layer_types
+   .. autoattribute:: n_layers_input
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: draw

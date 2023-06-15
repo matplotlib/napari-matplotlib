@@ -1,0 +1,17 @@
+SingleAxesWidget
+================
+
+.. currentmodule:: napari_matplotlib.base
+
+.. autoclass:: SingleAxesWidget
+   :show-inheritance:
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~SingleAxesWidget.clear
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: clear

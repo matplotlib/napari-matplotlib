@@ -1,0 +1,33 @@
+SliceWidget
+===========
+
+.. currentmodule:: napari_matplotlib
+
+.. autoclass:: SliceWidget
+   :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~SliceWidget.current_dim
+      ~SliceWidget.current_dim_index
+      ~SliceWidget.input_layer_types
+      ~SliceWidget.n_layers_input
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~SliceWidget.draw
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: current_dim
+   .. autoattribute:: current_dim_index
+   .. autoattribute:: input_layer_types
+   .. autoattribute:: n_layers_input
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: draw
