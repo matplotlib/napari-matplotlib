@@ -77,7 +77,6 @@ class MetadataLine2DWidget(Line2DBaseWidget):
 
     def __init__(self, napari_viewer: napari.viewer.Viewer):
         super().__init__(napari_viewer)
-        self.setMinimumSize(200, 200)
         self._plugin_name_widget = magicgui(
             self._set_plugin_name,
             plugin_name={"choices": self._get_plugin_metadata_key},
