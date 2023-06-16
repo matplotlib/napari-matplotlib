@@ -1,5 +1,6 @@
 from typing import Any, Dict, Optional, Tuple
 
+import matplotlib.ticker as mticker
 import napari
 import numpy as np
 import numpy.typing as npt
@@ -116,3 +117,7 @@ class SliceWidget(SingleAxesWidget):
         self.axes.plot(x, y)
         self.axes.set_xlabel(self.current_dim)
         self.axes.set_title(self._layer.name)
+        # Make sure all ticks lie on integer values
+        self.axes.xaxis.set_major_locator(
+            mticker.MaxNLocator(steps=[1, 2, 5, 10], integer=True)
+        )

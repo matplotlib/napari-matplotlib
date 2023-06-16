@@ -28,6 +28,7 @@ Changes
 - ``NapariMPLWidget.update_layers()`` has been removed as it is intended to be
   private API. Use ``NapariMPLWidget.on_update_layers`` instead to implement
   funcitonality when layer selection is changed.
+- The slice widget now only plots x-ticks at integer locations.
 
 Bug fixes
 ~~~~~~~~~
