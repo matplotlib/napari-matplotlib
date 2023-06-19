@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 import numpy as np
 import pytest
@@ -52,3 +53,8 @@ def set_strict_qt():
         os.environ[env_var] = old_val
     else:
         del os.environ[env_var]
+
+
+@pytest.fixture
+def theme_path():
+    return Path(__file__).parent / "data" / "test_theme.mplstyle"

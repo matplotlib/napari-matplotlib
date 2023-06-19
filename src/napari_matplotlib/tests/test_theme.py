@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 import napari
 import numpy as np
 import pytest
@@ -118,3 +120,23 @@ def test_no_theme_side_effects(make_napari_viewer):
     unrelated_figure.tight_layout()
 
     return unrelated_figure
+
+
+@pytest.mark.mpl_image_compare
+def test_custom_theme(make_napari_viewer, theme_path, brain_data):
+    viewer = make_napari_viewer()
+    viewer.theme = "dark"
+
+    widget = ScatterWidget(viewer)
+    widget.mpl_style_sheet_path = theme_path
+
+    viewer.add_image(brain_data[0], **brain_data[1], name="brain")
+    viewer.add_image(
+        brain_data[0] * -1, **brain_data[1], name="brain_reversed"
+    )
+
+    viewer.layers.selection.clear()
+    viewer.layers.selection.add(viewer.layers[0])
+    viewer.layers.selection.add(viewer.layers[1])
+
+    return deepcopy(widget.figure)
