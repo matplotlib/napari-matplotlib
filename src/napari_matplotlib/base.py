@@ -2,8 +2,8 @@ import os
 from pathlib import Path
 from typing import List, Optional, Tuple
 
+import matplotlib.style as mplstyle
 import napari
-from matplotlib.axes import Axes
 from matplotlib.backends.backend_qtagg import (
     FigureCanvas,
     NavigationToolbar2QT,
@@ -40,8 +40,11 @@ class BaseNapariMPLWidget(QWidget):
     ):
         super().__init__(parent=parent)
         self.viewer = napari_viewer
+        self._mpl_style_sheet_path: Optional[Path] = None
 
-        self.canvas = FigureCanvas()
+        # Sets figure.* style
+        with mplstyle.context(self.mpl_style_sheet_path):
+            self.canvas = FigureCanvas()
 
         self.canvas.figure.patch.set_facecolor("none")
         self.canvas.figure.set_layout_engine("constrained")
@@ -52,7 +55,7 @@ class BaseNapariMPLWidget(QWidget):
         # callback to update when napari theme changed
         # TODO: this isn't working completely (see issue #140)
         # most of our styling respects the theme change but not all
-        self.viewer.events.theme.connect(self._on_theme_change)
+        self.viewer.events.theme.connect(self._on_napari_theme_changed)
 
         self.setLayout(QVBoxLayout())
         self.layout().addWidget(self.toolbar)
@@ -63,47 +66,40 @@ class BaseNapariMPLWidget(QWidget):
         """Matplotlib figure."""
         return self.canvas.figure
 
+    @property
+    def mpl_style_sheet_path(self) -> Path:
+        """
+        Path to the set Matplotlib style sheet.
+        """
+        if self._mpl_style_sheet_path is not None:
+            return self._mpl_style_sheet_path
+        elif self._napari_theme_has_light_bg():
+            return Path(__file__).parent / "styles" / "light.mplstyle"
+        else:
+            return Path(__file__).parent / "styles" / "dark.mplstyle"
+
+    @mpl_style_sheet_path.setter
+    def mpl_style_sheet_path(self, path: Path) -> None:
+        self._mpl_style_sheet_path = Path(path)
+
     def add_single_axes(self) -> None:
         """
         Add a single Axes to the figure.
 
         The Axes is saved on the ``.axes`` attribute for later access.
         """
-        self.axes = self.figure.subplots()
-        self.apply_napari_colorscheme(self.axes)
+        # Sets axes.* style.
+        # Does not set any text styling set by axes.* keys
+        with mplstyle.context(self.mpl_style_sheet_path):
+            self.axes = self.figure.subplots()
 
-    def apply_napari_colorscheme(self, ax: Axes) -> None:
-        """Apply napari-compatible colorscheme to an Axes."""
-        # get the foreground colours from current theme
-        theme = napari.utils.theme.get_theme(self.viewer.theme, as_dict=False)
-        fg_colour = theme.foreground.as_hex()  # fg is a muted contrast to bg
-        text_colour = theme.text.as_hex()  # text is high contrast to bg
-
-        # changing color of axes background to transparent
-        ax.set_facecolor("none")
-
-        # changing colors of all axes
-        for spine in ax.spines:
-            ax.spines[spine].set_color(fg_colour)
-
-        ax.xaxis.label.set_color(text_colour)
-        ax.yaxis.label.set_color(text_colour)
-
-        # changing colors of axes labels
-        ax.tick_params(axis="x", colors=text_colour)
-        ax.tick_params(axis="y", colors=text_colour)
-
-    def _on_theme_change(self) -> None:
-        """Update MPL toolbar and axis styling when `napari.Viewer.theme` is changed.
-
-        Note:
-            At the moment we only handle the default 'light' and 'dark' napari themes.
+    def _on_napari_theme_changed(self) -> None:
+        """
+        Called when the napari theme is changed.
         """
         self._replace_toolbar_icons()
-        if self.figure.gca():
-            self.apply_napari_colorscheme(self.figure.gca())
 
-    def _theme_has_light_bg(self) -> bool:
+    def _napari_theme_has_light_bg(self) -> bool:
         """
         Does this theme have a light background?
 
@@ -124,7 +120,7 @@ class BaseNapariMPLWidget(QWidget):
         https://github.com/matplotlib/matplotlib/tree/main/lib/matplotlib/mpl-data/images
         """
         icon_root = Path(__file__).parent / "icons"
-        if self._theme_has_light_bg():
+        if self._napari_theme_has_light_bg():
             return icon_root / "black"
         else:
             return icon_root / "white"
@@ -211,6 +207,16 @@ class NapariMPLWidget(BaseNapariMPLWidget):
         """
         return self.viewer.dims.current_step[0]
 
+    def _on_napari_theme_changed(self) -> None:
+        """Update MPL toolbar and axis styling when `napari.Viewer.theme` is changed.
+
+        Note:
+            At the moment we only handle the default 'light' and 'dark' napari themes.
+        """
+        super()._on_napari_theme_changed()
+        self.clear()
+        self.draw()
+
     def _setup_callbacks(self) -> None:
         """
         Sets up callbacks.
@@ -240,12 +246,14 @@ class NapariMPLWidget(BaseNapariMPLWidget):
         Clear current figure, check selected layers are correct, and draw new
         figure if so.
         """
-        self.clear()
+        # Clearing axes sets new defaults, so need to make sure style is applied when
+        # this happens
+        with mplstyle.context(self.mpl_style_sheet_path):
+            self.clear()
         if self.n_selected_layers in self.n_layers_input and all(
             isinstance(layer, self.input_layer_types) for layer in self.layers
         ):
             self.draw()
-        self.apply_napari_colorscheme(self.figure.gca())
         self.canvas.draw()
 
     def clear(self) -> None:
@@ -288,7 +296,8 @@ class SingleAxesWidget(NapariMPLWidget):
         """
         Clear the axes.
         """
-        self.axes.clear()
+        with mplstyle.context(self.mpl_style_sheet_path):
+            self.axes.clear()
 
 
 class NapariNavigationToolbar(NavigationToolbar2QT):

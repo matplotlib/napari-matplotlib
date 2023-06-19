@@ -23,6 +23,8 @@ class ScatterBaseWidget(SingleAxesWidget):
         """
         Scatter the currently selected layers.
         """
+        if len(self.layers) == 0:
+            return
         x, y, x_axis_name, y_axis_name = self._get_data()
 
         if x.size > self._threshold_to_switch_to_histogram:

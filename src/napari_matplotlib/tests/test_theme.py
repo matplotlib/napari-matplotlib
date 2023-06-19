@@ -43,14 +43,14 @@ def test_theme_background_check(make_napari_viewer):
     widget = NapariMPLWidget(viewer)
 
     viewer.theme = "dark"
-    assert widget._theme_has_light_bg() is False
+    assert widget._napari_theme_has_light_bg() is False
 
     viewer.theme = "light"
-    assert widget._theme_has_light_bg() is True
+    assert widget._napari_theme_has_light_bg() is True
 
     _mock_up_theme()
     viewer.theme = "blue"
-    assert widget._theme_has_light_bg() is True
+    assert widget._napari_theme_has_light_bg() is True
 
 
 @pytest.mark.parametrize(
