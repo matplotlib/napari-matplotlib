@@ -32,7 +32,6 @@ The following properties and methods are useful for working with the figure and 
 
 - `~.BaseNapariMPLWidget.figure` provides access to the figure
 - :meth:`~.BaseNapariMPLWidget.add_single_axes` adds a single axes to the figure, which can be accessed using the ``.axes`` attribute.
-- :meth:`~.BaseNapariMPLWidget.apply_napari_colorscheme` can be used to apply the napari colorscheme to any Axes you setup manually on the figure.
 
 Working with napari layers
 --------------------------
