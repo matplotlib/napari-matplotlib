@@ -288,7 +288,7 @@ class FeaturesHistogramWidget(NapariMPLWidget):
         else:
             return self.layers[0].features.keys()
 
-    def _get_data(self) -> Tuple[List[np.ndarray], str, str]:
+    def _get_data(self) -> Tuple[np.ndarray, str]:
         """Get the plot data.
 
         Returns
