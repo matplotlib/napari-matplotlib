@@ -4,7 +4,7 @@ import napari
 import numpy.typing as npt
 from qtpy.QtWidgets import QComboBox, QLabel, QVBoxLayout, QWidget
 
-from .base import NapariMPLWidget
+from .base import SingleAxesWidget
 from .util import Interval
 from .features import FEATURES_LAYER_TYPES
 
@@ -12,7 +12,7 @@ __all__ = ["ScatterBaseWidget", "ScatterWidget",
            "FeaturesScatterWidget"]
 
 
-class ScatterBaseWidget(NapariMPLWidget):
+class ScatterBaseWidget(SingleAxesWidget):
     """
     Base class for widgets that scatter two datasets against each other.
     """
@@ -21,24 +21,12 @@ class ScatterBaseWidget(NapariMPLWidget):
     # the scatter is plotted as a 2D histogram
     _threshold_to_switch_to_histogram = 500
 
-    def __init__(
-        self,
-        napari_viewer: napari.viewer.Viewer,
-        parent: Optional[QWidget] = None,
-    ):
-        super().__init__(napari_viewer, parent=parent)
-        self.add_single_axes()
-
-    def clear(self) -> None:
-        """
-        Clear the axes.
-        """
-        self.axes.clear()
-
     def draw(self) -> None:
         """
         Scatter the currently selected layers.
         """
+        if len(self.layers) == 0:
+            return
         x, y, x_axis_name, y_axis_name = self._get_data()
 
         if x.size > self._threshold_to_switch_to_histogram:

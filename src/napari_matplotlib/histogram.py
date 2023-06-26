@@ -5,7 +5,7 @@ import numpy as np
 from qtpy.QtWidgets import QWidget
 from magicgui import magicgui, ComboBox
 
-from .base import NapariMPLWidget
+from .base import SingleAxesWidget
 from .util import Interval
 from .features import FEATURES_LAYER_TYPES
 
@@ -14,7 +14,7 @@ __all__ = ["HistogramWidget", "FeaturesHistogramWidget"]
 _COLORS = {"r": "tab:red", "g": "tab:green", "b": "tab:blue"}
 
 
-class HistogramWidget(NapariMPLWidget):
+class HistogramWidget(SingleAxesWidget):
     """
     Display a histogram of the currently selected layer.
     """
@@ -28,14 +28,7 @@ class HistogramWidget(NapariMPLWidget):
         parent: Optional[QWidget] = None,
     ):
         super().__init__(napari_viewer, parent=parent)
-        self.add_single_axes()
         self._update_layers(None)
-
-    def clear(self) -> None:
-        """
-        Clear the axes.
-        """
-        self.axes.clear()
 
     def draw(self) -> None:
         """

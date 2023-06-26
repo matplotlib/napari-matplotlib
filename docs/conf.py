@@ -49,7 +49,8 @@ qtgallery_conf = {
 }
 
 numpydoc_show_class_members = False
-automodapi_inheritance_diagram = False
+automodapi_inheritance_diagram = True
+inheritance_graph_attrs = {"rankdir": "TR"}
 
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3/", None),
@@ -60,11 +61,14 @@ intersphinx_mapping = {
 }
 
 nitpicky = True
-# Can't work out how to link this properley using intersphinx and the PyQT6 docs.
+# Can't work out how to link this properly using intersphinx and the PyQT6 docs.
 # TODO: fix at some point
 nitpick_ignore = [
-    ("py:class", "PyQt6.QtWidgets.QWidget"),
     ("py:class", "PyQt5.QtWidgets.QWidget"),
+    ("py:class", "PyQt5.QtCore.QObject"),
+    ("py:class", "PyQt5.QtGui.QPaintDevice"),
+    ("py:class", "sip.simplewrapper"),
+    ("py:class", "sip.wrapper"),
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -88,3 +92,17 @@ html_theme = "pydata_sphinx_theme"
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 # html_static_path = ['_static']
+
+html_theme_options = {
+    "icon_links": [
+        {
+            "name": "GitHub",
+            "url": "https://github.com/matplotlib/napari-matplotlib",
+            "icon": "fa-brands fa-square-github",
+            "type": "fontawesome",
+        }
+    ],
+    "logo": {
+        "text": "napari-matplotlib",
+    },
+}

@@ -5,52 +5,26 @@ import numpy as np
 import numpy.typing as npt
 import pytest
 
-from napari_matplotlib import FeaturesScatterWidget, ScatterWidget
+from napari_matplotlib import FeaturesScatterWidget
 
 
 @pytest.mark.mpl_image_compare
-def test_scatter_2D(make_napari_viewer, astronaut_data):
+def test_features_scatter_widget_2D(
+    make_napari_viewer, points_with_features_data
+):
     viewer = make_napari_viewer()
-    widget = ScatterWidget(viewer)
-    fig = widget.figure
-
-    viewer.add_image(astronaut_data[0], **astronaut_data[1], name="astronaut")
-
-    viewer.add_image(
-        astronaut_data[0] * -1, **astronaut_data[1], name="astronaut_reversed"
-    )
-    # De-select existing selection
-    viewer.layers.selection.clear()
-
-    # Select images
-    viewer.layers.selection.add(viewer.layers[0])
-    viewer.layers.selection.add(viewer.layers[1])
-    return deepcopy(fig)
-
-
-@pytest.mark.mpl_image_compare
-def test_features_scatter_widget_2D(make_napari_viewer):
-    viewer = make_napari_viewer()
+    viewer.theme = "light"
     widget = FeaturesScatterWidget(viewer)
 
-    # make the points data
-    n_points = 100
-    np.random.seed(10)
-    points_data = 100 * np.random.random((100, 2))
-    points_features = {
-        "feature_0": np.random.random((n_points,)),
-        "feature_1": np.random.random((n_points,)),
-        "feature_2": np.random.random((n_points,)),
-    }
-
-    viewer.add_points(points_data, features=points_features)
+    viewer.add_points(
+        points_with_features_data[0], **points_with_features_data[1]
+    )
+    assert len(viewer.layers) == 1
     # De-select existing selection
     viewer.layers.selection.clear()
 
     # Select points data and chosen features
-    viewer.layers.selection.add(
-        viewer.layers["points_data"]
-    )  # images need to be selected
+    viewer.layers.selection.add(viewer.layers[0])  # images need to be selected
     widget.x_axis_key = "feature_0"
     widget.y_axis_key = "feature_1"
 

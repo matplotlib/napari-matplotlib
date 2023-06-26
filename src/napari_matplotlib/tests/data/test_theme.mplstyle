@@ -1,0 +1,15 @@
+# Dark-theme napari colour scheme for matplotlib plots
+
+#f4b8b2 # light red
+#b2e4f4 # light blue
+#0aa3fc # dark blue
+#008939 # dark green
+
+figure.facecolor    : f4b8b2 # light red
+axes.facecolor      : b2e4f4 # light blue
+axes.edgecolor      : 0aa3fc # dark blue
+
+xtick.color         : 008939 # dark green
+xtick.labelcolor    : 008939 # dark green
+ytick.color         : 008939 # dark green
+ytick.labelcolor    : 008939 # dark green
