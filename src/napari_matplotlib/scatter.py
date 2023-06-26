@@ -337,7 +337,7 @@ class FeaturesHistogramWidget(NapariMPLWidget):
         if len(data) == 0:
             return
 
-        _, _, _ = self.axes.hist(data, bins=50, edgecolor='white',
+        self.axes.hist(data, bins=50, edgecolor='white',
                                  linewidth=0.3)
 
         # set ax labels
