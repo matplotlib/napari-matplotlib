@@ -8,7 +8,7 @@ from .base import NapariMPLWidget
 from .util import Interval
 
 __all__ = ["ScatterBaseWidget", "ScatterWidget",
-           "FeaturesScatterWidget", "FeaturesHistogramWidget"]
+           "FeaturesScatterWidget"]
 
 
 class ScatterBaseWidget(NapariMPLWidget):
