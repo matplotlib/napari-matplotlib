@@ -1,3 +1,4 @@
+import os
 import shutil
 from copy import deepcopy
 from pathlib import Path
@@ -169,18 +170,21 @@ def test_custom_stylesheet(make_napari_viewer, image_data):
         style_sheet_path,
     )
 
-    viewer = make_napari_viewer()
-    viewer.add_image(image_data[0], **image_data[1])
-    widget = HistogramWidget(viewer)
-    assert widget.mpl_style_sheet_path == style_sheet_path
-    ax = widget.figure.gca()
+    try:
+        viewer = make_napari_viewer()
+        viewer.add_image(image_data[0], **image_data[1])
+        widget = HistogramWidget(viewer)
+        assert widget.mpl_style_sheet_path == style_sheet_path
+        ax = widget.figure.gca()
 
-    # The axes should have a light brownish grey background:
-    assert ax.get_facecolor() == to_rgba("#eee8d5")
-    assert ax.patch.get_facecolor() == to_rgba("#eee8d5")
+        # The axes should have a light brownish grey background:
+        assert ax.get_facecolor() == to_rgba("#eee8d5")
+        assert ax.patch.get_facecolor() == to_rgba("#eee8d5")
 
-    # The figure background and axis gridlines are light yellow:
-    assert widget.figure.patch.get_facecolor() == to_rgba("#fdf6e3")
-    for gridline in ax.get_xgridlines() + ax.get_ygridlines():
-        assert gridline.get_visible() is True
-        assert gridline.get_color() == "#fdf6e3"
+        # The figure background and axis gridlines are light yellow:
+        assert widget.figure.patch.get_facecolor() == to_rgba("#fdf6e3")
+        for gridline in ax.get_xgridlines() + ax.get_ygridlines():
+            assert gridline.get_visible() is True
+            assert gridline.get_color() == "#fdf6e3"
+    finally:
+        os.remove(style_sheet_path)
