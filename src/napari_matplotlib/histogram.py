@@ -7,6 +7,7 @@ from magicgui import magicgui, ComboBox
 
 from .base import NapariMPLWidget
 from .util import Interval
+from .features import FEATURES_LAYER_TYPES
 
 __all__ = ["HistogramWidget", "FeaturesHistogramWidget"]
 
@@ -69,13 +70,7 @@ class HistogramWidget(NapariMPLWidget):
 class FeaturesHistogramWidget(NapariMPLWidget):
     n_layers_input = Interval(1, 1)
     # All layers that have a .features attributes
-    input_layer_types = (
-        napari.layers.Labels,
-        napari.layers.Points,
-        napari.layers.Shapes,
-        napari.layers.Tracks,
-        napari.layers.Vectors,
-    )
+    input_layer_types = FEATURES_LAYER_TYPES
 
     def __init__(self, napari_viewer: napari.viewer.Viewer):
         super().__init__(napari_viewer)
