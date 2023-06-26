@@ -2,8 +2,7 @@ from typing import Optional, List, Tuple
 
 import napari
 import numpy as np
-from qtpy.QtWidgets import QWidget
-from magicgui import magicgui
+from qtpy.QtWidgets import QComboBox, QLabel, QVBoxLayout, QWidget
 
 from .base import SingleAxesWidget
 from .util import Interval
@@ -71,13 +70,14 @@ class FeaturesHistogramWidget(SingleAxesWidget):
             parent: Optional[QWidget] = None,):
         super().__init__(napari_viewer, parent=parent)
 
-        self._key_selection_widget = magicgui(
-            x_axis_key={"choices": self._get_valid_axis_keys},
-            call_button="plot",
-        )
-        self.layout().addWidget(self._key_selection_widget.native)
+        self.layout().addLayout(QVBoxLayout())
+        self._key_selection_widget = QComboBox()
+        self.layout().addWidget(QLabel("Key:"))
+        self.layout().addWidget(self._key_selection_widget)
 
-        self.update_layers(None)
+        self._key_selection_widget.currentTextChanged.connect(self._set_axis_keys)
+
+        self._update_layers(None)
 
     @property
     def x_axis_key(self) -> Optional[str]:
@@ -139,16 +139,16 @@ class FeaturesHistogramWidget(SingleAxesWidget):
 
         return data, x_axis_name
 
-    def _on_update_layers(self) -> None:
+    def on_update_layers(self) -> None:
         """
-        This is called when the layer selection changes by
-        ``self.update_layers()``.
+        Called when the layer selection changes by ``self.update_layers()``.
         """
-        if hasattr(self, "_key_selection_widget"):
-            self._key_selection_widget.reset_choices()
-
         # reset the axis keys
         self._x_axis_key = None
+
+        # Clear combobox
+        self._key_selection_widget.clear()
+        self._key_selection_widget.addItems(self._get_valid_axis_keys())
 
     def draw(self) -> None:
         """Clear the axes and histogram the currently selected layer/slice."""
@@ -159,7 +159,7 @@ class FeaturesHistogramWidget(SingleAxesWidget):
             return
 
         self.axes.hist(data, bins=50, edgecolor='white',
-                                 linewidth=0.3)
+                       linewidth=0.3)
 
         # set ax labels
         self.axes.set_xlabel(x_axis_name)
