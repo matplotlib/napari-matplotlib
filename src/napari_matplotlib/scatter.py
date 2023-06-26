@@ -5,11 +5,10 @@ import numpy.typing as npt
 from qtpy.QtWidgets import QComboBox, QLabel, QVBoxLayout, QWidget
 
 from .base import SingleAxesWidget
-from .util import Interval
 from .features import FEATURES_LAYER_TYPES
+from .util import Interval
 
-__all__ = ["ScatterBaseWidget", "ScatterWidget",
-           "FeaturesScatterWidget"]
+__all__ = ["ScatterBaseWidget", "ScatterWidget", "FeaturesScatterWidget"]
 
 
 class ScatterBaseWidget(SingleAxesWidget):

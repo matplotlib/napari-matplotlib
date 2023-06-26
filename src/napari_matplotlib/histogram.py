@@ -1,13 +1,13 @@
-from typing import Optional, List, Tuple, Any
-import numpy.typing as npt
+from typing import Any, List, Optional, Tuple
 
 import napari
 import numpy as np
+import numpy.typing as npt
 from qtpy.QtWidgets import QComboBox, QLabel, QVBoxLayout, QWidget
 
 from .base import SingleAxesWidget
-from .util import Interval
 from .features import FEATURES_LAYER_TYPES
+from .util import Interval
 
 __all__ = ["HistogramWidget", "FeaturesHistogramWidget"]
 
@@ -64,14 +64,16 @@ class FeaturesHistogramWidget(SingleAxesWidget):
     """
     Display a histogram of selected feature attached to selected layer.
     """
+
     n_layers_input = Interval(1, 1)
     # All layers that have a .features attributes
     input_layer_types = FEATURES_LAYER_TYPES
 
     def __init__(
-            self,
-            napari_viewer: napari.viewer.Viewer,
-            parent: Optional[QWidget] = None,):
+        self,
+        napari_viewer: napari.viewer.Viewer,
+        parent: Optional[QWidget] = None,
+    ):
         super().__init__(napari_viewer, parent=parent)
 
         self.layout().addLayout(QVBoxLayout())
@@ -79,7 +81,9 @@ class FeaturesHistogramWidget(SingleAxesWidget):
         self.layout().addWidget(QLabel("Key:"))
         self.layout().addWidget(self._key_selection_widget)
 
-        self._key_selection_widget.currentTextChanged.connect(self._set_axis_keys)
+        self._key_selection_widget.currentTextChanged.connect(
+            self._set_axis_keys
+        )
 
         self._update_layers(None)
 
@@ -132,10 +136,7 @@ class FeaturesHistogramWidget(SingleAxesWidget):
 
         feature_table = self.layers[0].features
 
-        if (
-            (len(feature_table) == 0)
-            or (self.x_axis_key is None)
-        ):
+        if (len(feature_table) == 0) or (self.x_axis_key is None):
             return [], ""
 
         data = feature_table[self.x_axis_key]
@@ -156,15 +157,13 @@ class FeaturesHistogramWidget(SingleAxesWidget):
 
     def draw(self) -> None:
         """Clear the axes and histogram the currently selected layer/slice."""
-
         data, x_axis_name = self._get_data()
 
         if len(data) == 0:
             return
 
-        self.axes.hist(data, bins=50, edgecolor='white',
-                       linewidth=0.3)
+        self.axes.hist(data, bins=50, edgecolor="white", linewidth=0.3)
 
         # set ax labels
         self.axes.set_xlabel(x_axis_name)
-        self.axes.set_ylabel('Counts [#]')
+        self.axes.set_ylabel("Counts [#]")

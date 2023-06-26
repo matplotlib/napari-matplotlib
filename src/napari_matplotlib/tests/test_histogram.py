@@ -2,7 +2,7 @@ from copy import deepcopy
 
 import pytest
 
-from napari_matplotlib import HistogramWidget, FeaturesHistogramWidget
+from napari_matplotlib import FeaturesHistogramWidget, HistogramWidget
 from napari_matplotlib.tests.helpers import (
     assert_figures_equal,
     assert_figures_not_equal,
@@ -35,7 +35,6 @@ def test_histogram_3D(make_napari_viewer, brain_data):
 
 
 def test_feature_histogram(make_napari_viewer):
-
     import numpy as np
 
     n_points = 1000
@@ -44,21 +43,25 @@ def test_feature_histogram(make_napari_viewer):
     feature2 = np.random.normal(size=n_points)
 
     viewer = make_napari_viewer()
-    viewer.add_points(random_points,
-                      properties={'feature1': feature1, 'feature2': feature2},
-                      name='points1')
-    viewer.add_points(random_points,
-                      properties={'feature1': feature1, 'feature2': feature2},
-                      name='points2')
+    viewer.add_points(
+        random_points,
+        properties={"feature1": feature1, "feature2": feature2},
+        name="points1",
+    )
+    viewer.add_points(
+        random_points,
+        properties={"feature1": feature1, "feature2": feature2},
+        name="points2",
+    )
 
     widget = FeaturesHistogramWidget(viewer)
     viewer.window.add_dock_widget(widget)
 
     # Check whether changing the selected key changes the plot
-    widget._set_axis_keys('feature1')
+    widget._set_axis_keys("feature1")
     fig1 = deepcopy(widget.figure)
 
-    widget._set_axis_keys('feature2')
+    widget._set_axis_keys("feature2")
     assert_figures_not_equal(widget.figure, fig1)
 
     # check whether selecting a different layer produces the same plot
