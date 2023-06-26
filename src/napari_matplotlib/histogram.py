@@ -60,14 +60,13 @@ class HistogramWidget(SingleAxesWidget):
         self.axes.legend()
 
 
-class FeaturesHistogramWidget(NapariMPLWidget):
+class FeaturesHistogramWidget(SingleAxesWidget):
     n_layers_input = Interval(1, 1)
     # All layers that have a .features attributes
     input_layer_types = FEATURES_LAYER_TYPES
 
     def __init__(self, napari_viewer: napari.viewer.Viewer):
         super().__init__(napari_viewer)
-        self.axes = self.canvas.figure.subplots()
 
         self._key_selection_widget = magicgui(
             self._set_axis_keys,
@@ -77,14 +76,6 @@ class FeaturesHistogramWidget(NapariMPLWidget):
         self.layout().addWidget(self._key_selection_widget.native)
 
         self.update_layers(None)
-
-    def clear(self) -> None:
-        """
-        Clear the axes.
-        """
-        self.axes.clear()
-
-        self.layout().addWidget(self._key_selection_widget.native)
 
     @property
     def x_axis_key(self) -> Optional[str]:
