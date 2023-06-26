@@ -3,7 +3,7 @@ from typing import Optional, List, Tuple
 import napari
 import numpy as np
 from qtpy.QtWidgets import QWidget
-from magicgui import magicgui, ComboBox
+from magicgui import magicgui
 
 from .base import SingleAxesWidget
 from .util import Interval
@@ -94,9 +94,7 @@ class FeaturesHistogramWidget(SingleAxesWidget):
         self._x_axis_key = x_axis_key
         self._draw()
 
-    def _get_valid_axis_keys(
-        self, combo_widget: Optional[ComboBox] = None
-    ) -> List[str]:
+    def _get_valid_axis_keys(self) -> List[str]:
         """
         Get the valid axis keys from the layer FeatureTable.
 
