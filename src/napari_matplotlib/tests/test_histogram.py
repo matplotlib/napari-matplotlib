@@ -44,14 +44,27 @@ def test_feature_histogram(make_napari_viewer):
     feature2 = np.random.normal(size=n_points)
 
     viewer = make_napari_viewer()
-    viewer.add_points(random_points, properties={'feature1': feature1, 'feature2': feature2}, face_color='feature1', size=1)
+    viewer.add_points(random_points,
+                      properties={'feature1': feature1, 'feature2': feature2},
+                      name='points1')
+    viewer.add_points(random_points,
+                      properties={'feature1': feature1, 'feature2': feature2},
+                      name='points2')
 
     widget = FeaturesHistogramWidget(viewer)
     viewer.window.add_dock_widget(widget)
+
+    # Check whether changing the selected key changes the plot
     widget._set_axis_keys('feature1')
-    widget._key_selection_widget()
+    fig1 = deepcopy(widget.figure)
+
     widget._set_axis_keys('feature2')
-    widget._key_selection_widget()
+    assert_figures_not_equal(widget.figure, fig1)
+
+    #check whether selecting a different layer produces the same plot
+    viewer.layers.selection.clear()
+    viewer.layers.selection.add(viewer.layers[1])
+    assert_figures_equal(widget.figure, fig1)
 
 
 def test_change_layer(make_napari_viewer, brain_data, astronaut_data):
