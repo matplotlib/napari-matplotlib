@@ -1,4 +1,5 @@
-from typing import Optional, List, Tuple
+from typing import Optional, List, Tuple, Any
+import numpy.typing as npt
 
 import napari
 import numpy as np
@@ -60,6 +61,9 @@ class HistogramWidget(SingleAxesWidget):
 
 
 class FeaturesHistogramWidget(SingleAxesWidget):
+    """
+    Display a histogram of selected feature attached to selected layer.
+    """
     n_layers_input = Interval(1, 1)
     # All layers that have a .features attributes
     input_layer_types = FEATURES_LAYER_TYPES
@@ -109,7 +113,7 @@ class FeaturesHistogramWidget(SingleAxesWidget):
         else:
             return self.layers[0].features.keys()
 
-    def _get_data(self) -> Tuple[np.ndarray, str]:
+    def _get_data(self) -> Tuple[npt.NDArray[Any], str]:
         """Get the plot data.
 
         Returns
