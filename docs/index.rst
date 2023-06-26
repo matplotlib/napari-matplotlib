@@ -1,23 +1,21 @@
 napari-matplotlib
 =================
-``napari-matplotlib`` is a `Napari <https://napari.org>`_ plugin for generating
+A `napari <https://napari.org>`_ plugin for generating
 `Matplotlib <https://matplotlib.org/>`_ plots from one or more ``napari`` Layers.
 
-Design
-------
-``napari-matplotlib`` contains a number of different ``napari`` Widgets. Each
-widget is designed to map one or more ``napari`` Layers on to a ``matplotlib`` plot.
+This plugin provides a number of different ``napari`` Widgets. Each
+widget is designed to map one or more ``napari`` Layers on to a ``Matplotlib`` plot.
 As an example, the `~.HistogramWidget` is used to
 map one or more Image layers on to a 1D histogram plot.
 
-.. toctree::
-   :maxdepth: 1
-
-   guide/index
+.. image:: _static/hist.png
+  :alt: Screenshot of the napari viewer showing the napari-matplotlib histogram widget on the right hand side of the screen.
 
 .. toctree::
    :maxdepth: 1
-   :caption: Reference
+   :hidden:
 
+   user_guide
+   third_party
    api
    changelog

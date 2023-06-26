@@ -1,8 +1,6 @@
 Third-party plugins
 ===================
-This page explains how ``napari-matplotlib`` can be used within third party plugins.
-
-``napari-matplotlib`` provides a ready-to-go widget with a Matplotlib toolbar and figure to third party plugin developers
+``napari-matplotlib`` provides a ready-to-go widget with a Matplotlib toolbar and figure to third party plugin developers.
 This widget is customised to match the theme of the main napari window.
 
 The widget can be found at `napari_matplotlib.base.NapariMPLWidget`.
