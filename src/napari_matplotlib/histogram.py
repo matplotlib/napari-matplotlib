@@ -65,11 +65,13 @@ class FeaturesHistogramWidget(SingleAxesWidget):
     # All layers that have a .features attributes
     input_layer_types = FEATURES_LAYER_TYPES
 
-    def __init__(self, napari_viewer: napari.viewer.Viewer):
-        super().__init__(napari_viewer)
+    def __init__(
+            self,
+            napari_viewer: napari.viewer.Viewer,
+            parent: Optional[QWidget] = None,):
+        super().__init__(napari_viewer, parent=parent)
 
         self._key_selection_widget = magicgui(
-            self._set_axis_keys,
             x_axis_key={"choices": self._get_valid_axis_keys},
             call_button="plot",
         )
