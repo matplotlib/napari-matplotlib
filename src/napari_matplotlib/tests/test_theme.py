@@ -1,6 +1,5 @@
-from copy import deepcopy
-
 import shutil
+from copy import deepcopy
 from pathlib import Path
 
 import matplotlib
@@ -152,27 +151,36 @@ def find_mpl_stylesheet(name: str) -> Path:
     return Path(matplotlib.__path__[0]) / f"mpl-data/stylelib/{name}.mplstyle"
 
 
-def test_stylesheet_in_cwd(tmpdir, make_napari_viewer, image_data):
+def test_custom_stylesheet(make_napari_viewer, image_data):
     """
     Test that a stylesheet in the current directory is given precidence.
 
     Do this by copying over a stylesheet from matplotlib's built in styles,
     naming it correctly, and checking the colours are as expected.
     """
-    with tmpdir.as_cwd():
-        # Copy Solarize_Light2 to current dir as if it was a user-overriden stylesheet.
-        shutil.copy(find_mpl_stylesheet("Solarize_Light2"), "./user.mplstyle")
-        viewer = make_napari_viewer()
-        viewer.add_image(image_data[0], **image_data[1])
-        widget = HistogramWidget(viewer)
-        ax = widget.figure.gca()
+    # Copy Solarize_Light2 as if it was a user-overriden stylesheet.
+    style_sheet_path = (
+        Path(matplotlib.get_configdir()) / "napari-matplotlib.mplstyle"
+    )
+    if style_sheet_path.exists():
+        pytest.skip("Won't ovewrite existing custom style sheet.")
+    shutil.copy(
+        find_mpl_stylesheet("Solarize_Light2"),
+        style_sheet_path,
+    )
 
-        # The axes should have a light brownish grey background:
-        assert ax.get_facecolor() == to_rgba("#eee8d5")
-        assert ax.patch.get_facecolor() == to_rgba("#eee8d5")
+    viewer = make_napari_viewer()
+    viewer.add_image(image_data[0], **image_data[1])
+    widget = HistogramWidget(viewer)
+    assert widget.mpl_style_sheet_path == style_sheet_path
+    ax = widget.figure.gca()
 
-        # The figure background and axis gridlines are light yellow:
-        assert widget.figure.patch.get_facecolor() == to_rgba("#fdf6e3")
-        for gridline in ax.get_xgridlines() + ax.get_ygridlines():
-            assert gridline.get_visible() is True
-            assert gridline.get_color() == "#fdf6e3"
+    # The axes should have a light brownish grey background:
+    assert ax.get_facecolor() == to_rgba("#eee8d5")
+    assert ax.patch.get_facecolor() == to_rgba("#eee8d5")
+
+    # The figure background and axis gridlines are light yellow:
+    assert widget.figure.patch.get_facecolor() == to_rgba("#fdf6e3")
+    for gridline in ax.get_xgridlines() + ax.get_ygridlines():
+        assert gridline.get_visible() is True
+        assert gridline.get_color() == "#fdf6e3"

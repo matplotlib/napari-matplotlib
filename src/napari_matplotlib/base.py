@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 from typing import List, Optional, Tuple
 
+import matplotlib
 import matplotlib.style as mplstyle
 import napari
 from matplotlib.backends.backend_qtagg import (
@@ -15,6 +16,10 @@ from qtpy.QtWidgets import QLabel, QVBoxLayout, QWidget
 from .util import Interval, from_napari_css_get_size_of
 
 __all__ = ["BaseNapariMPLWidget", "NapariMPLWidget", "SingleAxesWidget"]
+
+_CUSTOM_STYLE_PATH = (
+    Path(matplotlib.get_configdir()) / "napari-matplotlib.mplstyle"
+)
 
 
 class BaseNapariMPLWidget(QWidget):
@@ -46,7 +51,6 @@ class BaseNapariMPLWidget(QWidget):
         with mplstyle.context(self.mpl_style_sheet_path):
             self.canvas = FigureCanvas()
 
-        self.canvas.figure.patch.set_facecolor("none")
         self.canvas.figure.set_layout_engine("constrained")
         self.toolbar = NapariNavigationToolbar(
             self.canvas, parent=self
@@ -73,6 +77,8 @@ class BaseNapariMPLWidget(QWidget):
         """
         if self._mpl_style_sheet_path is not None:
             return self._mpl_style_sheet_path
+        elif (_CUSTOM_STYLE_PATH).exists():
+            return _CUSTOM_STYLE_PATH
         elif self._napari_theme_has_light_bg():
             return Path(__file__).parent / "styles" / "light.mplstyle"
         else:
