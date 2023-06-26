@@ -340,6 +340,6 @@ class FeaturesHistogramWidget(NapariMPLWidget):
         _, _, _ = self.axes.hist(data, bins=50, edgecolor='white',
                                  linewidth=0.3)
 
-        # # set ax labels
+        # set ax labels
         self.axes.set_xlabel(x_axis_name)
         self.axes.set_ylabel('Counts [#]')
