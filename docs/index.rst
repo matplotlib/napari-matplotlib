@@ -16,6 +16,7 @@ map one or more Image layers on to a 1D histogram plot.
    :hidden:
 
    user_guide
+   auto_examples/index
    third_party
    api
    changelog
