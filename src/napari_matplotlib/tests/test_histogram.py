@@ -39,7 +39,7 @@ def test_feature_histogram(make_napari_viewer):
     import numpy as np
 
     n_points = 1000
-    random_points = np.random.random((n_points,3))*10
+    random_points = np.random.random((n_points, 3)) * 10
     feature1 = np.random.random(n_points)
     feature2 = np.random.normal(size=n_points)
 
@@ -61,7 +61,7 @@ def test_feature_histogram(make_napari_viewer):
     widget._set_axis_keys('feature2')
     assert_figures_not_equal(widget.figure, fig1)
 
-    #check whether selecting a different layer produces the same plot
+    # check whether selecting a different layer produces the same plot
     viewer.layers.selection.clear()
     viewer.layers.selection.add(viewer.layers[1])
     assert_figures_equal(widget.figure, fig1)
