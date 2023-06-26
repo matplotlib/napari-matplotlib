@@ -51,3 +51,5 @@ jobs:
       uses: JamesIves/github-pages-deploy-action@v4
       with:
         folder: html
+        ssh-key: ${{ secrets.DEPLOY_KEY }}
+        repository-name: dstansby/napari-matplotlib-docs
