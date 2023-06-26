@@ -52,4 +52,4 @@ jobs:
       with:
         folder: html
         ssh-key: ${{ secrets.DEPLOY_KEY }}
-        repository-name: dstansby/napari-matplotlib.github.io
+        repository-name: dstansby/napari-matplotlib-docs
