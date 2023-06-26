@@ -314,7 +314,7 @@ class FeaturesHistogramWidget(NapariMPLWidget):
         else:
             return self.layers[0].features.keys()
 
-    def _get_data(self) -> Tuple[List[np.ndarray], str, str]:
+    def _get_data(self) -> Tuple[np.ndarray, str]:
         """Get the plot data.
 
         Returns
@@ -363,9 +363,9 @@ class FeaturesHistogramWidget(NapariMPLWidget):
         if len(data) == 0:
             return
 
-        _, _, _ = self.axes.hist(data, bins=50, edgecolor='white',
+        self.axes.hist(data, bins=50, edgecolor='white',
                                  linewidth=0.3)
 
-        # # set ax labels
+        # set ax labels
         self.axes.set_xlabel(x_axis_name)
         self.axes.set_ylabel('Counts [#]')
