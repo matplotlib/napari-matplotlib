@@ -36,7 +36,7 @@ def test_features_scatter_widget_2D(
 def make_labels_layer_with_features() -> (
     Tuple[npt.NDArray[np.uint16], Dict[str, Any]]
 ):
-    label_image = np.zeros((100, 100), dtype=np.uint16)
+    label_image: npt.NDArray[np.uint16] = np.zeros((100, 100), dtype=np.uint16)
     for label_value, start_index in enumerate([10, 30, 50], start=1):
         end_index = start_index + 10
         label_image[start_index:end_index, start_index:end_index] = label_value
