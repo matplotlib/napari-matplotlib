@@ -17,7 +17,7 @@ import qtgallery
 
 # -- Project information -----------------------------------------------------
 
-project = "matplotlib-napari"
+project = "napari-matplotlib"
 copyright = "2022, David Stansby"
 author = "David Stansby"
 
@@ -41,12 +41,31 @@ sphinx_gallery_conf = {
     "reset_modules": (qtgallery.reset_qapp,),
 }
 
+qtgallery_conf = {
+    "xvfb_size": (640, 480),
+    "xvfb_color_depth": 24,
+    "xfvb_use_xauth": False,
+    "xfvb_extra_args": [],
+}
+
 numpydoc_show_class_members = False
+automodapi_inheritance_diagram = False
 
 intersphinx_mapping = {
+    "python": ("https://docs.python.org/3/", None),
     "napari": ("https://napari.org/", None),
+    "numpy": ("https://numpy.org/doc/stable/", None),
     "matplotlib": ("https://matplotlib.org/", None),
+    "PyQT6": ("https://www.riverbankcomputing.com/static/Docs/PyQt6/", None),
 }
+
+nitpicky = True
+# Can't work out how to link this properley using intersphinx and the PyQT6 docs.
+# TODO: fix at some point
+nitpick_ignore = [
+    ("py:class", "PyQt6.QtWidgets.QWidget"),
+    ("py:class", "PyQt5.QtWidgets.QWidget"),
+]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]

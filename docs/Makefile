@@ -3,7 +3,7 @@
 
 # You can set these variables from the command line, and also
 # from the environment for the first two.
-SPHINXOPTS    ?= -W
+SPHINXOPTS    ?= -W --keep-going
 SPHINXBUILD   ?= sphinx-build
 SOURCEDIR     = .
 BUILDDIR      = _build
@@ -11,6 +11,11 @@ BUILDDIR      = _build
 # Put it first so that "make" without argument is like "make help".
 help:
 	@$(SPHINXBUILD) -M help "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
+
+clean:
+	@echo Removing files created by sphinx-build
+	rm -rf $(BUILDDIR)
+	rm -rf $(SOURCEDIR)/api/
 
 .PHONY: help Makefile
 
