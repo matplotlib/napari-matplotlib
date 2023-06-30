@@ -217,13 +217,6 @@ class FeaturesScatterWidget(ScatterBaseWidget):
         """
         Called when the layer selection changes by ``self.update_layers()``.
         """
-        if hasattr(self, "_key_selection_widget"):
-            self._key_selection_widget.reset_choices()
-
-        # reset the axis keys
-        self._x_axis_key = None
-        self._y_axis_key = None
-
         # Clear combobox
         for dim in ["x", "y"]:
             while self._selectors[dim].count() > 0:
