@@ -1,28 +1,27 @@
-from typing import List, Optional, Tuple
-
+from typing import Any, Dict, List, Optional, Tuple, Union
 import matplotlib.colors as mcolor
+from cycler import cycler
 import napari
 import numpy as np
 import pandas as pd
-from magicgui import magicgui
-from magicgui.widgets import ComboBox
+import numpy.typing as npt
+from qtpy.QtWidgets import QComboBox, QLabel, QVBoxLayout, QWidget
 
 from .base import NapariMPLWidget
 from .util import Interval
 
-__all__ = ["Line2DBaseWidget", "MetadataLine2DWidget"]
+__all__ = ["LineBaseWidget", "MetadataLineWidget", "FeaturesLineWidget"]
 
 
-class Line2DBaseWidget(NapariMPLWidget):
-    # opacity value for the lines
-    _line_alpha = 0.5
-    _lines = []
+class LineBaseWidget(NapariMPLWidget):
+    """
+    Base class for widgets that do line plots of two datasets against each other.
+    """
 
-    def __init__(self, napari_viewer: napari.viewer.Viewer):
-        super().__init__(napari_viewer)
-
-        self.axes = self.canvas.figure.subplots()
-        self.update_layers(None)
+    def __init__(self, napari_viewer: napari.viewer.Viewer, parent: Optional[QWidget] = None,
+                 ):
+        super().__init__(napari_viewer, parent=parent)
+        self.add_single_axes()
 
     def clear(self) -> None:
         """
@@ -32,31 +31,14 @@ class Line2DBaseWidget(NapariMPLWidget):
 
     def draw(self) -> None:
         """
-        Plot the currently selected layers.
+        Plot lines for the currently selected layers.
         """
-        data, x_axis_name, y_axis_name = self._get_data()
-        
-
-        if len(data) == 0:
-            # don't plot if there isn't data
-            return
-        self._lines = []
-        x_data = data[0]
-        y_data = data[1]
-
-        if len(y_data) < len(x_data):
-            print("x_data bigger than y_data, plotting only first y_data")
-        for i, y in enumerate(y_data):
-            if len(x_data) == 1:
-                line = self.axes.plot(x_data[0], y, alpha=self._line_alpha)
-            else:
-                line = self.axes.plot(x_data[i], y, alpha=self._line_alpha)
-            self._lines += line
-
+        x, y, x_axis_name, y_axis_name = self._get_data()
+        self.axes.plot(x, y)
         self.axes.set_xlabel(x_axis_name)
         self.axes.set_ylabel(y_axis_name)
 
-    def _get_data(self) -> Tuple[List[np.ndarray], str, str]:
+    def _get_data(self) -> Tuple[npt.NDArray[Any], npt.NDArray[Any], str, str]:
         """Get the plot data.
 
         This must be implemented on the subclass.
@@ -72,115 +54,230 @@ class Line2DBaseWidget(NapariMPLWidget):
         """
         raise NotImplementedError
 
-class MetadataLine2DWidget(Line2DBaseWidget):
-    n_layers_input = Interval(1, 1)
 
-    def __init__(self, napari_viewer: napari.viewer.Viewer):
-        super().__init__(napari_viewer)
-        self._plugin_name_widget = magicgui(
-            self._set_plugin_name,
-            plugin_name={"choices": self._get_plugin_metadata_key},
-            auto_call = True,
-        )
-        self._key_selection_widget = magicgui(
-            self._set_axis_keys,
-            x_axis_key={"choices": self._get_valid_axis_keys},
-            y_axis_key={"choices": self._get_valid_axis_keys},
-            call_button="plot",
-        )
-        
-        self.ray_index = 0
-        self.dot_index = 0
-        self.layout().insertWidget(0, self._plugin_name_widget.native)
-        self.layout().addWidget(self._key_selection_widget.native)
+class LineWidget(LineBaseWidget):
+    """
+    Plot pixel values of an Image layer underneath a line from a Shapes layer.
+    """
+
+    n_layers_input = Interval(2, 2)
+    input_layer_types = (napari.layers.Image,
+                         napari.layers.Shapes,)
+
+    def _get_data(self) -> Tuple[npt.NDArray[Any], npt.NDArray[Any], str, str]:
+        """
+        Get the plot data.
+
+        Returns
+        -------
+        x, y : np.ndarray
+            x and y values of plot data.
+        x_axis_name : str
+            The title to display on the x axis
+        y_axis_name: str
+            The title to display on the y axis
+        """
+        line_data = self._get_line_data()
+        if line_data is None:
+            return [], [], "", ""
+        image_layers = [layer for layer in self.layers if isinstance(layer, napari.layers.Image)]
+        if len(image_layers) == 0:
+            return [], [], "", ""
+        line_pixel_coords = self._get_line_pixel_coordinates(
+            line_data[0], line_data[1], weight=1, shape=image_layers[0].data.shape)
+
+        x = self._get_pixel_distances(line_pixel_coords, line_data[0])
+        y = image_layers[0].data[self.current_z][line_pixel_coords[0], line_pixel_coords[1]]
+        x_axis_name = 'pixel distance'
+        y_axis_name = image_layers[0].name
+
+        return x, y, x_axis_name, y_axis_name
+
+    def _get_line_data(self):
+        """
+        Get the line data from the Shapes layer.
+        """
+        for layer in self.layers:
+            # There must be a Shapes layer
+            if isinstance(layer, napari.layers.Shapes):
+                # There must be a line
+                if 'line' in layer.shape_type:
+                    line_data = layer.data[layer.shape_type.index('line')]
+                    return line_data
+        return None
+
+    def _get_line_pixel_coordinates(self, start, end, weight=1, shape=None):
+        """
+        Get the pixel coordinates of a line from start to end using a bezier curve.
+        """
+        import numpy as np
+        from skimage.draw import bezier_curve
+        middle = (start + end) / 2
+        start = np.round(start).astype(int)
+        middle = np.round(middle).astype(int)
+        end = np.round(end).astype(int)
+        rr, cc = bezier_curve(start[0], start[1], middle[0], middle[1], end[0], end[1], weight=weight, shape=shape)
+        return np.array([rr, cc])
+
+    def _get_pixel_distances(self, line_coordinates, start):
+        """
+        Get the pixel distances from the start of the line.
+        """
+        distances = np.linalg.norm(line_coordinates - start[:, np.newaxis], axis=0)
+        return distances
+
+
+class FeaturesLineWidget(LineBaseWidget):
+    """
+    Widget to do line plots of two features from a layer, grouped by label.
+    """
+
+    n_layers_input = Interval(1, 1)
+    # Currently working with Labels layer
+    input_layer_types = (
+        napari.layers.Labels,
+    )
+
+    def __init__(
+        self,
+        napari_viewer: napari.viewer.Viewer,
+        parent: Optional[QWidget] = None,
+    ):
+        super().__init__(napari_viewer, parent=parent)
+
+        self.layout().addLayout(QVBoxLayout())
+
+        self._selectors: Dict[str, QComboBox] = {}
+        # Add split-by selector
+        self._selectors["label"] = QComboBox()
+        self._selectors["label"].currentTextChanged.connect(self._draw)
+        self.layout().addWidget(QLabel(f"label:"))
+        self.layout().addWidget(self._selectors["label"])
+
+        for dim in ["x", "y"]:
+            self._selectors[dim] = QComboBox()
+            # Re-draw when combo boxes are updated
+            self._selectors[dim].currentTextChanged.connect(self._draw)
+
+            self.layout().addWidget(QLabel(f"{dim}-axis:"))
+            self.layout().addWidget(self._selectors[dim])
+
+        self._update_layers(None)
 
     @property
-    def x_axis_key(self) -> Optional[str]:
-        """Key to access x axis data from the Metadata"""
-        return self._x_axis_key
+    def x_axis_key(self) -> Union[str, None]:
+        """
+        Key for the x-axis data.
+        """
+        if self._selectors["x"].count() == 0:
+            return None
+        else:
+            return self._selectors["x"].currentText()
 
     @x_axis_key.setter
-    def x_axis_key(self, key: Optional[str]) -> None:
-        self._x_axis_key = key
+    def x_axis_key(self, key: str) -> None:
+        self._selectors["x"].setCurrentText(key)
         self._draw()
 
     @property
-    def y_axis_key(self) -> Optional[str]:
-        """Key to access y axis data from the Metadata"""
-        return self._y_axis_key
+    def y_axis_key(self) -> Union[str, None]:
+        """
+        Key for the y-axis data.
+        """
+        if self._selectors["y"].count() == 0:
+            return None
+        else:
+            return self._selectors["y"].currentText()
 
     @y_axis_key.setter
-    def y_axis_key(self, key: Optional[str]) -> None:
-        self._y_axis_key = key
+    def y_axis_key(self, key: str) -> None:
+        self._selectors["y"].setCurrentText(key)
         self._draw()
 
-    def _set_axis_keys(self, x_axis_key: str, y_axis_key: str) -> None:
-        """Set both axis keys and then redraw the plot"""
-        self._x_axis_key = x_axis_key
-        self._y_axis_key = y_axis_key
-        self._draw()
-        
     @property
-    def plugin_name_key(self) -> Optional[str]:
-        """Key to plugin dictionary in the Metadata"""
-        return self._plugin_name_key
-
-    @plugin_name_key.setter
-    def plugin_name_key(self, key: Optional[str]) -> None:
-        self._plugin_name_key = key
-        
-    def _set_plugin_name(self, plugin_name: str) -> None:
-        """Set plugin name from layer metadata"""
-        self._plugin_name_key = plugin_name
-        self._key_selection_widget.reset_choices()
-    
-    def _get_plugin_metadata_key(
-            self, combo_widget: Optional[ComboBox] = None
-        ) -> List[str]:
-        """Get plugin key from layer metadata"""
-        if len(self.layers) == 0:
-            return []
-        else:
-            return self._get_valid_metadata_keys() 
-
-    def _get_valid_metadata_keys(
-            self) -> List[str]:
-        """Get metadata keys if nested dictionaries"""
-        if len(self.layers) == 0:
-            return []
-        else:
-            metadata = self.layers[0].metadata
-            keys_with_nested_dicts = []
-            for key, value in metadata.items():
-                if isinstance(value, dict):
-                    keys_with_nested_dicts.append(key)
-            return keys_with_nested_dicts
-
-    def _get_valid_axis_keys(
-        self, combo_widget: Optional[ComboBox] = None
-    ) -> List[str]:
+    def label_axis_key(self) -> Union[str, None]:
         """
-        Get the valid axis keys from the layer Metadata.
+        Key for the label factor.
+        """
+        if self._selectors["label"].count() == 0:
+            return None
+        else:
+            return self._selectors["label"].currentText()
+
+    @label_axis_key.setter
+    def label_axis_key(self, key: str) -> None:
+        self._selectors["label"].setCurrentText(key)
+        self._draw()
+
+    def _get_valid_axis_keys(self) -> List[str]:
+        """
+        Get the valid axis keys from the layer FeatureTable.
+
         Returns
         -------
         axis_keys : List[str]
-            The valid axis keys in the Metadata. If the table is empty
+            The valid axis keys in the FeatureTable. If the table is empty
             or there isn't a table, returns an empty list.
         """
-        
-        if len(self.layers) == 0:
+        if len(self.layers) == 0 or not (hasattr(self.layers[0], "features")):
             return []
         else:
-            valid_metadata = self._get_valid_metadata_keys()
-            if not valid_metadata:
-                return []
-            else:
-                if not hasattr(self, "plugin_name_key"):
-                    self.plugin_name_key = self._get_valid_metadata_keys()[0]
-                return self.layers[0].metadata[self.plugin_name_key].keys()
+            return self.layers[0].features.keys()
 
-    def _get_data(self) -> Tuple[List[np.ndarray], str, str]:
-        """Get the plot data.
+    def _check_valid_labels_data_and_set_color_cycle(self):
+        feature_table = self.layers[0].features
+        # Get sorted unique labels
+        labels_from_table = np.unique(feature_table[self.label_axis_key].values).astype(int)
+        labels_from_layer = np.unique(self.layers[0].data)[1:]  # exclude zero
+        if np.array_equal(labels_from_table, labels_from_layer):
+            # Set color cycle
+            self._set_color_cycle(labels_from_table.tolist())
+            return True
+        return False
+
+    def _ready_to_plot(self) -> bool:
+        """
+        Return True if selected layer has a feature table we can plot with,
+        the two columns to be plotted have been selected, and object
+        identifier ('labels') in the table.
+        """
+        if not hasattr(self.layers[0], "features"):
+            return False
+
+        feature_table = self.layers[0].features
+        valid_keys = self._get_valid_axis_keys()
+        valid_labels_data = self._check_valid_labels_data_and_set_color_cycle()
+
+        return (
+            feature_table is not None
+            and len(feature_table) > 0
+            and self.x_axis_key in valid_keys
+            and self.y_axis_key in valid_keys
+            and self.label_axis_key in valid_keys
+            and valid_labels_data
+        )
+
+    def draw(self) -> None:
+        """
+        Plot lines for two features from the currently selected layer, grouped by labels.
+        """
+        if self._ready_to_plot():
+            # draw calls _get_data and then plots the data
+            super().draw()
+
+    def _set_color_cycle(self, labels):
+        """
+        Set the color cycle for the plot from the colors in the Labels layer.
+        """
+        colors = [self.layers[0].get_color(label) for label in labels]
+        napari_labels_cycler = (cycler(color=colors))
+        self.axes.set_prop_cycle(napari_labels_cycler)
+
+    def _get_data(self) -> Tuple[npt.NDArray[Any], npt.NDArray[Any], str, str]:
+        """
+        Get the plot data from the ``features`` attribute of the first
+        selected layer grouped by labels.
+
         Returns
         -------
         data : List[np.ndarray]
@@ -193,53 +290,27 @@ class MetadataLine2DWidget(Line2DBaseWidget):
             The title to display on the y axis. Returns
             an empty string if nothing to plot.
         """
-        valid_metadata = self._get_valid_metadata_keys()
-        
-        if (
-            (not valid_metadata)
-            or (self.x_axis_key is None)
-            or (self.y_axis_key is None)
-        ):
-            return [], "", ""
-        
-        if not hasattr(self, "plugin_name_key"):
-            self.plugin_name_key = valid_metadata[0]
+        feature_table = self.layers[0].features
 
-        plugin_metadata_dict = self.layers[0].metadata[self.plugin_name_key]
+        # Sort features by 'label' and x_axis_key
+        feature_table = feature_table.sort_values(by=[self.label_axis_key, self.x_axis_key])
+        # Get data for each label
+        grouped = feature_table.groupby(self.label_axis_key)
+        x = np.array([sub_df[self.x_axis_key].values for label, sub_df in grouped]).T.squeeze()
+        y = np.array([sub_df[self.y_axis_key].values for label, sub_df in grouped]).T.squeeze()
 
-        data_x = warp_to_list(plugin_metadata_dict[self.x_axis_key])
-        data_y = warp_to_list(plugin_metadata_dict[self.y_axis_key])
-        data = [data_x, data_y]
+        x_axis_name = str(self.x_axis_key)
+        y_axis_name = str(self.y_axis_key)
 
-        x_axis_name = self.x_axis_key.replace("_", " ")
-        y_axis_name = self.y_axis_key.replace("_", " ")
+        return x, y, x_axis_name, y_axis_name
 
-        return data, x_axis_name, y_axis_name
-
-    def _on_update_layers(self) -> None:
+    def on_update_layers(self) -> None:
         """
-        This is called when the layer selection changes by
-        ``self.update_layers()``.
+        Called when the layer selection changes by ``self.update_layers()``.
         """
-        if hasattr(self, "_key_selection_widget"):
-            self._plugin_name_widget.reset_choices()
-            self._key_selection_widget.reset_choices()
-        
-        # reset the axis keys
-        self._x_axis_key = None
-        self._y_axis_key = None
-        
-def warp_to_list(data):
-    if isinstance(data, list):
-        return data
-    # If numpy array, make a list from axis=0
-    if isinstance(data, np.ndarray):
-        if len(data.shape) == 1:
-            data = data[np.newaxis,:]
-        data = data.tolist()
-    # If pandas dataframe, make a list from columns
-    if isinstance(data, pd.DataFrame):
-        data = data.T.values.tolist()
-    return data
-
-    
+        # Clear combobox
+        for dim in ["label", "x", "y"]:
+            while self._selectors[dim].count() > 0:
+                self._selectors[dim].removeItem(0)
+            # Add keys for newly selected layer
+            self._selectors[dim].addItems(self._get_valid_axis_keys())
