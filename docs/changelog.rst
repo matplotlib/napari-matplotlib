@@ -15,6 +15,8 @@ Visual improvements
 ~~~~~~~~~~~~~~~~~~~
 - The background of ``napari-matplotlib`` figures and axes is now transparent, and the text and axis colour respects the ``napari`` theme.
 - The icons in the Matplotlib toolbar are now the same size as icons in the napari window.
+- Custom style sheets can now be set to customise plots. See the user guide
+  for more information.
 
 Changes
 ~~~~~~~
