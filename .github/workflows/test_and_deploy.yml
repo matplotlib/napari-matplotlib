@@ -74,6 +74,8 @@ jobs:
     runs-on: ubuntu-latest
     if: contains(github.ref, 'tags')
     environment: pypi-deploy
+    permissions:
+      id-token: write
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python
