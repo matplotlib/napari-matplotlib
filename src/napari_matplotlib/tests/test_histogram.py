@@ -69,6 +69,33 @@ def test_feature_histogram(make_napari_viewer):
     viewer.layers.selection.add(viewer.layers[1])
     assert_figures_equal(widget.figure, fig1)
 
+@pytest.mark.mpl_image_compare
+def test_feature_histogram2(make_napari_viewer):
+    import numpy as np    
+    np.random.seed(0)
+    n_points = 1000
+    random_points = np.random.random((n_points, 3)) * 10
+    feature1 = np.random.random(n_points)
+    feature2 = np.random.normal(size=n_points)
+
+    viewer = make_napari_viewer()
+    viewer.add_points(
+        random_points,
+        properties={"feature1": feature1, "feature2": feature2},
+        name="points1",
+    )
+    viewer.add_points(
+        random_points,
+        properties={"feature1": feature1, "feature2": feature2},
+        name="points2",
+    )
+
+    widget = FeaturesHistogramWidget(viewer)
+    viewer.window.add_dock_widget(widget)
+
+    fig = HistogramWidget(viewer).figure
+    return deepcopy(fig)
+
 
 def test_change_layer(make_napari_viewer, brain_data, astronaut_data):
     viewer = make_napari_viewer()
