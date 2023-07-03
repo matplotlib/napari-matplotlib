@@ -1,9 +1,7 @@
 from typing import Any, Dict, List, Optional, Tuple, Union
-import matplotlib.colors as mcolor
 from cycler import cycler
 import napari
 import numpy as np
-import pandas as pd
 import numpy.typing as npt
 from qtpy.QtWidgets import QComboBox, QLabel, QVBoxLayout, QWidget
 
@@ -239,7 +237,7 @@ class FeaturesLineWidget(LineBaseWidget):
         """
         Return True if selected layer has a feature table we can plot with,
         the two columns to be plotted have been selected, and object
-        identifier ('labels') in the table.
+        identifier (usually 'labels') in the table.
         """
         if not hasattr(self.layers[0], "features"):
             return False
