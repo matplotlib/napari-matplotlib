@@ -69,6 +69,7 @@ def test_feature_histogram(make_napari_viewer):
     viewer.layers.selection.add(viewer.layers[1])
     assert_figures_equal(widget.figure, fig1)
 
+
 @pytest.mark.mpl_image_compare
 def test_feature_histogram2(make_napari_viewer):
     import numpy as np    
@@ -92,8 +93,9 @@ def test_feature_histogram2(make_napari_viewer):
 
     widget = FeaturesHistogramWidget(viewer)
     viewer.window.add_dock_widget(widget)
+    widget._set_axis_keys("feature1")
 
-    fig = HistogramWidget(viewer).figure
+    fig = FeaturesHistogramWidget(viewer).figure
     return deepcopy(fig)
 
 
