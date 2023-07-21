@@ -33,7 +33,6 @@ class HistogramWidget(SingleAxesWidget):
         Clear the axes and histogram the currently selected layer/slice.
         """
         layer = self.layers[0]
-        bins = np.linspace(np.min(layer.data), np.max(layer.data), 100)
 
         if layer.data.ndim - layer.rgb == 3:
             # 3D data, can be single channel or RGB
@@ -41,6 +40,10 @@ class HistogramWidget(SingleAxesWidget):
             self.axes.set_title(f"z={self.current_z}")
         else:
             data = layer.data
+
+        # Important to calculate bins after slicing 3D data, to avoid reading
+        # whole cube into memory.
+        bins = np.linspace(np.min(layer.data), np.max(layer.data), 100)
 
         if layer.rgb:
             # Histogram RGB channels independently
