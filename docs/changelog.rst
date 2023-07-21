@@ -5,8 +5,8 @@ Changelog
 -----
 Bug fixes
 ~~~~~~~~~
-- Pinned that maximum version of `napari` to 0.4.17, since `napari-matplotlib`
-  does not yet work with `napari 0.4.18`.
+- Pinned that maximum version of `napari` to 0.4.17, since ``napari-matplotlib``
+  does not yet work with ``napari`` 0.4.18.
 
 1.0.0
 -----
