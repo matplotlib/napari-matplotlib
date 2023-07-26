@@ -43,7 +43,7 @@ class HistogramWidget(SingleAxesWidget):
 
         # Important to calculate bins after slicing 3D data, to avoid reading
         # whole cube into memory.
-        bins = np.linspace(np.min(layer.data), np.max(layer.data), 100)
+        bins = np.linspace(np.min(data), np.max(data), 100)
 
         if layer.rgb:
             # Histogram RGB channels independently
