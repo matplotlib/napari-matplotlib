@@ -6,6 +6,7 @@ Bug fixes
 ~~~~~~~~~
 - A full dataset is no longer read into memory when using ``HistogramWidget``.
   Only the current slice is loaded.
+- Fixed compatibility with napari 0.4.18.
 
 Changes
 ~~~~~~~
