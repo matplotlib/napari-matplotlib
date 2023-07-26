@@ -1,5 +1,16 @@
 Changelog
 =========
+1.0.2
+-----
+Bug fixes
+~~~~~~~~~
+- A full dataset is no longer read into memory when using ``HistogramWidget``.
+  Only the current slice is loaded.
+
+Changes
+~~~~~~~
+- Histogram bin limits are now caclualted from the slice being histogrammed, and
+  not the whole dataset. This is as a result of the above bug fix.
 
 1.0.1
 -----
