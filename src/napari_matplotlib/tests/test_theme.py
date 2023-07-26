@@ -37,9 +37,11 @@ def _mock_up_theme() -> None:
     https://napari.org/stable/gallery/new_theme.html
     """
     blue_theme = napari.utils.theme.get_theme("dark", False)
-    blue_theme.name = "blue"
+    blue_theme.label = "blue"
     blue_theme.background = "#4169e1"  # my favourite shade of blue
-    napari.utils.theme.register_theme("blue", blue_theme)
+    napari.utils.theme.register_theme(
+        "blue", blue_theme, source="napari-mpl-tests"
+    )
 
 
 def test_theme_background_check(make_napari_viewer):
