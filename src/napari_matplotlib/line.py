@@ -53,78 +53,6 @@ class LineBaseWidget(NapariMPLWidget):
         raise NotImplementedError
 
 
-class LineWidget(LineBaseWidget):
-    """
-    Plot pixel values of an Image layer underneath a line from a Shapes layer.
-    """
-
-    n_layers_input = Interval(2, 2)
-    input_layer_types = (napari.layers.Image,
-                         napari.layers.Shapes,)
-
-    def _get_data(self) -> Tuple[npt.NDArray[Any], npt.NDArray[Any], str, str]:
-        """
-        Get the plot data.
-
-        Returns
-        -------
-        x, y : np.ndarray
-            x and y values of plot data.
-        x_axis_name : str
-            The title to display on the x axis
-        y_axis_name: str
-            The title to display on the y axis
-        """
-        line_data = self._get_line_data()
-        if line_data is None:
-            return [], [], "", ""
-        image_layers = [layer for layer in self.layers if isinstance(layer, napari.layers.Image)]
-        if len(image_layers) == 0:
-            return [], [], "", ""
-        line_pixel_coords = self._get_line_pixel_coordinates(
-            line_data[0], line_data[1], weight=1, shape=image_layers[0].data.shape)
-
-        x = self._get_pixel_distances(line_pixel_coords, line_data[0])
-        y = image_layers[0].data[self.current_z][line_pixel_coords[0], line_pixel_coords[1]]
-        x_axis_name = 'pixel distance'
-        y_axis_name = image_layers[0].name
-
-        return x, y, x_axis_name, y_axis_name
-
-    def _get_line_data(self):
-        """
-        Get the line data from the Shapes layer.
-        """
-        for layer in self.layers:
-            # There must be a Shapes layer
-            if isinstance(layer, napari.layers.Shapes):
-                # There must be a line
-                if 'line' in layer.shape_type:
-                    line_data = layer.data[layer.shape_type.index('line')]
-                    return line_data
-        return None
-
-    def _get_line_pixel_coordinates(self, start, end, weight=1, shape=None):
-        """
-        Get the pixel coordinates of a line from start to end using a bezier curve.
-        """
-        import numpy as np
-        from skimage.draw import bezier_curve
-        middle = (start + end) / 2
-        start = np.round(start).astype(int)
-        middle = np.round(middle).astype(int)
-        end = np.round(end).astype(int)
-        rr, cc = bezier_curve(start[0], start[1], middle[0], middle[1], end[0], end[1], weight=weight, shape=shape)
-        return np.array([rr, cc])
-
-    def _get_pixel_distances(self, line_coordinates, start):
-        """
-        Get the pixel distances from the start of the line.
-        """
-        distances = np.linalg.norm(line_coordinates - start[:, np.newaxis], axis=0)
-        return distances
-
-
 class FeaturesLineWidget(LineBaseWidget):
     """
     Widget to do line plots of two features from a layer, grouped by label.
@@ -147,10 +75,10 @@ class FeaturesLineWidget(LineBaseWidget):
 
         self._selectors: Dict[str, QComboBox] = {}
         # Add split-by selector
-        self._selectors["label"] = QComboBox()
-        self._selectors["label"].currentTextChanged.connect(self._draw)
-        self.layout().addWidget(QLabel(f"label:"))
-        self.layout().addWidget(self._selectors["label"])
+        self._selectors["object_id"] = QComboBox()
+        self._selectors["object_id"].currentTextChanged.connect(self._draw)
+        self.layout().addWidget(QLabel(f"object-id:"))
+        self.layout().addWidget(self._selectors["object_id"])
 
         for dim in ["x", "y"]:
             self._selectors[dim] = QComboBox()
@@ -197,14 +125,14 @@ class FeaturesLineWidget(LineBaseWidget):
         """
         Key for the label factor.
         """
-        if self._selectors["label"].count() == 0:
+        if self._selectors["object_id"].count() == 0:
             return None
         else:
-            return self._selectors["label"].currentText()
+            return self._selectors["object_id"].currentText()
 
     @label_axis_key.setter
     def label_axis_key(self, key: str) -> None:
-        self._selectors["label"].setCurrentText(key)
+        self._selectors["object_id"].setCurrentText(key)
         self._draw()
 
     def _get_valid_axis_keys(self) -> List[str]:
@@ -307,7 +235,7 @@ class FeaturesLineWidget(LineBaseWidget):
         Called when the layer selection changes by ``self.update_layers()``.
         """
         # Clear combobox
-        for dim in ["label", "x", "y"]:
+        for dim in ["object_id", "x", "y"]:
             while self._selectors[dim].count() > 0:
                 self._selectors[dim].removeItem(0)
             # Add keys for newly selected layer
