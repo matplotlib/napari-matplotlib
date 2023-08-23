@@ -58,6 +58,6 @@ def test_slice_axes(make_napari_viewer, astronaut_data):
     assert widget.current_dim_name == "x"
     assert widget.slice_selector.value() == 0
     assert widget.slice_selector.minimum() == 0
-    assert widget.slice_selector.maximum() == data.shape[0]
+    assert widget.slice_selector.maximum() == data.shape[0] - 1
     # x/y are flipped in napari
     assert widget._slice_width == data.shape[1]

@@ -58,20 +58,22 @@ class SliceWidget(SingleAxesWidget):
         """
         Called when layer selection is updated.
         """
+        if not len(self.layers):
+            return
         if self.current_dim_name == "x":
             max = self._layer.data.shape[-2]
         elif self.current_dim_name == "y":
             max = self._layer.data.shape[-1]
         else:
             raise RuntimeError("dim name must be x or y")
-        self.slice_selector.setRange(0, max)
+        self.slice_selector.setRange(0, max - 1)
 
     @property
     def _slice_width(self) -> int:
         """
         Width of the slice being plotted.
         """
-        return self._layer.data.shape[self.current_dim_index] - 1
+        return self._layer.data.shape[self.current_dim_index]
 
     @property
     def _layer(self) -> napari.layers.Layer:
