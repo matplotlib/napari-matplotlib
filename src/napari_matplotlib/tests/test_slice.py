@@ -31,7 +31,7 @@ def test_slice_2D(make_napari_viewer, astronaut_data):
     # Take first RGB channel
     data = astronaut_data[0][:, :, 0]
     assert data.ndim == 2, data.shape
-    viewer.add_image(data, **astronaut_data[1])
+    viewer.add_image(data)
 
     fig = SliceWidget(viewer).figure
     # Need to return a copy, as original figure is too eagerley garbage
