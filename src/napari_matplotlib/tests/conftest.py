@@ -1,9 +1,7 @@
 import os
 from pathlib import Path
-from typing import Any, Dict, Tuple
 
 import numpy as np
-import numpy.typing as npt
 import pytest
 from skimage import data
 
@@ -20,7 +18,7 @@ def image_data(request):
 
 
 @pytest.fixture
-def astronaut_data() -> Tuple[npt.NDArray[Any], Dict[Any, Any]]:
+def astronaut_data():
     return data.astronaut(), {"rgb": True}
 
 
