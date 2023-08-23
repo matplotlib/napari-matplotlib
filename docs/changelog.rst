@@ -1,5 +1,11 @@
 Changelog
 =========
+1.0.3
+-----
+Bug fixes
+~~~~~~~~~
+- Fixed creating 1D slices of 2D images.
+
 1.0.2
 -----
 Bug fixes
