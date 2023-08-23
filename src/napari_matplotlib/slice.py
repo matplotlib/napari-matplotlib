@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import matplotlib.ticker as mticker
 import napari
@@ -12,7 +12,6 @@ from .util import Interval
 __all__ = ["SliceWidget"]
 
 _dims_sel = ["x", "y"]
-_dims = ["x", "y", "z"]
 
 
 class SliceWidget(SingleAxesWidget):
@@ -37,7 +36,7 @@ class SliceWidget(SingleAxesWidget):
         self.dim_selector = QComboBox()
         button_layout.addWidget(QLabel("Slice axis:"))
         button_layout.addWidget(self.dim_selector)
-        self.dim_selector.addItems(_dims)
+        self.dim_selector.addItems(["x", "y", "z"])
 
         self.slice_selectors = {}
         for d in _dims_sel:
@@ -61,7 +60,7 @@ class SliceWidget(SingleAxesWidget):
         return self.layers[0]
 
     @property
-    def current_dim(self) -> str:
+    def current_dim_name(self) -> str:
         """
         Currently selected slice dimension.
         """
@@ -74,12 +73,27 @@ class SliceWidget(SingleAxesWidget):
         """
         # Note the reversed list because in napari the z-axis is the first
         # numpy axis
-        return _dims[::-1].index(self.current_dim)
+        return self._dim_names[::-1].index(self.current_dim_name)
+
+    @property
+    def _dim_names(self) -> List[str]:
+        """
+        List of dimension names. This is a property as it varies depending on the
+        dimensionality of the currently selected data.
+        """
+        if self._layer.data.ndim == 2:
+            return ["x", "y"]
+        elif self._layer.data.ndim == 3:
+            return ["x", "y", "z"]
+        else:
+            raise RuntimeError("Don't know how to handle ndim != 2 or 3")
 
     @property
     def _selector_values(self) -> Dict[str, int]:
         """
         Values of the slice selectors.
+
+        Mapping from dimension name to value.
         """
         return {d: self.slice_selectors[d].value() for d in _dims_sel}
 
@@ -87,19 +101,22 @@ class SliceWidget(SingleAxesWidget):
         """
         Get data for plotting.
         """
-        x = np.arange(self._layer.data.shape[self.current_dim_index])
+        dim_index = self.current_dim_index
+        if self._layer.data.ndim == 2:
+            dim_index -= 1
+        x = np.arange(self._layer.data.shape[dim_index])
 
         vals = self._selector_values
         vals.update({"z": self.current_z})
 
         slices = []
-        for d in _dims:
-            if d == self.current_dim:
+        for dim_name in self._dim_names:
+            if dim_name == self.current_dim_name:
                 # Select all data along this axis
                 slices.append(slice(None))
             else:
                 # Select specific index
-                val = vals[d]
+                val = vals[dim_name]
                 slices.append(slice(val, val + 1))
 
         # Reverse since z is the first axis in napari
@@ -115,7 +132,7 @@ class SliceWidget(SingleAxesWidget):
         x, y = self._get_xy()
 
         self.axes.plot(x, y)
-        self.axes.set_xlabel(self.current_dim)
+        self.axes.set_xlabel(self.current_dim_name)
         self.axes.set_title(self._layer.name)
         # Make sure all ticks lie on integer values
         self.axes.xaxis.set_major_locator(
