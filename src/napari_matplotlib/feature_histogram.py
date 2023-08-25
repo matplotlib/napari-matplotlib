@@ -64,9 +64,6 @@ class FeatureHistogramWidget(SingleAxesWidget):
 
         self.plot_column_name.setCurrentIndex(former_plot_column_index)
 
-    def clear(self) -> None:
-        self.axes.clear()
-
     def draw(self) -> None:
         """
         Clear the axes and histogram the currently selected feature.
