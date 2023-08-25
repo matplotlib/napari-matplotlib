@@ -3,7 +3,7 @@ from typing import Optional
 import numpy as np
 from qtpy.QtWidgets import QCheckBox, QComboBox, QLabel, QWidget
 
-from .base import SingleAxesWidget
+from napari_matplotlib.base import SingleAxesWidget
 
 __all__ = ["FeatureHistogramWidget"]
 
@@ -57,16 +57,16 @@ class FeatureHistogramWidget(SingleAxesWidget):
         Update the feature list pulldown as soon as the user changes the selected layer
         """
         selected_layer = self.layers[0]
-
-        former_plot_column_index = self.plot_column_name.currentIndex()
+        self.plot_column_name.currentIndex()
 
         if selected_layer is not None:
             features = selected_layer.features
             if features is not None:
                 self.plot_column_name.clear()
-                self.plot_column_name.addItems(list(features.keys()))
-
-        self.plot_column_name.setCurrentIndex(former_plot_column_index)
+                feats = list(features.keys())
+                print(f"Updating features list: {feats}")
+                self.plot_column_name.addItems(feats)
+                self.plot_column_name.setCurrentIndex(0)
 
     def draw(self) -> None:
         """
