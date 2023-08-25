@@ -13,7 +13,7 @@ def fig_to_array(fig: Figure) -> npt.NDArray[np.uint8]:
     with BytesIO() as io_buf:
         fig.savefig(io_buf, format="raw")
         io_buf.seek(0)
-        img_arr = np.reshape(
+        img_arr: npt.NDArray[np.uint8] = np.reshape(
             np.frombuffer(io_buf.getvalue(), dtype=np.uint8),
             newshape=(int(fig.bbox.bounds[3]), int(fig.bbox.bounds[2]), -1),
         )
