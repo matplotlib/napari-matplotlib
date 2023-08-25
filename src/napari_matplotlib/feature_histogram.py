@@ -1,7 +1,7 @@
 import numpy as np
 from qtpy.QtWidgets import QCheckBox, QComboBox, QLabel
 
-from .base import NapariMPLWidget
+from .base import SingleAxesWidget
 
 __all__ = ["FeatureHistogramWidget"]
 
@@ -10,7 +10,7 @@ import napari
 from .util import Interval
 
 
-class FeatureHistogramWidget(NapariMPLWidget):
+class FeatureHistogramWidget(SingleAxesWidget):
     """
     Display a histogram of the features stored in the currently selected layer.
     """
@@ -27,7 +27,6 @@ class FeatureHistogramWidget(NapariMPLWidget):
         self, napari_viewer: napari.viewer.Viewer, column_name: str = None
     ):
         super().__init__(napari_viewer)
-        self.axes = self.canvas.figure.subplots()
 
         # Feature selection
         self.layout().addWidget(QLabel("Feature:"))
@@ -46,10 +45,10 @@ class FeatureHistogramWidget(NapariMPLWidget):
         )
 
         # setup GUI
-        self.update_layers(None)
+        self._update_layers(None)
         self.update_available_columns()
 
-    def update_available_columns(self):
+    def update_available_columns(self) -> None:
         """
         Update the feature list pulldown as soon as the user changes the selected layer
         """
