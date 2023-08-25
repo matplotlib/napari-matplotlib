@@ -1,8 +1,7 @@
 import numpy as np
+from qtpy.QtWidgets import QCheckBox, QComboBox, QLabel
 
 from .base import NapariMPLWidget
-from qtpy.QtWidgets import QComboBox, QLabel, QCheckBox
-from qtpy.QtCore import QSize
 
 __all__ = ["FeatureHistogramWidget"]
 
@@ -17,9 +16,16 @@ class FeatureHistogramWidget(NapariMPLWidget):
     """
 
     n_layers_input = Interval(1, 1)
-    input_layer_types = (napari.layers.Image, napari.layers.Labels, napari.layers.Points, napari.layers.Surface)
+    input_layer_types = (
+        napari.layers.Image,
+        napari.layers.Labels,
+        napari.layers.Points,
+        napari.layers.Surface,
+    )
 
-    def __init__(self, napari_viewer: napari.viewer.Viewer, column_name: str = None):
+    def __init__(
+        self, napari_viewer: napari.viewer.Viewer, column_name: str = None
+    ):
         super().__init__(napari_viewer)
         self.axes = self.canvas.figure.subplots()
 
@@ -35,7 +41,9 @@ class FeatureHistogramWidget(NapariMPLWidget):
         self.layout().addWidget(self.logarithmic_plot)
 
         # listen to laer changed
-        napari_viewer.layers.selection.events.changed.connect(self.update_available_columns)
+        napari_viewer.layers.selection.events.changed.connect(
+            self.update_available_columns
+        )
 
         # setup GUI
         self.update_layers(None)
@@ -74,8 +82,10 @@ class FeatureHistogramWidget(NapariMPLWidget):
             data = layer.features[selected_column]
             bins = np.linspace(np.min(data), np.max(data), 100)
             self.clear()
-            self.axes.hist(data,
-                           bins=bins,
-                           label=layer.name + " / " + selected_column,
-                           log=self.logarithmic_plot.isChecked())
+            self.axes.hist(
+                data,
+                bins=bins,
+                label=layer.name + " / " + selected_column,
+                log=self.logarithmic_plot.isChecked(),
+            )
             self.axes.legend()
