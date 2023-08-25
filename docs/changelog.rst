@@ -1,7 +1,11 @@
 Changelog
 =========
-1.0.3
+1.1.0
 -----
+Additions
+~~~~~~~~~
+- Added a widget to draw a histogram of features.
+
 Changes
 ~~~~~~~
 - The slice widget is now limited to slicing along the x/y dimensions. Support
