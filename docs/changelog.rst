@@ -2,9 +2,17 @@ Changelog
 =========
 1.0.3
 -----
+Changes
+~~~~~~~
+- The slice widget is now limited to slicing along the x/y dimensions. Support
+  for slicing along z has been removed for now to make the code simpler.
+- The slice widget now uses a slider to select the slice value.
+
 Bug fixes
 ~~~~~~~~~
 - Fixed creating 1D slices of 2D images.
+- Removed the limitation that only the first 99 indices could be sliced using
+  the slice widget.
 
 1.0.2
 -----

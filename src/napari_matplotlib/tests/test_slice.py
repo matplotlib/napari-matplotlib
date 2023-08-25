@@ -37,3 +37,27 @@ def test_slice_2D(make_napari_viewer, astronaut_data):
     # Need to return a copy, as original figure is too eagerley garbage
     # collected by the widget
     return deepcopy(fig)
+
+
+def test_slice_axes(make_napari_viewer, astronaut_data):
+    viewer = make_napari_viewer()
+    viewer.theme = "light"
+
+    # Take first RGB channel
+    data = astronaut_data[0][:256, :, 0]
+    # Shape:
+    # x: 0 > 512
+    # y: 0 > 256
+    assert data.ndim == 2, data.shape
+    # Make sure data isn't square for later tests
+    assert data.shape[0] != data.shape[1]
+    viewer.add_image(data)
+
+    widget = SliceWidget(viewer)
+    assert widget._dim_names == ["y", "x"]
+    assert widget.current_dim_name == "x"
+    assert widget.slice_selector.value() == 0
+    assert widget.slice_selector.minimum() == 0
+    assert widget.slice_selector.maximum() == data.shape[0] - 1
+    # x/y are flipped in napari
+    assert widget._slice_width == data.shape[1]
