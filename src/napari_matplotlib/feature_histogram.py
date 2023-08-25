@@ -38,7 +38,6 @@ class FeatureHistogramWidget(NapariMPLWidget):
         napari_viewer.layers.selection.events.changed.connect(self.update_available_columns)
 
         # setup GUI
-        self.setMinimumSize(QSize(400, 400))
         self.update_layers(None)
         self.update_available_columns()
 
