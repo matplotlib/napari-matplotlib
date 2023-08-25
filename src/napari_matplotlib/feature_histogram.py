@@ -1,5 +1,7 @@
+from typing import Optional
+
 import numpy as np
-from qtpy.QtWidgets import QCheckBox, QComboBox, QLabel
+from qtpy.QtWidgets import QCheckBox, QComboBox, QLabel, QWidget
 
 from .base import SingleAxesWidget
 
@@ -24,7 +26,9 @@ class FeatureHistogramWidget(SingleAxesWidget):
     )
 
     def __init__(
-        self, napari_viewer: napari.viewer.Viewer, column_name: str = None
+        self,
+        napari_viewer: napari.viewer.Viewer,
+        parent: Optional[QWidget] = None,
     ):
         super().__init__(napari_viewer)
 
