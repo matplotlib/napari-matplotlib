@@ -1,86 +1,63 @@
-from typing import List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, Union
 
-import matplotlib.colors as mcolor
 import napari
-import numpy as np
-from magicgui import magicgui
-from magicgui.widgets import ComboBox
+import numpy.typing as npt
+from qtpy.QtWidgets import QComboBox, QLabel, QVBoxLayout, QWidget
 
-from .base import NapariMPLWidget
+from .base import SingleAxesWidget
 from .util import Interval
 
-__all__ = ["ScatterWidget", "FeaturesScatterWidget"]
+__all__ = ["ScatterBaseWidget", "ScatterWidget", "FeaturesScatterWidget"]
 
 
-class ScatterBaseWidget(NapariMPLWidget):
-    # opacity value for the markers
-    _marker_alpha = 0.5
-
-    # flag set to True if histogram should be used
-    # for plotting large points
-    _histogram_for_large_data = True
+class ScatterBaseWidget(SingleAxesWidget):
+    """
+    Base class for widgets that scatter two datasets against each other.
+    """
 
     # if the number of points is greater than this value,
-    # the scatter is plotted as a 2dhist
+    # the scatter is plotted as a 2D histogram
     _threshold_to_switch_to_histogram = 500
-
-    def __init__(self, napari_viewer: napari.viewer.Viewer):
-        super().__init__(napari_viewer)
-
-        self.axes = self.canvas.figure.subplots()
-        self.update_layers(None)
-
-    def clear(self) -> None:
-        """
-        Clear the axes.
-        """
-        self.axes.clear()
 
     def draw(self) -> None:
         """
         Scatter the currently selected layers.
         """
-        data, x_axis_name, y_axis_name = self._get_data()
-
-        if len(data) == 0:
-            # don't plot if there isn't data
+        if len(self.layers) == 0:
             return
+        x, y, x_axis_name, y_axis_name = self._get_data()
 
-        if self._histogram_for_large_data and (
-            data[0].size > self._threshold_to_switch_to_histogram
-        ):
+        if x.size > self._threshold_to_switch_to_histogram:
             self.axes.hist2d(
-                data[0].ravel(),
-                data[1].ravel(),
+                x.ravel(),
+                y.ravel(),
                 bins=100,
-                norm=mcolor.LogNorm(),
             )
         else:
-            self.axes.scatter(data[0], data[1], alpha=self._marker_alpha)
+            self.axes.scatter(x, y, alpha=0.5)
 
         self.axes.set_xlabel(x_axis_name)
         self.axes.set_ylabel(y_axis_name)
 
-    def _get_data(self) -> Tuple[List[np.ndarray], str, str]:
-        """Get the plot data.
+    def _get_data(self) -> Tuple[npt.NDArray[Any], npt.NDArray[Any], str, str]:
+        """
+        Get the plot data.
 
         This must be implemented on the subclass.
 
         Returns
         -------
-        data : np.ndarray
-            The list containing the scatter plot data.
-        x_axis_name : str
-            The label to display on the x axis
-        y_axis_name: str
-            The label to display on the y axis
+        x, y : np.ndarray
+            x and y values of plot data.
+        x_axis_name, y_axis_name : str
+            Label to display on the x/y axis
         """
         raise NotImplementedError
 
 
 class ScatterWidget(ScatterBaseWidget):
     """
-    Widget to display scatter plot of two similarly shaped image layers.
+    Scatter data in two similarly shaped layers.
 
     If there are more than 500 data points, a 2D histogram is displayed instead
     of a scatter plot, to avoid too many scatter points.
@@ -89,8 +66,9 @@ class ScatterWidget(ScatterBaseWidget):
     n_layers_input = Interval(2, 2)
     input_layer_types = (napari.layers.Image,)
 
-    def _get_data(self) -> Tuple[List[np.ndarray], str, str]:
-        """Get the plot data.
+    def _get_data(self) -> Tuple[npt.NDArray[Any], npt.NDArray[Any], str, str]:
+        """
+        Get the plot data.
 
         Returns
         -------
@@ -101,14 +79,19 @@ class ScatterWidget(ScatterBaseWidget):
         y_axis_name: str
             The title to display on the y axis
         """
-        data = [layer.data[self.current_z] for layer in self.layers]
+        x = self.layers[0].data[self.current_z]
+        y = self.layers[1].data[self.current_z]
         x_axis_name = self.layers[0].name
         y_axis_name = self.layers[1].name
 
-        return data, x_axis_name, y_axis_name
+        return x, y, x_axis_name, y_axis_name
 
 
 class FeaturesScatterWidget(ScatterBaseWidget):
+    """
+    Widget to scatter data stored in two layer feature attributes.
+    """
+
     n_layers_input = Interval(1, 1)
     # All layers that have a .features attributes
     input_layer_types = (
@@ -119,46 +102,57 @@ class FeaturesScatterWidget(ScatterBaseWidget):
         napari.layers.Vectors,
     )
 
-    def __init__(self, napari_viewer: napari.viewer.Viewer):
-        super().__init__(napari_viewer)
-        self._key_selection_widget = magicgui(
-            self._set_axis_keys,
-            x_axis_key={"choices": self._get_valid_axis_keys},
-            y_axis_key={"choices": self._get_valid_axis_keys},
-            call_button="plot",
-        )
+    def __init__(
+        self,
+        napari_viewer: napari.viewer.Viewer,
+        parent: Optional[QWidget] = None,
+    ):
+        super().__init__(napari_viewer, parent=parent)
 
-        self.layout().addWidget(self._key_selection_widget.native)
+        self.layout().addLayout(QVBoxLayout())
+
+        self._selectors: Dict[str, QComboBox] = {}
+        for dim in ["x", "y"]:
+            self._selectors[dim] = QComboBox()
+            # Re-draw when combo boxes are updated
+            self._selectors[dim].currentTextChanged.connect(self._draw)
+
+            self.layout().addWidget(QLabel(f"{dim}-axis:"))
+            self.layout().addWidget(self._selectors[dim])
+
+        self._update_layers(None)
 
     @property
-    def x_axis_key(self) -> Optional[str]:
-        """Key to access x axis data from the FeaturesTable"""
-        return self._x_axis_key
+    def x_axis_key(self) -> Union[str, None]:
+        """
+        Key for the x-axis data.
+        """
+        if self._selectors["x"].count() == 0:
+            return None
+        else:
+            return self._selectors["x"].currentText()
 
     @x_axis_key.setter
-    def x_axis_key(self, key: Optional[str]) -> None:
-        self._x_axis_key = key
+    def x_axis_key(self, key: str) -> None:
+        self._selectors["x"].setCurrentText(key)
         self._draw()
 
     @property
-    def y_axis_key(self) -> Optional[str]:
-        """Key to access y axis data from the FeaturesTable"""
-        return self._y_axis_key
+    def y_axis_key(self) -> Union[str, None]:
+        """
+        Key for the y-axis data.
+        """
+        if self._selectors["y"].count() == 0:
+            return None
+        else:
+            return self._selectors["y"].currentText()
 
     @y_axis_key.setter
-    def y_axis_key(self, key: Optional[str]) -> None:
-        self._y_axis_key = key
+    def y_axis_key(self, key: str) -> None:
+        self._selectors["y"].setCurrentText(key)
         self._draw()
 
-    def _set_axis_keys(self, x_axis_key: str, y_axis_key: str) -> None:
-        """Set both axis keys and then redraw the plot"""
-        self._x_axis_key = x_axis_key
-        self._y_axis_key = y_axis_key
-        self._draw()
-
-    def _get_valid_axis_keys(
-        self, combo_widget: Optional[ComboBox] = None
-    ) -> List[str]:
+    def _get_valid_axis_keys(self) -> List[str]:
         """
         Get the valid axis keys from the layer FeatureTable.
 
@@ -173,8 +167,34 @@ class FeaturesScatterWidget(ScatterBaseWidget):
         else:
             return self.layers[0].features.keys()
 
-    def _get_data(self) -> Tuple[List[np.ndarray], str, str]:
-        """Get the plot data.
+    def _ready_to_scatter(self) -> bool:
+        """
+        Return True if selected layer has a feature table we can scatter with,
+        and the two columns to be scatterd have been selected.
+        """
+        if not hasattr(self.layers[0], "features"):
+            return False
+
+        feature_table = self.layers[0].features
+        valid_keys = self._get_valid_axis_keys()
+        return (
+            feature_table is not None
+            and len(feature_table) > 0
+            and self.x_axis_key in valid_keys
+            and self.y_axis_key in valid_keys
+        )
+
+    def draw(self) -> None:
+        """
+        Scatter two features from the currently selected layer.
+        """
+        if self._ready_to_scatter():
+            super().draw()
+
+    def _get_data(self) -> Tuple[npt.NDArray[Any], npt.NDArray[Any], str, str]:
+        """
+        Get the plot data from the ``features`` attribute of the first
+        selected layer.
 
         Returns
         -------
@@ -188,37 +208,23 @@ class FeaturesScatterWidget(ScatterBaseWidget):
             The title to display on the y axis. Returns
             an empty string if nothing to plot.
         """
-        if not hasattr(self.layers[0], "features"):
-            # if the selected layer doesn't have a featuretable,
-            # skip draw
-            return [], "", ""
-
         feature_table = self.layers[0].features
 
-        if (
-            (len(feature_table) == 0)
-            or (self.x_axis_key is None)
-            or (self.y_axis_key is None)
-        ):
-            return [], "", ""
+        x = feature_table[self.x_axis_key]
+        y = feature_table[self.y_axis_key]
 
-        data_x = feature_table[self.x_axis_key]
-        data_y = feature_table[self.y_axis_key]
-        data = [data_x, data_y]
+        x_axis_name = str(self.x_axis_key)
+        y_axis_name = str(self.y_axis_key)
 
-        x_axis_name = self.x_axis_key.replace("_", " ")
-        y_axis_name = self.y_axis_key.replace("_", " ")
+        return x, y, x_axis_name, y_axis_name
 
-        return data, x_axis_name, y_axis_name
-
-    def _on_update_layers(self) -> None:
+    def on_update_layers(self) -> None:
         """
-        This is called when the layer selection changes by
-        ``self.update_layers()``.
+        Called when the layer selection changes by ``self.update_layers()``.
         """
-        if hasattr(self, "_key_selection_widget"):
-            self._key_selection_widget.reset_choices()
-
-        # reset the axis keys
-        self._x_axis_key = None
-        self._y_axis_key = None
+        # Clear combobox
+        for dim in ["x", "y"]:
+            while self._selectors[dim].count() > 0:
+                self._selectors[dim].removeItem(0)
+            # Add keys for newly selected layer
+            self._selectors[dim].addItems(self._get_valid_axis_keys())

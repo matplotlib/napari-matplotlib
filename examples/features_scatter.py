@@ -1,9 +1,15 @@
+"""
+Scattering features
+===================
+"""
+
 import napari
 import numpy as np
+import numpy.typing as npt
 from skimage.measure import regionprops_table
 
 # make a test label image
-label_image = np.zeros((100, 100), dtype=np.uint16)
+label_image: npt.NDArray[np.uint16] = np.zeros((100, 100), dtype=np.uint16)
 
 label_image[10:20, 10:20] = 1
 label_image[50:70, 50:70] = 2

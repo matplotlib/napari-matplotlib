@@ -1,19 +1,25 @@
-from typing import Dict, Tuple
+from typing import Any, List, Optional, Tuple
 
+import matplotlib.ticker as mticker
 import napari
 import numpy as np
-from qtpy.QtWidgets import QComboBox, QHBoxLayout, QLabel, QSpinBox
+import numpy.typing as npt
+from qtpy.QtCore import Qt
+from qtpy.QtWidgets import (
+    QComboBox,
+    QLabel,
+    QSlider,
+    QVBoxLayout,
+    QWidget,
+)
 
-from .base import NapariMPLWidget
+from .base import SingleAxesWidget
 from .util import Interval
 
 __all__ = ["SliceWidget"]
 
-_dims_sel = ["x", "y"]
-_dims = ["x", "y", "z"]
 
-
-class SliceWidget(NapariMPLWidget):
+class SliceWidget(SingleAxesWidget):
     """
     Plot a 1D slice along a given dimension.
     """
@@ -21,39 +27,63 @@ class SliceWidget(NapariMPLWidget):
     n_layers_input = Interval(1, 1)
     input_layer_types = (napari.layers.Image,)
 
-    def __init__(self, napari_viewer: napari.viewer.Viewer):
+    def __init__(
+        self,
+        napari_viewer: napari.viewer.Viewer,
+        parent: Optional[QWidget] = None,
+    ):
         # Setup figure/axes
-        super().__init__(napari_viewer)
-        self.axes = self.canvas.figure.subplots()
-
-        button_layout = QHBoxLayout()
-        self.layout().addLayout(button_layout)
+        super().__init__(napari_viewer, parent=parent)
 
         self.dim_selector = QComboBox()
+        self.dim_selector.addItems(["x", "y"])
+
+        self.slice_selector = QSlider(orientation=Qt.Orientation.Horizontal)
+
+        # Create widget layout
+        button_layout = QVBoxLayout()
         button_layout.addWidget(QLabel("Slice axis:"))
         button_layout.addWidget(self.dim_selector)
-        self.dim_selector.addItems(_dims)
-
-        self.slice_selectors = {}
-        for d in _dims_sel:
-            self.slice_selectors[d] = QSpinBox()
-            button_layout.addWidget(QLabel(f"{d}:"))
-            button_layout.addWidget(self.slice_selectors[d])
+        button_layout.addWidget(self.slice_selector)
+        self.layout().addLayout(button_layout)
 
         # Setup callbacks
-        # Re-draw when any of the combon/spin boxes are updated
+        # Re-draw when any of the combo/slider is updated
         self.dim_selector.currentTextChanged.connect(self._draw)
-        for d in _dims_sel:
-            self.slice_selectors[d].textChanged.connect(self._draw)
+        self.slice_selector.valueChanged.connect(self._draw)
 
-        self.update_layers(None)
+        self._update_layers(None)
+
+    def on_update_layers(self) -> None:
+        """
+        Called when layer selection is updated.
+        """
+        if not len(self.layers):
+            return
+        if self.current_dim_name == "x":
+            max = self._layer.data.shape[-2]
+        elif self.current_dim_name == "y":
+            max = self._layer.data.shape[-1]
+        else:
+            raise RuntimeError("dim name must be x or y")
+        self.slice_selector.setRange(0, max - 1)
 
     @property
-    def layer(self):
+    def _slice_width(self) -> int:
+        """
+        Width of the slice being plotted.
+        """
+        return self._layer.data.shape[self.current_dim_index]
+
+    @property
+    def _layer(self) -> napari.layers.Layer:
+        """
+        Layer being plotted.
+        """
         return self.layers[0]
 
     @property
-    def current_dim(self) -> str:
+    def current_dim_name(self) -> str:
         """
         Currently selected slice dimension.
         """
@@ -66,55 +96,54 @@ class SliceWidget(NapariMPLWidget):
         """
         # Note the reversed list because in napari the z-axis is the first
         # numpy axis
-        return _dims[::-1].index(self.current_dim)
+        return self._dim_names.index(self.current_dim_name)
 
     @property
-    def selector_values(self) -> Dict[str, int]:
-        return {d: self.slice_selectors[d].value() for d in _dims_sel}
-
-    def update_slice_selectors(self) -> None:
+    def _dim_names(self) -> List[str]:
         """
-        Update range and enabled status of the slice selectors, and the value
-        of the z slice selector.
+        List of dimension names. This is a property as it varies depending on the
+        dimensionality of the currently selected data.
         """
-        # Update min/max
-        for i, dim in enumerate(_dims_sel):
-            self.slice_selectors[dim].setRange(0, self.layer.data.shape[i])
+        if self._layer.data.ndim == 2:
+            return ["y", "x"]
+        elif self._layer.data.ndim == 3:
+            return ["z", "y", "x"]
+        else:
+            raise RuntimeError("Don't know how to handle ndim != 2 or 3")
 
-    def get_xy(self) -> Tuple[np.ndarray, np.ndarray]:
+    def _get_xy(self) -> Tuple[npt.NDArray[Any], npt.NDArray[Any]]:
         """
         Get data for plotting.
         """
-        x = np.arange(self.layer.data.shape[self.current_dim_index])
-
-        vals = self.selector_values
-        vals.update({"z": self.current_z})
+        val = self.slice_selector.value()
 
         slices = []
-        for d in _dims:
-            if d == self.current_dim:
+        for dim_name in self._dim_names:
+            if dim_name == self.current_dim_name:
                 # Select all data along this axis
                 slices.append(slice(None))
+            elif dim_name == "z":
+                # Only select the currently viewed z-index
+                slices.append(slice(self.current_z, self.current_z + 1))
             else:
                 # Select specific index
-                val = vals[d]
                 slices.append(slice(val, val + 1))
 
-        # Reverse since z is the first axis in napari
-        slices = slices[::-1]
-        y = self.layer.data[tuple(slices)].ravel()
+        x = np.arange(self._slice_width)
+        y = self._layer.data[tuple(slices)].ravel()
 
         return x, y
-
-    def clear(self) -> None:
-        self.axes.cla()
 
     def draw(self) -> None:
         """
         Clear axes and draw a 1D plot.
         """
-        x, y = self.get_xy()
+        x, y = self._get_xy()
 
         self.axes.plot(x, y)
-        self.axes.set_xlabel(self.current_dim)
-        self.axes.set_title(self.layer.name)
+        self.axes.set_xlabel(self.current_dim_name)
+        self.axes.set_title(self._layer.name)
+        # Make sure all ticks lie on integer values
+        self.axes.xaxis.set_major_locator(
+            mticker.MaxNLocator(steps=[1, 2, 5, 10], integer=True)
+        )

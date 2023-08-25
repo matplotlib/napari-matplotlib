@@ -1,26 +1,42 @@
+from copy import deepcopy
+from typing import Any, Dict, Tuple
+
 import numpy as np
+import numpy.typing as npt
+import pytest
 
-from napari_matplotlib import FeaturesScatterWidget, ScatterWidget
+from napari_matplotlib import FeaturesScatterWidget
 
 
-def test_scatter(make_napari_viewer):
-    # Smoke test adding a scatter widget
+@pytest.mark.mpl_image_compare
+def test_features_scatter_widget_2D(
+    make_napari_viewer, points_with_features_data
+):
     viewer = make_napari_viewer()
-    viewer.add_image(np.random.random((100, 100)))
-    viewer.add_image(np.random.random((100, 100)))
-    ScatterWidget(viewer)
+    viewer.theme = "light"
+    widget = FeaturesScatterWidget(viewer)
+
+    viewer.add_points(
+        points_with_features_data[0], **points_with_features_data[1]
+    )
+    assert len(viewer.layers) == 1
+    # De-select existing selection
+    viewer.layers.selection.clear()
+
+    # Select points data and chosen features
+    viewer.layers.selection.add(viewer.layers[0])  # images need to be selected
+    widget.x_axis_key = "feature_0"
+    widget.y_axis_key = "feature_1"
+
+    fig = widget.figure
+
+    return deepcopy(fig)
 
 
-def test_features_scatter_widget(make_napari_viewer):
-    # Smoke test adding a features scatter widget
-    viewer = make_napari_viewer()
-    viewer.add_image(np.random.random((100, 100)))
-    viewer.add_labels(np.random.randint(0, 5, (100, 100)))
-    FeaturesScatterWidget(viewer)
-
-
-def make_labels_layer_with_features():
-    label_image = np.zeros((100, 100), dtype=np.uint16)
+def make_labels_layer_with_features() -> (
+    Tuple[npt.NDArray[np.uint16], Dict[str, Any]]
+):
+    label_image: npt.NDArray[np.uint16] = np.zeros((100, 100), dtype=np.uint16)
     for label_value, start_index in enumerate([10, 30, 50], start=1):
         end_index = start_index + 10
         label_image[start_index:end_index, start_index:end_index] = label_value
@@ -34,7 +50,9 @@ def make_labels_layer_with_features():
 
 
 def test_features_scatter_get_data(make_napari_viewer):
-    """test the get data method"""
+    """
+    Test the get data method.
+    """
     # make the label image
     label_image, feature_table = make_labels_layer_with_features()
 
@@ -50,17 +68,16 @@ def test_features_scatter_get_data(make_napari_viewer):
     y_column = "feature_2"
     scatter_widget.y_axis_key = y_column
 
-    data, x_axis_name, y_axis_name = scatter_widget._get_data()
-    np.testing.assert_allclose(
-        data, np.stack((feature_table[x_column], feature_table[y_column]))
-    )
-    assert x_axis_name == x_column.replace("_", " ")
-    assert y_axis_name == y_column.replace("_", " ")
+    x, y, x_axis_name, y_axis_name = scatter_widget._get_data()
+    np.testing.assert_allclose(x, feature_table[x_column])
+    np.testing.assert_allclose(y, np.stack(feature_table[y_column]))
+    assert x_axis_name == x_column
+    assert y_axis_name == y_column
 
 
 def test_get_valid_axis_keys(make_napari_viewer):
-    """test the values returned from
-    FeaturesScatterWidget._get_valid_keys() when there
+    """
+    Test the values returned from _get_valid_keys() when there
     are valid keys.
     """
     # make the label image
@@ -76,7 +93,7 @@ def test_get_valid_axis_keys(make_napari_viewer):
 
 
 def test_get_valid_axis_keys_no_valid_keys(make_napari_viewer):
-    """test the values returned from
+    """Test the values returned from
     FeaturesScatterWidget._get_valid_keys() when there
     are not valid keys.
     """
