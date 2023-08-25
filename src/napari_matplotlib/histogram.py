@@ -122,7 +122,7 @@ class FeaturesHistogramWidget(SingleAxesWidget):
         else:
             return self.layers[0].features.keys()
 
-    def _get_data(self) -> Tuple[npt.NDArray[Any], str]:
+    def _get_data(self) -> Tuple[Optional[npt.NDArray[Any]], str]:
         """Get the plot data.
 
         Returns
@@ -137,12 +137,12 @@ class FeaturesHistogramWidget(SingleAxesWidget):
         if not hasattr(self.layers[0], "features"):
             # if the selected layer doesn't have a featuretable,
             # skip draw
-            return [], ""
+            return None, ""
 
         feature_table = self.layers[0].features
 
         if (len(feature_table) == 0) or (self.x_axis_key is None):
-            return [], ""
+            return None, ""
 
         data = feature_table[self.x_axis_key]
         x_axis_name = self.x_axis_key.replace("_", " ")
@@ -164,7 +164,7 @@ class FeaturesHistogramWidget(SingleAxesWidget):
         """Clear the axes and histogram the currently selected layer/slice."""
         data, x_axis_name = self._get_data()
 
-        if len(data) == 0:
+        if data is None:
             return
 
         self.axes.hist(data, bins=50, edgecolor="white", linewidth=0.3)

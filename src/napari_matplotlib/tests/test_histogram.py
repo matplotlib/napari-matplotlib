@@ -1,5 +1,6 @@
 from copy import deepcopy
 
+import numpy as np
 import pytest
 
 from napari_matplotlib import FeaturesHistogramWidget, HistogramWidget
@@ -35,8 +36,6 @@ def test_histogram_3D(make_napari_viewer, brain_data):
 
 
 def test_feature_histogram(make_napari_viewer):
-    import numpy as np
-
     n_points = 1000
     random_points = np.random.random((n_points, 3)) * 10
     feature1 = np.random.random(n_points)
@@ -72,7 +71,8 @@ def test_feature_histogram(make_napari_viewer):
 
 @pytest.mark.mpl_image_compare
 def test_feature_histogram2(make_napari_viewer):
-    import numpy as np    
+    import numpy as np
+
     np.random.seed(0)
     n_points = 1000
     random_points = np.random.random((n_points, 3)) * 10
