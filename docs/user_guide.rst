@@ -30,6 +30,7 @@ These widgets plot the data stored in the ``.features`` attribute of individual 
 Currently available are:
 
 - 2D scatter plots of two features against each other.
+- Histograms of individual features.
 
 To use these:
 
