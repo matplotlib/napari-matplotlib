@@ -14,6 +14,10 @@ contributions:
       python_name: napari_matplotlib:FeaturesScatterWidget
       title: Make a scatter plot of layer features
 
+    - id: napari-matplotlib.features_histogram
+      python_name: napari_matplotlib:FeaturesHistogramWidget
+      title: Plot feature histograms
+
     - id: napari-matplotlib.slice
       python_name: napari_matplotlib:SliceWidget
       title: Plot a 1D slice
@@ -27,6 +31,9 @@ contributions:
 
     - command: napari-matplotlib.features_scatter
       display_name: FeaturesScatter
+
+    - command: napari-matplotlib.features_histogram
+      display_name: FeaturesHistogram
 
     - command: napari-matplotlib.slice
       display_name: 1D slice
