@@ -131,6 +131,15 @@ class BaseNapariMPLWidget(QWidget):
         else:
             return icon_root / "white"
 
+    def setCustomToolbar(self, toolbar):
+        layout = self.layout()
+        # Remove the current toolbar from the layout
+        layout.removeWidget(self.toolbar)
+        self.toolbar.deleteLater()  # Delete the old toolbar
+        # Add the new custom toolbar to the layout at the same place
+        layout.insertWidget(1, toolbar)
+        self.toolbar = toolbar
+
     def _replace_toolbar_icons(self) -> None:
         """
         Modifies toolbar icons to match the napari theme, and add some tooltips.
