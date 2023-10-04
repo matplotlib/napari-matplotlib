@@ -138,9 +138,3 @@ def test_change_layer(make_napari_viewer, brain_data, astronaut_data):
     viewer.layers.selection.clear()
     viewer.layers.selection.add(viewer.layers[1])
     assert_figures_not_equal(widget.figure, fig1)
-
-
-if __name__ == "__main__":
-    import napari
-
-    test_feature_histogram_points(napari.Viewer)
