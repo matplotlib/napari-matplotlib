@@ -166,13 +166,13 @@ class FeaturesHistogramWidget(SingleAxesWidget):
         # get the colormap from the layer depending on its type
         if isinstance(self.layers[0], napari.layers.Points):
             colormap = self.layers[0].face_colormap
-            self.viewer.layers[0].face_color = self.x_axis_key
+            self.layers[0].face_color = self.x_axis_key
         elif isinstance(self.layers[0], napari.layers.Vectors):
             colormap = self.layers[0].edge_colormap
-            self.viewer.layers[0].edge_color = self.x_axis_key
+            self.layers[0].edge_color = self.x_axis_key
         elif isinstance(self.layers[0], napari.layers.Labels):
             colormap = self.layers[0].colormap
-            self.viewer.layers[0].color = self.x_axis_key
+            self.layers[0].color = self.x_axis_key
         else:
             colormap = None
         self.viewer.layers[self.layers[0].name].refresh_colors(True)
