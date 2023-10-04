@@ -170,9 +170,6 @@ class FeaturesHistogramWidget(SingleAxesWidget):
         elif isinstance(self.layers[0], napari.layers.Vectors):
             colormap = self.layers[0].edge_colormap
             self.layers[0].edge_color = self.x_axis_key
-        elif isinstance(self.layers[0], napari.layers.Labels):
-            colormap = self.layers[0].colormap
-            self.layers[0].color = self.x_axis_key
         else:
             colormap = None
 
