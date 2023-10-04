@@ -175,8 +175,11 @@ class FeaturesHistogramWidget(SingleAxesWidget):
             self.layers[0].color = self.x_axis_key
         else:
             colormap = None
+
+        # apply new colors to the layer
         self.viewer.layers[self.layers[0].name].refresh_colors(True)
-        
+        self.viewer.layers[self.layers[0].name].refresh()
+
         # Draw the histogram
         data, x_axis_name = self._get_data()
 
