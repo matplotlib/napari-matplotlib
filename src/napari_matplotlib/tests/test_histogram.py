@@ -36,7 +36,6 @@ def test_histogram_3D(make_napari_viewer, brain_data):
 
 
 def test_feature_histogram(make_napari_viewer):
-
     n_points = 1000
     random_points = np.random.random((n_points, 3)) * 10
     random_directions = np.random.random((n_points, 3)) * 10
@@ -74,7 +73,6 @@ def test_feature_histogram(make_napari_viewer):
 
 @pytest.mark.mpl_image_compare
 def test_feature_histogram_vectors(make_napari_viewer):
-
     n_points = 1000
     np.random.seed(42)
     random_points = np.random.random((n_points, 3)) * 10
@@ -99,7 +97,6 @@ def test_feature_histogram_vectors(make_napari_viewer):
 
 @pytest.mark.mpl_image_compare
 def test_feature_histogram_points(make_napari_viewer):
-
     np.random.seed(0)
     n_points = 1000
     random_points = np.random.random((n_points, 3)) * 10
@@ -143,6 +140,7 @@ def test_change_layer(make_napari_viewer, brain_data, astronaut_data):
     assert_figures_not_equal(widget.figure, fig1)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import napari
+
     test_feature_histogram_points(napari.Viewer)
