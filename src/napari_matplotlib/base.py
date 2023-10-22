@@ -5,8 +5,8 @@ from typing import Optional
 import matplotlib
 import matplotlib.style as mplstyle
 import napari
-from matplotlib.backends.backend_qtagg import (
-    FigureCanvas,
+from matplotlib.backends.backend_qtagg import (  # type: ignore[attr-defined]
+    FigureCanvasQTAgg,
     NavigationToolbar2QT,
 )
 from matplotlib.figure import Figure
@@ -49,12 +49,10 @@ class BaseNapariMPLWidget(QWidget):
 
         # Sets figure.* style
         with mplstyle.context(self.mpl_style_sheet_path):
-            self.canvas = FigureCanvas()
+            self.canvas = FigureCanvasQTAgg()  # type: ignore[no-untyped-call]
 
         self.canvas.figure.set_layout_engine("constrained")
-        self.toolbar = NapariNavigationToolbar(
-            self.canvas, parent=self
-        )  # type: ignore[no-untyped-call]
+        self.toolbar = NapariNavigationToolbar(self.canvas, parent=self)
         self._replace_toolbar_icons()
         # callback to update when napari theme changed
         # TODO: this isn't working completely (see issue #140)
@@ -260,7 +258,7 @@ class NapariMPLWidget(BaseNapariMPLWidget):
             isinstance(layer, self.input_layer_types) for layer in self.layers
         ):
             self.draw()
-        self.canvas.draw()
+        self.canvas.draw()  # type: ignore[no-untyped-call]
 
     def clear(self) -> None:
         """
@@ -309,8 +307,8 @@ class SingleAxesWidget(NapariMPLWidget):
 class NapariNavigationToolbar(NavigationToolbar2QT):
     """Custom Toolbar style for Napari."""
 
-    def __init__(self, *args, **kwargs):  # type: ignore[no-untyped-def]
-        super().__init__(*args, **kwargs)
+    def __init__(self, *args, **kwargs) -> None:  # type: ignore[no-untyped-def]
+        super().__init__(*args, **kwargs)  # type: ignore[no-untyped-call]
         self.setIconSize(
             from_napari_css_get_size_of(
                 "QtViewerPushButton", fallback=(28, 28)
@@ -319,7 +317,7 @@ class NapariNavigationToolbar(NavigationToolbar2QT):
 
     def _update_buttons_checked(self) -> None:
         """Update toggle tool icons when selected/unselected."""
-        super()._update_buttons_checked()
+        super()._update_buttons_checked()  # type: ignore[no-untyped-call]
         icon_dir = self.parentWidget()._get_path_to_icon()
 
         # changes pan/zoom icons depending on state (checked or not)
