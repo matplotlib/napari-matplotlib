@@ -97,7 +97,7 @@ class BaseNapariMPLWidget(QWidget):
         # Sets axes.* style.
         # Does not set any text styling set by axes.* keys
         with mplstyle.context(self.mpl_style_sheet_path):
-            self.axes = self.figure.subplots()
+            self.axes = self.figure.add_subplot()
 
     def _on_napari_theme_changed(self) -> None:
         """
