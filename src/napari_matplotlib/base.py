@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from typing import List, Optional, Tuple
+from typing import Optional
 
 import matplotlib
 import matplotlib.style as mplstyle
@@ -184,7 +184,7 @@ class NapariMPLWidget(BaseNapariMPLWidget):
     #: Number of layers taken as input
     n_layers_input = Interval(None, None)
     #: Type of layer taken as input
-    input_layer_types: Tuple[napari.layers.Layer, ...] = (napari.layers.Layer,)
+    input_layer_types: tuple[napari.layers.Layer, ...] = (napari.layers.Layer,)
 
     def __init__(
         self,
@@ -193,7 +193,7 @@ class NapariMPLWidget(BaseNapariMPLWidget):
     ):
         super().__init__(napari_viewer=napari_viewer, parent=parent)
         self._setup_callbacks()
-        self.layers: List[napari.layers.Layer] = []
+        self.layers: list[napari.layers.Layer] = []
 
         helper_text = self.n_layers_input._helper_text
         if helper_text is not None:

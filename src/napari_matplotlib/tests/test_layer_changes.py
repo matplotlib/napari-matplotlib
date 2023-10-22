@@ -1,5 +1,5 @@
 from copy import deepcopy
-from typing import Any, Dict, Tuple, Type
+from typing import Any
 
 import numpy as np
 import numpy.typing as npt
@@ -61,8 +61,8 @@ def test_change_features_layer(
 
 def assert_features_plot_changes(
     viewer: Viewer,
-    widget_cls: Type[NapariMPLWidget],
-    data: Tuple[npt.NDArray[np.generic], Dict[str, Any]],
+    widget_cls: type[NapariMPLWidget],
+    data: tuple[npt.NDArray[np.generic], dict[str, Any]],
 ) -> None:
     """
     When the selected layer is changed, make sure the plot generated
