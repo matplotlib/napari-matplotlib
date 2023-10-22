@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Optional, Union
 
 import napari
 import numpy.typing as npt
@@ -40,7 +40,7 @@ class ScatterBaseWidget(SingleAxesWidget):
         self.axes.set_xlabel(x_axis_name)
         self.axes.set_ylabel(y_axis_name)
 
-    def _get_data(self) -> Tuple[npt.NDArray[Any], npt.NDArray[Any], str, str]:
+    def _get_data(self) -> tuple[npt.NDArray[Any], npt.NDArray[Any], str, str]:
         """
         Get the plot data.
 
@@ -67,7 +67,7 @@ class ScatterWidget(ScatterBaseWidget):
     n_layers_input = Interval(2, 2)
     input_layer_types = (napari.layers.Image,)
 
-    def _get_data(self) -> Tuple[npt.NDArray[Any], npt.NDArray[Any], str, str]:
+    def _get_data(self) -> tuple[npt.NDArray[Any], npt.NDArray[Any], str, str]:
         """
         Get the plot data.
 
@@ -106,7 +106,7 @@ class FeaturesScatterWidget(ScatterBaseWidget):
 
         self.layout().addLayout(QVBoxLayout())
 
-        self._selectors: Dict[str, QComboBox] = {}
+        self._selectors: dict[str, QComboBox] = {}
         for dim in ["x", "y"]:
             self._selectors[dim] = QComboBox()
             # Re-draw when combo boxes are updated
@@ -147,7 +147,7 @@ class FeaturesScatterWidget(ScatterBaseWidget):
         self._selectors["y"].setCurrentText(key)
         self._draw()
 
-    def _get_valid_axis_keys(self) -> List[str]:
+    def _get_valid_axis_keys(self) -> list[str]:
         """
         Get the valid axis keys from the layer FeatureTable.
 
@@ -186,7 +186,7 @@ class FeaturesScatterWidget(ScatterBaseWidget):
         if self._ready_to_scatter():
             super().draw()
 
-    def _get_data(self) -> Tuple[npt.NDArray[Any], npt.NDArray[Any], str, str]:
+    def _get_data(self) -> tuple[npt.NDArray[Any], npt.NDArray[Any], str, str]:
         """
         Get the plot data from the ``features`` attribute of the first
         selected layer.

@@ -1,4 +1,4 @@
-from typing import Any, List, Optional, Tuple
+from typing import Any, Optional
 
 import matplotlib.ticker as mticker
 import napari
@@ -99,7 +99,7 @@ class SliceWidget(SingleAxesWidget):
         return self._dim_names.index(self.current_dim_name)
 
     @property
-    def _dim_names(self) -> List[str]:
+    def _dim_names(self) -> list[str]:
         """
         List of dimension names. This is a property as it varies depending on the
         dimensionality of the currently selected data.
@@ -111,7 +111,7 @@ class SliceWidget(SingleAxesWidget):
         else:
             raise RuntimeError("Don't know how to handle ndim != 2 or 3")
 
-    def _get_xy(self) -> Tuple[npt.NDArray[Any], npt.NDArray[Any]]:
+    def _get_xy(self) -> tuple[npt.NDArray[Any], npt.NDArray[Any]]:
         """
         Get data for plotting.
         """

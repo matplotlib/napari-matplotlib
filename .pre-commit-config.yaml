@@ -20,7 +20,7 @@ repos:
     rev: v1.6.0
     hooks:
      - id: mypy
-       additional_dependencies: [numpy, matplotlib<3.8]
+       additional_dependencies: [numpy, matplotlib]
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
     # Ruff version.

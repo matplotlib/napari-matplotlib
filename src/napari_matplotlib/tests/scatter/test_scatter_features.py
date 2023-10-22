@@ -1,5 +1,5 @@
 from copy import deepcopy
-from typing import Any, Dict, Tuple
+from typing import Any
 
 import numpy as np
 import numpy.typing as npt
@@ -34,7 +34,7 @@ def test_features_scatter_widget_2D(
 
 
 def make_labels_layer_with_features() -> (
-    Tuple[npt.NDArray[np.uint16], Dict[str, Any]]
+    tuple[npt.NDArray[np.uint16], dict[str, Any]]
 ):
     label_image: npt.NDArray[np.uint16] = np.zeros((100, 100), dtype=np.uint16)
     for label_value, start_index in enumerate([10, 30, 50], start=1):
