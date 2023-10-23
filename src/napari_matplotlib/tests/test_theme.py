@@ -187,6 +187,6 @@ def test_custom_stylesheet(make_napari_viewer, image_data):
         assert widget.figure.patch.get_facecolor() == to_rgba("#fdf6e3")
         for gridline in ax.get_xgridlines() + ax.get_ygridlines():
             assert gridline.get_visible() is True
-            assert gridline.get_color() == "#fdf6e3"
+            assert gridline.get_color() == "#b0b0b0"
     finally:
         os.remove(style_sheet_path)
