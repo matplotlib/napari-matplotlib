@@ -1,8 +1,9 @@
-from typing import Any, Optional
+from typing import Any, Optional, cast
 
 import napari
 import numpy as np
 import numpy.typing as npt
+from matplotlib.container import BarContainer
 from qtpy.QtWidgets import QComboBox, QLabel, QVBoxLayout, QWidget
 
 from .base import SingleAxesWidget
@@ -162,12 +163,39 @@ class FeaturesHistogramWidget(SingleAxesWidget):
 
     def draw(self) -> None:
         """Clear the axes and histogram the currently selected layer/slice."""
+        # get the colormap from the layer depending on its type
+        if isinstance(self.layers[0], napari.layers.Points):
+            colormap = self.layers[0].face_colormap
+            self.layers[0].face_color = self.x_axis_key
+        elif isinstance(self.layers[0], napari.layers.Vectors):
+            colormap = self.layers[0].edge_colormap
+            self.layers[0].edge_color = self.x_axis_key
+        else:
+            colormap = None
+
+        # apply new colors to the layer
+        self.viewer.layers[self.layers[0].name].refresh_colors(True)
+        self.viewer.layers[self.layers[0].name].refresh()
+
+        # Draw the histogram
         data, x_axis_name = self._get_data()
 
         if data is None:
             return
 
-        self.axes.hist(data, bins=50, edgecolor="white", linewidth=0.3)
+        _, bins, patches = self.axes.hist(
+            data, bins=50, edgecolor="white", linewidth=0.3
+        )
+        patches = cast(BarContainer, patches)
+
+        # recolor the histogram plot
+        if colormap is not None:
+            self.bins_norm = (bins - bins.min()) / (bins.max() - bins.min())
+            colors = colormap.map(self.bins_norm)
+
+            # Set histogram style:
+            for idx, patch in enumerate(patches):
+                patch.set_facecolor(colors[idx])
 
         # set ax labels
         self.axes.set_xlabel(x_axis_name)

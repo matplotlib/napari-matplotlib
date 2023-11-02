@@ -38,6 +38,8 @@ def test_histogram_3D(make_napari_viewer, brain_data):
 def test_feature_histogram(make_napari_viewer):
     n_points = 1000
     random_points = np.random.random((n_points, 3)) * 10
+    random_directions = np.random.random((n_points, 3)) * 10
+    random_vectors = np.stack([random_points, random_directions], axis=1)
     feature1 = np.random.random(n_points)
     feature2 = np.random.normal(size=n_points)
 
@@ -47,10 +49,10 @@ def test_feature_histogram(make_napari_viewer):
         properties={"feature1": feature1, "feature2": feature2},
         name="points1",
     )
-    viewer.add_points(
-        random_points,
+    viewer.add_vectors(
+        random_vectors,
         properties={"feature1": feature1, "feature2": feature2},
-        name="points2",
+        name="vectors1",
     )
 
     widget = FeaturesHistogramWidget(viewer)
@@ -70,25 +72,41 @@ def test_feature_histogram(make_napari_viewer):
 
 
 @pytest.mark.mpl_image_compare
-def test_feature_histogram2(make_napari_viewer):
-    import numpy as np
+def test_feature_histogram_vectors(make_napari_viewer):
+    n_points = 1000
+    np.random.seed(42)
+    random_points = np.random.random((n_points, 3)) * 10
+    random_directions = np.random.random((n_points, 3)) * 10
+    random_vectors = np.stack([random_points, random_directions], axis=1)
+    feature1 = np.random.random(n_points)
 
+    viewer = make_napari_viewer()
+    viewer.add_vectors(
+        random_vectors,
+        properties={"feature1": feature1},
+        name="vectors1",
+    )
+
+    widget = FeaturesHistogramWidget(viewer)
+    viewer.window.add_dock_widget(widget)
+    widget._set_axis_keys("feature1")
+
+    fig = FeaturesHistogramWidget(viewer).figure
+    return deepcopy(fig)
+
+
+@pytest.mark.mpl_image_compare
+def test_feature_histogram_points(make_napari_viewer):
     np.random.seed(0)
     n_points = 1000
     random_points = np.random.random((n_points, 3)) * 10
     feature1 = np.random.random(n_points)
-    feature2 = np.random.normal(size=n_points)
 
     viewer = make_napari_viewer()
     viewer.add_points(
         random_points,
-        properties={"feature1": feature1, "feature2": feature2},
+        properties={"feature1": feature1},
         name="points1",
-    )
-    viewer.add_points(
-        random_points,
-        properties={"feature1": feature1, "feature2": feature2},
-        name="points2",
     )
 
     widget = FeaturesHistogramWidget(viewer)
