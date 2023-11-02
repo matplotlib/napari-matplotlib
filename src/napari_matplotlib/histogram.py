@@ -1,8 +1,9 @@
-from typing import Any, Optional
+from typing import Any, Optional, cast
 
 import napari
 import numpy as np
 import numpy.typing as npt
+from matplotlib.container import BarContainer
 from qtpy.QtWidgets import QComboBox, QLabel, QVBoxLayout, QWidget
 
 from .base import SingleAxesWidget
@@ -185,6 +186,7 @@ class FeaturesHistogramWidget(SingleAxesWidget):
         _, bins, patches = self.axes.hist(
             data, bins=50, edgecolor="white", linewidth=0.3
         )
+        patches = cast(BarContainer, patches)
 
         # recolor the histogram plot
         if colormap is not None:
