@@ -1,5 +1,13 @@
 Changelog
 =========
+1.2.0
+-----
+Changes
+~~~~~~~
+- Dropped support for Python 3.8, and added support for Python 3.11.
+- Histogram plots of points and vector layers are now coloured with their napari colourmap.
+- Added support for Matplotlib 3.8
+
 1.1.0
 -----
 Additions
