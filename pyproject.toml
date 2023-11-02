@@ -23,7 +23,7 @@ profile = "black"
 line_length = 79
 
 [tool.ruff]
-target-version = "py38"
+target-version = "py39"
 select = ["I", "UP", "F", "E", "W", "D"]
 ignore = [
     "D100", # Missing docstring in public module
@@ -45,7 +45,7 @@ fix = true
 convention = "numpy"
 
 [tool.mypy]
-python_version = "3.8"
+python_version = "3.9"
 # Block below are checks that form part of mypy 'strict' mode
 warn_unused_configs = true
 warn_redundant_casts = true

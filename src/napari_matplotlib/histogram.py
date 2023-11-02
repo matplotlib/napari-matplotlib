@@ -1,4 +1,4 @@
-from typing import Any, List, Optional, Tuple
+from typing import Any, Optional
 
 import napari
 import numpy as np
@@ -107,7 +107,7 @@ class FeaturesHistogramWidget(SingleAxesWidget):
         self._x_axis_key = x_axis_key
         self._draw()
 
-    def _get_valid_axis_keys(self) -> List[str]:
+    def _get_valid_axis_keys(self) -> list[str]:
         """
         Get the valid axis keys from the layer FeatureTable.
 
@@ -122,7 +122,7 @@ class FeaturesHistogramWidget(SingleAxesWidget):
         else:
             return self.layers[0].features.keys()
 
-    def _get_data(self) -> Tuple[Optional[npt.NDArray[Any]], str]:
+    def _get_data(self) -> tuple[Optional[npt.NDArray[Any]], str]:
         """Get the plot data.
 
         Returns

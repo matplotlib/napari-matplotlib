@@ -1,12 +1,12 @@
 import os
 from pathlib import Path
-from typing import List, Optional, Tuple
+from typing import Optional
 
 import matplotlib
 import matplotlib.style as mplstyle
 import napari
-from matplotlib.backends.backend_qtagg import (
-    FigureCanvas,
+from matplotlib.backends.backend_qtagg import (  # type: ignore[attr-defined]
+    FigureCanvasQTAgg,
     NavigationToolbar2QT,
 )
 from matplotlib.figure import Figure
@@ -49,12 +49,10 @@ class BaseNapariMPLWidget(QWidget):
 
         # Sets figure.* style
         with mplstyle.context(self.mpl_style_sheet_path):
-            self.canvas = FigureCanvas()
+            self.canvas = FigureCanvasQTAgg()  # type: ignore[no-untyped-call]
 
         self.canvas.figure.set_layout_engine("constrained")
-        self.toolbar = NapariNavigationToolbar(
-            self.canvas, parent=self
-        )  # type: ignore[no-untyped-call]
+        self.toolbar = NapariNavigationToolbar(self.canvas, parent=self)
         self._replace_toolbar_icons()
         # callback to update when napari theme changed
         # TODO: this isn't working completely (see issue #140)
@@ -97,7 +95,7 @@ class BaseNapariMPLWidget(QWidget):
         # Sets axes.* style.
         # Does not set any text styling set by axes.* keys
         with mplstyle.context(self.mpl_style_sheet_path):
-            self.axes = self.figure.subplots()
+            self.axes = self.figure.add_subplot()
 
     def _on_napari_theme_changed(self) -> None:
         """
@@ -184,7 +182,7 @@ class NapariMPLWidget(BaseNapariMPLWidget):
     #: Number of layers taken as input
     n_layers_input = Interval(None, None)
     #: Type of layer taken as input
-    input_layer_types: Tuple[napari.layers.Layer, ...] = (napari.layers.Layer,)
+    input_layer_types: tuple[napari.layers.Layer, ...] = (napari.layers.Layer,)
 
     def __init__(
         self,
@@ -193,7 +191,7 @@ class NapariMPLWidget(BaseNapariMPLWidget):
     ):
         super().__init__(napari_viewer=napari_viewer, parent=parent)
         self._setup_callbacks()
-        self.layers: List[napari.layers.Layer] = []
+        self.layers: list[napari.layers.Layer] = []
 
         helper_text = self.n_layers_input._helper_text
         if helper_text is not None:
@@ -260,7 +258,7 @@ class NapariMPLWidget(BaseNapariMPLWidget):
             isinstance(layer, self.input_layer_types) for layer in self.layers
         ):
             self.draw()
-        self.canvas.draw()
+        self.canvas.draw()  # type: ignore[no-untyped-call]
 
     def clear(self) -> None:
         """
@@ -309,8 +307,8 @@ class SingleAxesWidget(NapariMPLWidget):
 class NapariNavigationToolbar(NavigationToolbar2QT):
     """Custom Toolbar style for Napari."""
 
-    def __init__(self, *args, **kwargs):  # type: ignore[no-untyped-def]
-        super().__init__(*args, **kwargs)
+    def __init__(self, *args, **kwargs) -> None:  # type: ignore[no-untyped-def]
+        super().__init__(*args, **kwargs)  # type: ignore[no-untyped-call]
         self.setIconSize(
             from_napari_css_get_size_of(
                 "QtViewerPushButton", fallback=(28, 28)
@@ -319,7 +317,7 @@ class NapariNavigationToolbar(NavigationToolbar2QT):
 
     def _update_buttons_checked(self) -> None:
         """Update toggle tool icons when selected/unselected."""
-        super()._update_buttons_checked()
+        super()._update_buttons_checked()  # type: ignore[no-untyped-call]
         icon_dir = self.parentWidget()._get_path_to_icon()
 
         # changes pan/zoom icons depending on state (checked or not)

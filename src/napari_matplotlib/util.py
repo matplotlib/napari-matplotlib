@@ -1,4 +1,4 @@
-from typing import List, Optional, Tuple, Union
+from typing import Optional, Union
 from warnings import warn
 
 import napari.qt
@@ -76,7 +76,7 @@ class Interval:
         return helper_text
 
 
-def _has_id(nodes: List[tinycss2.ast.Node], id_name: str) -> bool:
+def _has_id(nodes: list[tinycss2.ast.Node], id_name: str) -> bool:
     """
     Is `id_name` in IdentTokens in the list of CSS `nodes`?
     """
@@ -86,7 +86,7 @@ def _has_id(nodes: List[tinycss2.ast.Node], id_name: str) -> bool:
 
 
 def _get_dimension(
-    nodes: List[tinycss2.ast.Node], id_name: str
+    nodes: list[tinycss2.ast.Node], id_name: str
 ) -> Union[int, None]:
     """
     Get the value of the DimensionToken for the IdentToken `id_name`.
@@ -108,7 +108,7 @@ def _get_dimension(
 
 
 def from_napari_css_get_size_of(
-    qt_element_name: str, fallback: Tuple[int, int]
+    qt_element_name: str, fallback: tuple[int, int]
 ) -> QSize:
     """
     Get the size of `qt_element_name` from napari's current stylesheet.
