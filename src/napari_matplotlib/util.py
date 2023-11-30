@@ -1,8 +1,9 @@
-from typing import Optional, Union
+from typing import Dict, Optional, Union
 from warnings import warn
 
 import napari.qt
 import tinycss2
+from napari.utils.theme import Theme
 from qtpy.QtCore import QSize
 
 
@@ -138,3 +139,29 @@ def from_napari_css_get_size_of(
         RuntimeWarning,
     )
     return QSize(*fallback)
+
+
+def style_sheet_from_theme(theme: Theme) -> Dict[str, str]:
+    return {
+        'axes.edgecolor':theme.secondary.as_hex(),
+        # alternatively "axes.facecolor" could be background color or not be set at all, 
+        # but this causes problems when saving figure as image
+        'axes.facecolor':theme.canvas.as_hex(),
+        'axes.labelcolor':theme.text.as_hex(),
+        'boxplot.boxprops.color':theme.text.as_hex(),
+        'boxplot.capprops.color':theme.text.as_hex(),
+        'boxplot.flierprops.markeredgecolor':theme.text.as_hex(),
+        'boxplot.whiskerprops.color':theme.text.as_hex(),
+        'figure.edgecolor':theme.secondary.as_hex(),
+        # alternatively "figure.facecolor" could not be set, but this causes problems 
+        # when saving figure as image
+        'figure.facecolor':theme.background.as_hex(),
+        'grid.color':theme.foreground.as_hex(),
+        'legend.edgecolor':theme.secondary.as_hex(),
+        'legend.facecolor':theme.background.as_hex(),
+        'text.color':theme.text.as_hex(),
+        'xtick.color':theme.secondary.as_hex(),
+        'xtick.labelcolor':theme.text.as_hex(),
+        'ytick.color':theme.secondary.as_hex(),
+        'ytick.labelcolor':theme.text.as_hex(),
+    }

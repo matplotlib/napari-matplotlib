@@ -5,6 +5,7 @@ from typing import Optional
 import matplotlib
 import matplotlib.style as mplstyle
 import napari
+from napari.utils.theme import get_theme
 from matplotlib.backends.backend_qtagg import (  # type: ignore[attr-defined]
     FigureCanvasQTAgg,
     NavigationToolbar2QT,
@@ -13,7 +14,7 @@ from matplotlib.figure import Figure
 from qtpy.QtGui import QIcon
 from qtpy.QtWidgets import QLabel, QVBoxLayout, QWidget
 
-from .util import Interval, from_napari_css_get_size_of
+from .util import Interval, from_napari_css_get_size_of, style_sheet_from_theme
 
 __all__ = ["BaseNapariMPLWidget", "NapariMPLWidget", "SingleAxesWidget"]
 
@@ -45,10 +46,11 @@ class BaseNapariMPLWidget(QWidget):
     ):
         super().__init__(parent=parent)
         self.viewer = napari_viewer
-        self._mpl_style_sheet_path: Optional[Path] = None
+        #self._mpl_style_sheet_path: Optional[Path] = None
+        self.napari_theme_style_sheet = style_sheet_from_theme(get_theme(napari_viewer.theme, as_dict=False))
 
         # Sets figure.* style
-        with mplstyle.context(self.mpl_style_sheet_path):
+        with mplstyle.context(self.napari_theme_style_sheet):
             self.canvas = FigureCanvasQTAgg()  # type: ignore[no-untyped-call]
 
         self.canvas.figure.set_layout_engine("constrained")
@@ -68,23 +70,23 @@ class BaseNapariMPLWidget(QWidget):
         """Matplotlib figure."""
         return self.canvas.figure
 
-    @property
-    def mpl_style_sheet_path(self) -> Path:
-        """
-        Path to the set Matplotlib style sheet.
-        """
-        if self._mpl_style_sheet_path is not None:
-            return self._mpl_style_sheet_path
-        elif (_CUSTOM_STYLE_PATH).exists():
-            return _CUSTOM_STYLE_PATH
-        elif self._napari_theme_has_light_bg():
-            return Path(__file__).parent / "styles" / "light.mplstyle"
-        else:
-            return Path(__file__).parent / "styles" / "dark.mplstyle"
+    #@property
+    #def mpl_style_sheet_path(self) -> Path:
+    #    """
+    #    Path to the set Matplotlib style sheet.
+    #    """
+    #    if self._mpl_style_sheet_path is not None:
+    #        return self._mpl_style_sheet_path
+    #    elif (_CUSTOM_STYLE_PATH).exists():
+    #        return _CUSTOM_STYLE_PATH
+    #    elif self._napari_theme_has_light_bg():
+    #        return Path(__file__).parent / "styles" / "light.mplstyle"
+    #    else:
+    #        return Path(__file__).parent / "styles" / "dark.mplstyle"
 
-    @mpl_style_sheet_path.setter
-    def mpl_style_sheet_path(self, path: Path) -> None:
-        self._mpl_style_sheet_path = Path(path)
+    #@mpl_style_sheet_path.setter
+    #def mpl_style_sheet_path(self, path: Path) -> None:
+    #    self._mpl_style_sheet_path = Path(path)
 
     def add_single_axes(self) -> None:
         """
@@ -94,13 +96,14 @@ class BaseNapariMPLWidget(QWidget):
         """
         # Sets axes.* style.
         # Does not set any text styling set by axes.* keys
-        with mplstyle.context(self.mpl_style_sheet_path):
+        with mplstyle.context(self.napari_theme_style_sheet):
             self.axes = self.figure.add_subplot()
 
     def _on_napari_theme_changed(self) -> None:
         """
         Called when the napari theme is changed.
         """
+        self.napari_theme_style_sheet = style_sheet_from_theme(get_theme(self.napari_viewer.theme, as_dict=False))
         self._replace_toolbar_icons()
 
     def _napari_theme_has_light_bg(self) -> bool:
@@ -252,7 +255,7 @@ class NapariMPLWidget(BaseNapariMPLWidget):
         """
         # Clearing axes sets new defaults, so need to make sure style is applied when
         # this happens
-        with mplstyle.context(self.mpl_style_sheet_path):
+        with mplstyle.context(self.napari_theme_style_sheet):
             self.clear()
         if self.n_selected_layers in self.n_layers_input and all(
             isinstance(layer, self.input_layer_types) for layer in self.layers
@@ -300,7 +303,7 @@ class SingleAxesWidget(NapariMPLWidget):
         """
         Clear the axes.
         """
-        with mplstyle.context(self.mpl_style_sheet_path):
+        with mplstyle.context(self.napari_theme_style_sheet):
             self.axes.clear()
 
 
