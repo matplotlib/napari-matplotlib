@@ -142,23 +142,43 @@ def from_napari_css_get_size_of(
 
 
 def style_sheet_from_theme(theme: Theme) -> Dict[str, str]:
+    """Translate napari theme to a matplotlib style dictionary.
+
+    Parameters
+    ----------
+    theme : napari.utils.theme.Theme
+        Napari theme object representing the theme of the current viewer.
+    
+    Returns
+    -------
+    Dict[str, str]
+        Matplotlib compatible style dictionary.
+    """
     return {
         'axes.edgecolor':theme.secondary.as_hex(),
-        # alternatively "axes.facecolor" could be background color or not be set at all, 
-        # but this causes problems when saving figure as image
-        'axes.facecolor':theme.canvas.as_hex(),
+        #BUG: could be the same as napari canvas, but facecolors do not get 
+        #     updated upon redraw for what ever reason
+        #'axes.facecolor':theme.canvas.as_hex(),
+        'axes.facecolor':'none',
         'axes.labelcolor':theme.text.as_hex(),
         'boxplot.boxprops.color':theme.text.as_hex(),
         'boxplot.capprops.color':theme.text.as_hex(),
         'boxplot.flierprops.markeredgecolor':theme.text.as_hex(),
         'boxplot.whiskerprops.color':theme.text.as_hex(),
         'figure.edgecolor':theme.secondary.as_hex(),
-        # alternatively "figure.facecolor" could not be set, but this causes problems 
-        # when saving figure as image
-        'figure.facecolor':theme.background.as_hex(),
+        #BUG: should be the same as napari background, but facecolors do not get 
+        #     updated upon redraw for what ever reason
+        #'figure.facecolor':theme.background.as_hex(),
+        'figure.facecolor':'none',
         'grid.color':theme.foreground.as_hex(),
-        'legend.edgecolor':theme.secondary.as_hex(),
-        'legend.facecolor':theme.background.as_hex(),
+        #COMMENT: the hard coded colors are to match the previous behaviour 
+        #         alternativly we could use the theme to style the legend as well
+        #'legend.edgecolor':theme.secondary.as_hex(),
+        'legend.edgecolor':'black',
+        #'legend.facecolor':theme.background.as_hex(),
+        'legend.facecolor':'white',
+        #'legend.labelcolor':theme.text.as_hex()
+        'legend.labelcolor':'black',
         'text.color':theme.text.as_hex(),
         'xtick.color':theme.secondary.as_hex(),
         'xtick.labelcolor':theme.text.as_hex(),
