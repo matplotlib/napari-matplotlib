@@ -7,7 +7,7 @@ repos:
       - id: trailing-whitespace
 
   - repo: https://github.com/psf/black
-    rev: 23.11.0
+    rev: 23.12.1
     hooks:
       - id: black
 
@@ -17,14 +17,14 @@ repos:
       - id: napari-plugin-checks
 
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.7.1
+    rev: v1.8.0
     hooks:
      - id: mypy
        additional_dependencies: [numpy, matplotlib]
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
     # Ruff version.
-    rev: 'v0.1.6'
+    rev: 'v0.1.9'
     hooks:
       - id: ruff
 
