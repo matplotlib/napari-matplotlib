@@ -82,13 +82,13 @@ class HistogramWidget(SingleAxesWidget):
             for i, c in enumerate("rgb"):
                 self.axes.hist(
                     data[..., i].ravel(),
-                    bins=bins,
+                    bins=bins.tolist(),
                     label=c,
                     histtype="step",
                     color=_COLORS[c],
                 )
         else:
-            self.axes.hist(data.ravel(), bins=bins, label=layer.name)
+            self.axes.hist(data.ravel(), bins=bins.tolist(), label=layer.name)
 
         self._contrast_lines = [
             self.axes.axvline(lim, color="white")
