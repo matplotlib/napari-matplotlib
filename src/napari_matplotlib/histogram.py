@@ -70,7 +70,12 @@ class HistogramWidget(SingleAxesWidget):
 
         # Important to calculate bins after slicing 3D data, to avoid reading
         # whole cube into memory.
-        bins = np.linspace(np.min(data), np.max(data), 100, dtype=data.dtype)
+        if data.dtype.kind == "i":
+            # Make sure integer data types have integer sized bins
+            step = (np.max(data) -  np.min(data)) // 100
+            bins = np.arange(np.min(data), np.max(data) + step, step)
+        else:
+            bins = np.linspace(np.min(data), np.max(data), 100)
 
         if layer.rgb:
             # Histogram RGB channels independently
