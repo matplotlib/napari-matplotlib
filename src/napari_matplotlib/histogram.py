@@ -4,7 +4,17 @@ import napari
 import numpy as np
 import numpy.typing as npt
 from matplotlib.container import BarContainer
-from qtpy.QtWidgets import QComboBox, QLabel, QVBoxLayout, QWidget, QGroupBox, QFormLayout, QDoubleSpinBox, QSpinBox, QAbstractSpinBox
+from qtpy.QtWidgets import (
+    QAbstractSpinBox,
+    QComboBox,
+    QDoubleSpinBox,
+    QFormLayout,
+    QGroupBox,
+    QLabel,
+    QSpinBox,
+    QVBoxLayout,
+    QWidget,
+)
 
 from .base import SingleAxesWidget
 from .features import FEATURES_LAYER_TYPES
@@ -124,16 +134,13 @@ class HistogramWidget(SingleAxesWidget):
 
     def autoset_widget_bins(self, data: npt.ArrayLike) -> None:
         """Update widgets with bins determined from the image data"""
-
         bins = np.linspace(np.min(data), np.max(data), 100, dtype=data.dtype)
         self.bins_start = bins[0]
         self.bins_stop = bins[-1]
         self.bins_num = bins.size
 
-
     def _get_layer_data(self, layer) -> np.ndarray:
         """Get the data associated with a given layer"""
-
         if layer.data.ndim - layer.rgb == 3:
             # 3D data, can be single channel or RGB
             data = layer.data[self.current_z]
@@ -150,7 +157,6 @@ class HistogramWidget(SingleAxesWidget):
         """
         Called when the layer selection changes by ``self._update_layers()``.
         """
-
         if not self.layers:
             return
 
@@ -160,8 +166,12 @@ class HistogramWidget(SingleAxesWidget):
 
         # Only allow integer bins for integer data
         n_decimals = 0 if np.issubdtype(layer_data.dtype, np.integer) else 2
-        self.findChild(QDoubleSpinBox, name="bins start").setDecimals(n_decimals)
-        self.findChild(QDoubleSpinBox, name="bins stop").setDecimals(n_decimals)
+        self.findChild(QDoubleSpinBox, name="bins start").setDecimals(
+            n_decimals
+        )
+        self.findChild(QDoubleSpinBox, name="bins stop").setDecimals(
+            n_decimals
+        )
 
     def draw(self) -> None:
         """
