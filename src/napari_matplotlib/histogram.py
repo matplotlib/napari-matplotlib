@@ -4,12 +4,7 @@ import napari
 import numpy as np
 import numpy.typing as npt
 from matplotlib.container import BarContainer
-from qtpy.QtWidgets import (
-    QComboBox,
-    QLabel,
-    QVBoxLayout,
-    QWidget,
-)
+from qtpy.QtWidgets import QComboBox, QLabel, QVBoxLayout, QWidget, QGroupBox, QFormLayout, QDoubleSpinBox, QSpinBox, QAbstractSpinBox
 
 from .base import SingleAxesWidget
 from .features import FEATURES_LAYER_TYPES
@@ -34,6 +29,50 @@ class HistogramWidget(SingleAxesWidget):
         parent: Optional[QWidget] = None,
     ):
         super().__init__(napari_viewer, parent=parent)
+
+        # Create widgets for setting bin parameters
+        bins_start = QDoubleSpinBox()
+        bins_start.setObjectName("bins start")
+        bins_start.setStepType(QAbstractSpinBox.AdaptiveDecimalStepType)
+        bins_start.setRange(-1e10, 1e10)
+        bins_start.setValue(0)
+        bins_start.setWrapping(True)
+        bins_start.setKeyboardTracking(False)
+        bins_start.setDecimals(2)
+
+        bins_stop = QDoubleSpinBox()
+        bins_stop.setObjectName("bins stop")
+        bins_stop.setStepType(QAbstractSpinBox.AdaptiveDecimalStepType)
+        bins_stop.setRange(-1e10, 1e10)
+        bins_stop.setValue(100)
+        bins_stop.setKeyboardTracking(False)
+        bins_stop.setDecimals(2)
+
+        bins_num = QSpinBox()
+        bins_num.setObjectName("bins num")
+        bins_num.setRange(1, 100_000)
+        bins_num.setValue(101)
+        bins_num.setWrapping(False)
+        bins_num.setKeyboardTracking(False)
+
+        # Set bins widget layout
+        bins_selection_layout = QFormLayout()
+        bins_selection_layout.addRow("start", bins_start)
+        bins_selection_layout.addRow("stop", bins_stop)
+        bins_selection_layout.addRow("num", bins_num)
+
+        # Group the widgets and add to main layout
+        bins_widget_group = QGroupBox("Bins")
+        bins_widget_group_layout = QVBoxLayout()
+        bins_widget_group_layout.addLayout(bins_selection_layout)
+        bins_widget_group.setLayout(bins_widget_group_layout)
+        self.layout().addWidget(bins_widget_group)
+
+        # Add callbacks
+        bins_start.valueChanged.connect(self._draw)
+        bins_stop.valueChanged.connect(self._draw)
+        bins_num.valueChanged.connect(self._draw)
+
         self._update_layers(None)
         self.viewer.events.theme.connect(self._on_napari_theme_changed)
 
@@ -53,11 +92,47 @@ class HistogramWidget(SingleAxesWidget):
 
         self.figure.canvas.draw()
 
-    def draw(self) -> None:
-        """
-        Clear the axes and histogram the currently selected layer/slice.
-        """
-        layer = self.layers[0]
+    @property
+    def bins_start(self) -> float:
+        """Minimum bin edge"""
+        return self.findChild(QDoubleSpinBox, name="bins start").value()
+
+    @bins_start.setter
+    def bins_start(self, start: int | float) -> None:
+        """Set the minimum bin edge"""
+        self.findChild(QDoubleSpinBox, name="bins start").setValue(start)
+
+    @property
+    def bins_stop(self) -> float:
+        """Maximum bin edge"""
+        return self.findChild(QDoubleSpinBox, name="bins stop").value()
+
+    @bins_stop.setter
+    def bins_stop(self, stop: int | float) -> None:
+        """Set the maximum bin edge"""
+        self.findChild(QDoubleSpinBox, name="bins stop").setValue(stop)
+
+    @property
+    def bins_num(self) -> int:
+        """Number of bins to use"""
+        return self.findChild(QSpinBox, name="bins num").value()
+
+    @bins_num.setter
+    def bins_num(self, num: int) -> None:
+        """Set the number of bins to use"""
+        self.findChild(QSpinBox, name="bins num").setValue(num)
+
+    def autoset_widget_bins(self, data: npt.ArrayLike) -> None:
+        """Update widgets with bins determined from the image data"""
+
+        bins = np.linspace(np.min(data), np.max(data), 100, dtype=data.dtype)
+        self.bins_start = bins[0]
+        self.bins_stop = bins[-1]
+        self.bins_num = bins.size
+
+
+    def _get_layer_data(self, layer) -> np.ndarray:
+        """Get the data associated with a given layer"""
 
         if layer.data.ndim - layer.rgb == 3:
             # 3D data, can be single channel or RGB
@@ -65,18 +140,45 @@ class HistogramWidget(SingleAxesWidget):
             self.axes.set_title(f"z={self.current_z}")
         else:
             data = layer.data
+
         # Read data into memory if it's a dask array
         data = np.asarray(data)
+
+        return data
+
+    def on_update_layers(self) -> None:
+        """
+        Called when the layer selection changes by ``self._update_layers()``.
+        """
+
+        if not self.layers:
+            return
+
+        # Reset to bin start, stop and step
+        layer_data = self._get_layer_data(self.layers[0])
+        self.autoset_widget_bins(data=layer_data)
+
+        # Only allow integer bins for integer data
+        n_decimals = 0 if np.issubdtype(layer_data.dtype, np.integer) else 2
+        self.findChild(QDoubleSpinBox, name="bins start").setDecimals(n_decimals)
+        self.findChild(QDoubleSpinBox, name="bins stop").setDecimals(n_decimals)
+
+    def draw(self) -> None:
+        """
+        Clear the axes and histogram the currently selected layer/slice.
+        """
+        layer = self.layers[0]
+        data = self._get_layer_data(layer)
 
         # Important to calculate bins after slicing 3D data, to avoid reading
         # whole cube into memory.
         if data.dtype.kind in {"i", "u"}:
             # Make sure integer data types have integer sized bins
-            step = abs(np.max(data) - np.min(data)) // 100
+            step = (self.bins_start - self.bins_stop) // self.bins_num
             step = max(1, step)
-            bins = np.arange(np.min(data), np.max(data) + step, step)
+            bins = np.arange(self.bins_start, self.bins_stop + step, step)
         else:
-            bins = np.linspace(np.min(data), np.max(data), 100)
+            bins = np.linspace(self.bins_start, self.bins_stop, self.bins_num)
 
         if layer.rgb:
             # Histogram RGB channels independently
