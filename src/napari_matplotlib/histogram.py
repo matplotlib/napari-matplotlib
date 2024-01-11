@@ -4,7 +4,12 @@ import napari
 import numpy as np
 import numpy.typing as npt
 from matplotlib.container import BarContainer
-from qtpy.QtWidgets import QComboBox, QLabel, QVBoxLayout, QWidget
+from qtpy.QtWidgets import (
+    QComboBox,
+    QLabel,
+    QVBoxLayout,
+    QWidget,
+)
 
 from .base import SingleAxesWidget
 from .features import FEATURES_LAYER_TYPES
@@ -65,7 +70,7 @@ class HistogramWidget(SingleAxesWidget):
 
         # Important to calculate bins after slicing 3D data, to avoid reading
         # whole cube into memory.
-        bins = np.linspace(np.min(data), np.max(data), 100)
+        bins = np.linspace(np.min(data), np.max(data), 100, dtype=data.dtype)
 
         if layer.rgb:
             # Histogram RGB channels independently
