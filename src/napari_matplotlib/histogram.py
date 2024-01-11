@@ -1,4 +1,4 @@
-from typing import Any, Optional, cast
+from typing import Any, Optional, Union, cast
 
 import napari
 import numpy as np
@@ -108,7 +108,7 @@ class HistogramWidget(SingleAxesWidget):
         return self.findChild(QDoubleSpinBox, name="bins start").value()
 
     @bins_start.setter
-    def bins_start(self, start: int | float) -> None:
+    def bins_start(self, start: Union[int, float]) -> None:
         """Set the minimum bin edge"""
         self.findChild(QDoubleSpinBox, name="bins start").setValue(start)
 
@@ -118,7 +118,7 @@ class HistogramWidget(SingleAxesWidget):
         return self.findChild(QDoubleSpinBox, name="bins stop").value()
 
     @bins_stop.setter
-    def bins_stop(self, stop: int | float) -> None:
+    def bins_stop(self, stop: Union[int, float]) -> None:
         """Set the maximum bin edge"""
         self.findChild(QDoubleSpinBox, name="bins stop").setValue(stop)
 
@@ -132,14 +132,14 @@ class HistogramWidget(SingleAxesWidget):
         """Set the number of bins to use"""
         self.findChild(QSpinBox, name="bins num").setValue(num)
 
-    def autoset_widget_bins(self, data: npt.ArrayLike) -> None:
+    def autoset_widget_bins(self, data: npt.NDArray[Any]) -> None:
         """Update widgets with bins determined from the image data"""
         bins = np.linspace(np.min(data), np.max(data), 100, dtype=data.dtype)
         self.bins_start = bins[0]
         self.bins_stop = bins[-1]
         self.bins_num = bins.size
 
-    def _get_layer_data(self, layer) -> np.ndarray:
+    def _get_layer_data(self, layer: napari.layers.Layer) -> npt.NDArray[Any]:
         """Get the data associated with a given layer"""
         if layer.data.ndim - layer.rgb == 3:
             # 3D data, can be single channel or RGB
