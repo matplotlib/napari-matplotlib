@@ -8,6 +8,10 @@ Changes
 - Histogram plots of points and vector layers are now coloured with their napari colourmap.
 - Added support for Matplotlib 3.8
 
+Bug fixes
+~~~~~~~~~
+- Use integer bin limits for integer images in ``HistogramWidget``
+
 1.1.0
 -----
 Additions
