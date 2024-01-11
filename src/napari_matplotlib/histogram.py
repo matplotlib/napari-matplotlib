@@ -41,12 +41,11 @@ class HistogramWidget(SingleAxesWidget):
             layer.events.contrast_limits.connect(self._update_contrast_lims)
 
     def _update_contrast_lims(self) -> None:
-        [
+        for lim, line in zip(
+            self.layers[0].contrast_limits, self._contrast_lines
+        ):
             line.set_xdata(lim)
-            for lim, line in zip(
-                self.layers[0].contrast_limits, self._contrast_lines
-            )
-        ]
+
         self.figure.canvas.draw()
 
     def draw(self) -> None:
