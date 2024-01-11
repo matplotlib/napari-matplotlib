@@ -30,6 +30,23 @@ class HistogramWidget(SingleAxesWidget):
     ):
         super().__init__(napari_viewer, parent=parent)
         self._update_layers(None)
+        self.viewer.events.theme.connect(self._on_napari_theme_changed)
+
+    def on_update_layers(self) -> None:
+        """
+        Called when the selected layers are updated.
+        """
+        super().on_update_layers()
+        for layer in self.viewer.layers:
+            layer.events.contrast_limits.connect(self._update_contrast_lims)
+
+    def _update_contrast_lims(self) -> None:
+        for lim, line in zip(
+            self.layers[0].contrast_limits, self._contrast_lines
+        ):
+            line.set_xdata(lim)
+
+        self.figure.canvas.draw()
 
     def draw(self) -> None:
         """
@@ -63,6 +80,10 @@ class HistogramWidget(SingleAxesWidget):
         else:
             self.axes.hist(data.ravel(), bins=bins, label=layer.name)
 
+        self._contrast_lines = [
+            self.axes.axvline(lim, color="white")
+            for lim in layer.contrast_limits
+        ]
         self.axes.legend()
 
 
