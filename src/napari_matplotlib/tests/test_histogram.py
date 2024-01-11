@@ -9,6 +9,20 @@ from napari_matplotlib.tests.helpers import (
     assert_figures_not_equal,
 )
 
+@pytest.mark.mpl_image_compare
+def test_histogram_2D_bins(make_napari_viewer, astronaut_data):
+    viewer = make_napari_viewer()
+    viewer.theme = "light"
+    viewer.add_image(astronaut_data[0], **astronaut_data[1])
+    widget = HistogramWidget(viewer)
+    viewer.window.add_dock_widget(widget)
+    widget.bins_start = -50
+    widget.bins_stop = 300
+    widget.bins_num = 35
+    fig = widget.figure
+    # Need to return a copy, as original figure is too eagerley garbage
+    # collected by the widget
+    return deepcopy(fig)
 
 @pytest.mark.mpl_image_compare
 def test_histogram_2D(make_napari_viewer, astronaut_data):
@@ -19,7 +33,6 @@ def test_histogram_2D(make_napari_viewer, astronaut_data):
     # Need to return a copy, as original figure is too eagerley garbage
     # collected by the widget
     return deepcopy(fig)
-
 
 @pytest.mark.mpl_image_compare
 def test_histogram_3D(make_napari_viewer, brain_data):
