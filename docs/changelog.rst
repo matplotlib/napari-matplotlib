@@ -7,6 +7,11 @@ Changes
 - Dropped support for Python 3.8, and added support for Python 3.11.
 - Histogram plots of points and vector layers are now coloured with their napari colourmap.
 - Added support for Matplotlib 3.8
+- Add widgets for setting histogram bin parameters
+
+Bug fixes
+~~~~~~~~~
+- Use integer bin limits for integer images in ``HistogramWidget``
 
 Bug fixes
 ~~~~~~~~~
