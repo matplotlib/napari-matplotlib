@@ -46,7 +46,7 @@ class HistogramWidget(SingleAxesWidget):
         bins_start.setStepType(QAbstractSpinBox.AdaptiveDecimalStepType)
         bins_start.setRange(-1e10, 1e10)
         bins_start.setValue(0)
-        bins_start.setWrapping(True)
+        bins_start.setWrapping(False)
         bins_start.setKeyboardTracking(False)
         bins_start.setDecimals(2)
 
@@ -55,6 +55,7 @@ class HistogramWidget(SingleAxesWidget):
         bins_stop.setStepType(QAbstractSpinBox.AdaptiveDecimalStepType)
         bins_stop.setRange(-1e10, 1e10)
         bins_stop.setValue(100)
+        bins_start.setWrapping(False)
         bins_stop.setKeyboardTracking(False)
         bins_stop.setDecimals(2)
 
@@ -165,13 +166,17 @@ class HistogramWidget(SingleAxesWidget):
         self.autoset_widget_bins(data=layer_data)
 
         # Only allow integer bins for integer data
+        # And only allow values greater than 0 for unsigned integers
         n_decimals = 0 if np.issubdtype(layer_data.dtype, np.integer) else 2
-        self.findChild(QDoubleSpinBox, name="bins start").setDecimals(
-            n_decimals
-        )
-        self.findChild(QDoubleSpinBox, name="bins stop").setDecimals(
-            n_decimals
-        )
+        is_unsigned = layer_data.dtype.kind == "u"
+        minimum_value = 0 if is_unsigned else -1e10
+
+        bins_start = self.findChild(QDoubleSpinBox, name="bins start")
+        bins_stop = self.findChild(QDoubleSpinBox, name="bins stop")
+        bins_start.setDecimals(n_decimals)
+        bins_stop.setDecimals(n_decimals)
+        bins_start.setMinimum(minimum_value)
+        bins_stop.setMinimum(minimum_value)
 
     def draw(self) -> None:
         """
