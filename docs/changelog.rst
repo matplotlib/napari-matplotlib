@@ -13,10 +13,6 @@ Bug fixes
 ~~~~~~~~~
 - Use integer bin limits for integer images in ``HistogramWidget``
 
-Bug fixes
-~~~~~~~~~
-- Use integer bin limits for integer images in ``HistogramWidget``
-
 1.1.0
 -----
 Additions
