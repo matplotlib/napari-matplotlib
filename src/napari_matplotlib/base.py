@@ -2,7 +2,6 @@ import os
 from pathlib import Path
 from typing import Optional
 
-import matplotlib
 import matplotlib.style as mplstyle
 import napari
 from matplotlib.backends.backend_qtagg import (  # type: ignore[attr-defined]
@@ -18,10 +17,6 @@ from qtpy.QtWidgets import QLabel, QVBoxLayout, QWidget
 from .util import Interval, from_napari_css_get_size_of, style_sheet_from_theme
 
 __all__ = ["BaseNapariMPLWidget", "NapariMPLWidget", "SingleAxesWidget"]
-
-_CUSTOM_STYLE_PATH = (
-    Path(matplotlib.get_configdir()) / "napari-matplotlib.mplstyle"
-)
 
 
 class BaseNapariMPLWidget(QWidget):
@@ -47,7 +42,6 @@ class BaseNapariMPLWidget(QWidget):
     ):
         super().__init__(parent=parent)
         self.viewer = napari_viewer
-        # self._mpl_style_sheet_path: Optional[Path] = None
         self.napari_theme_style_sheet = style_sheet_from_theme(
             get_theme(napari_viewer.theme, as_dict=False)
         )
