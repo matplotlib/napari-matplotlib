@@ -2,7 +2,6 @@ import os
 from pathlib import Path
 from typing import Optional
 
-import matplotlib
 import matplotlib.style as mplstyle
 import napari
 from matplotlib.backends.backend_qtagg import (  # type: ignore[attr-defined]
@@ -10,16 +9,14 @@ from matplotlib.backends.backend_qtagg import (  # type: ignore[attr-defined]
     NavigationToolbar2QT,
 )
 from matplotlib.figure import Figure
+from napari.utils.events import Event
+from napari.utils.theme import get_theme
 from qtpy.QtGui import QIcon
 from qtpy.QtWidgets import QLabel, QVBoxLayout, QWidget
 
-from .util import Interval, from_napari_css_get_size_of
+from .util import Interval, from_napari_css_get_size_of, style_sheet_from_theme
 
 __all__ = ["BaseNapariMPLWidget", "NapariMPLWidget", "SingleAxesWidget"]
-
-_CUSTOM_STYLE_PATH = (
-    Path(matplotlib.get_configdir()) / "napari-matplotlib.mplstyle"
-)
 
 
 class BaseNapariMPLWidget(QWidget):
@@ -45,18 +42,17 @@ class BaseNapariMPLWidget(QWidget):
     ):
         super().__init__(parent=parent)
         self.viewer = napari_viewer
-        self._mpl_style_sheet_path: Optional[Path] = None
+        self.napari_theme_style_sheet = style_sheet_from_theme(
+            get_theme(napari_viewer.theme, as_dict=False)
+        )
 
         # Sets figure.* style
-        with mplstyle.context(self.mpl_style_sheet_path):
+        with mplstyle.context(self.napari_theme_style_sheet):
             self.canvas = FigureCanvasQTAgg()  # type: ignore[no-untyped-call]
 
         self.canvas.figure.set_layout_engine("constrained")
         self.toolbar = NapariNavigationToolbar(self.canvas, parent=self)
         self._replace_toolbar_icons()
-        # callback to update when napari theme changed
-        # TODO: this isn't working completely (see issue #140)
-        # most of our styling respects the theme change but not all
         self.viewer.events.theme.connect(self._on_napari_theme_changed)
 
         self.setLayout(QVBoxLayout())
@@ -68,24 +64,6 @@ class BaseNapariMPLWidget(QWidget):
         """Matplotlib figure."""
         return self.canvas.figure
 
-    @property
-    def mpl_style_sheet_path(self) -> Path:
-        """
-        Path to the set Matplotlib style sheet.
-        """
-        if self._mpl_style_sheet_path is not None:
-            return self._mpl_style_sheet_path
-        elif (_CUSTOM_STYLE_PATH).exists():
-            return _CUSTOM_STYLE_PATH
-        elif self._napari_theme_has_light_bg():
-            return Path(__file__).parent / "styles" / "light.mplstyle"
-        else:
-            return Path(__file__).parent / "styles" / "dark.mplstyle"
-
-    @mpl_style_sheet_path.setter
-    def mpl_style_sheet_path(self, path: Path) -> None:
-        self._mpl_style_sheet_path = Path(path)
-
     def add_single_axes(self) -> None:
         """
         Add a single Axes to the figure.
@@ -94,13 +72,21 @@ class BaseNapariMPLWidget(QWidget):
         """
         # Sets axes.* style.
         # Does not set any text styling set by axes.* keys
-        with mplstyle.context(self.mpl_style_sheet_path):
+        with mplstyle.context(self.napari_theme_style_sheet):
             self.axes = self.figure.add_subplot()
 
-    def _on_napari_theme_changed(self) -> None:
+    def _on_napari_theme_changed(self, event: Event) -> None:
         """
         Called when the napari theme is changed.
+
+        Parameters
+        ----------
+        event : napari.utils.events.Event
+            Event that triggered the callback.
         """
+        self.napari_theme_style_sheet = style_sheet_from_theme(
+            get_theme(event.value, as_dict=False)
+        )
         self._replace_toolbar_icons()
 
     def _napari_theme_has_light_bg(self) -> bool:
@@ -211,15 +197,18 @@ class NapariMPLWidget(BaseNapariMPLWidget):
         """
         return self.viewer.dims.current_step[0]
 
-    def _on_napari_theme_changed(self) -> None:
+    def _on_napari_theme_changed(self, event: Event) -> None:
         """Update MPL toolbar and axis styling when `napari.Viewer.theme` is changed.
 
-        Note:
-            At the moment we only handle the default 'light' and 'dark' napari themes.
+        Parameters
+        ----------
+        event : napari.utils.events.Event
+            Event that triggered the callback.
         """
-        super()._on_napari_theme_changed()
-        self.clear()
-        self.draw()
+        super()._on_napari_theme_changed(event)
+        # use self._draw instead of self.draw to cope with redraw while there are no
+        # layers, this makes the self.clear() obsolete
+        self._draw()
 
     def _setup_callbacks(self) -> None:
         """
@@ -252,13 +241,15 @@ class NapariMPLWidget(BaseNapariMPLWidget):
         """
         # Clearing axes sets new defaults, so need to make sure style is applied when
         # this happens
-        with mplstyle.context(self.mpl_style_sheet_path):
+        with mplstyle.context(self.napari_theme_style_sheet):
+            # everything should be done in the style context
             self.clear()
-        if self.n_selected_layers in self.n_layers_input and all(
-            isinstance(layer, self.input_layer_types) for layer in self.layers
-        ):
-            self.draw()
-        self.canvas.draw()  # type: ignore[no-untyped-call]
+            if self.n_selected_layers in self.n_layers_input and all(
+                isinstance(layer, self.input_layer_types)
+                for layer in self.layers
+            ):
+                self.draw()
+            self.canvas.draw()  # type: ignore[no-untyped-call]
 
     def clear(self) -> None:
         """
@@ -300,7 +291,7 @@ class SingleAxesWidget(NapariMPLWidget):
         """
         Clear the axes.
         """
-        with mplstyle.context(self.mpl_style_sheet_path):
+        with mplstyle.context(self.napari_theme_style_sheet):
             self.axes.clear()
 
 
