@@ -72,7 +72,7 @@ class HistogramWidget(SingleAxesWidget):
         # whole cube into memory.
         if data.dtype.kind == "i":
             # Make sure integer data types have integer sized bins
-            step = (np.max(data) - np.min(data)) // 100
+            step = 1 + (np.max(data) - np.min(data)) // 100
             bins = np.arange(np.min(data), np.max(data) + step, step)
         else:
             bins = np.linspace(np.min(data), np.max(data), 100)
