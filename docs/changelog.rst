@@ -1,5 +1,26 @@
 Changelog
 =========
+2.0.0
+-----
+Changes to custom theming
+~~~~~~~~~~~~~~~~~~~~~~~~~
+``napari-matplotlib`` now uses colours from the current napari theme to customise the
+Matplotlib plots. See `the example on creating a new napari theme
+<https://napari.org/stable/gallery/new_theme.html>`_ for a helpful guide on how to
+create custom napari themes.
+
+This means support for custom Matplotlib styles sheets has been removed.
+
+If you spot any issues with the new theming, please report them at
+https://github.com/matplotlib/napari-matplotlib/issues.
+
+Other changes
+~~~~~~~~~~~~~
+- Histogram bin sizes for integer-type data are now force to be an integer.
+- The ``HistogramWidget`` now has two vertical lines showing the contrast limits used
+  to render the selected layer in the main napari window.
+- Added an example gallery for the ``FeaturesHistogramWidget``.
+
 1.2.0
 -----
 Changes
@@ -7,10 +28,6 @@ Changes
 - Dropped support for Python 3.8, and added support for Python 3.11.
 - Histogram plots of points and vector layers are now coloured with their napari colourmap.
 - Added support for Matplotlib 3.8
-
-Bug fixes
-~~~~~~~~~
-- Use integer bin limits for integer images in ``HistogramWidget``
 
 1.1.0
 -----
