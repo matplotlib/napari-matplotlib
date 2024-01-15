@@ -20,6 +20,16 @@ __all__ = ["HistogramWidget", "FeaturesHistogramWidget"]
 _COLORS = {"r": "tab:red", "g": "tab:green", "b": "tab:blue"}
 
 
+def _get_bins(data: npt.NDArray[Any]) -> npt.NDArray[Any]:
+    if data.dtype.kind in {"i", "u"}:
+        # Make sure integer data types have integer sized bins
+        step = np.ceil(np.ptp(data) / 100)
+        return np.arange(np.min(data), np.max(data) + step, step)
+    else:
+        # For other data types, just have 128 evenly spaced bins
+        return np.linspace(np.min(data), np.max(data), 100)
+
+
 class HistogramWidget(SingleAxesWidget):
     """
     Display a histogram of the currently selected layer.
@@ -70,13 +80,7 @@ class HistogramWidget(SingleAxesWidget):
 
         # Important to calculate bins after slicing 3D data, to avoid reading
         # whole cube into memory.
-        if data.dtype.kind in {"i", "u"}:
-            # Make sure integer data types have integer sized bins
-            step = abs(np.max(data) - np.min(data)) // 100
-            step = max(1, step)
-            bins = np.arange(np.min(data), np.max(data) + step, step)
-        else:
-            bins = np.linspace(np.min(data), np.max(data), 100)
+        bins = _get_bins(data)
 
         if layer.rgb:
             # Histogram RGB channels independently
@@ -215,9 +219,9 @@ class FeaturesHistogramWidget(SingleAxesWidget):
         if data is None:
             return
 
-        _, bins, patches = self.axes.hist(
-            data, bins=50, edgecolor="white", linewidth=0.3
-        )
+        bins = _get_bins(data)
+
+        _, bins, patches = self.axes.hist(data, bins=bins.tolist())
         patches = cast(BarContainer, patches)
 
         # recolor the histogram plot
