@@ -26,8 +26,9 @@ def _get_bins(data: npt.NDArray[Any]) -> npt.NDArray[Any]:
         step = np.ceil(np.ptp(data) / 100)
         return np.arange(np.min(data), np.max(data) + step, step)
     else:
-        # For other data types, just have 128 evenly spaced bins
-        return np.linspace(np.min(data), np.max(data), 100)
+        # For other data types, just have 100 evenly spaced bins
+        # (and 101 bin edges)
+        return np.linspace(np.min(data), np.max(data), 101)
 
 
 class HistogramWidget(SingleAxesWidget):
