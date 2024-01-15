@@ -17,8 +17,8 @@ def test_histogram_2D_bins(make_napari_viewer, astronaut_data):
     viewer.add_image(astronaut_data[0], **astronaut_data[1])
     widget = HistogramWidget(viewer)
     viewer.window.add_dock_widget(widget)
-    widget.bins_start = -50
-    widget.bins_stop = 300
+    widget.bins_start = 0
+    widget.bins_stop = 350
     widget.bins_num = 35
     fig = widget.figure
     # Need to return a copy, as original figure is too eagerley garbage
