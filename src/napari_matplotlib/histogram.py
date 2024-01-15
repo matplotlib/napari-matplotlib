@@ -70,7 +70,7 @@ class HistogramWidget(SingleAxesWidget):
 
         # Important to calculate bins after slicing 3D data, to avoid reading
         # whole cube into memory.
-        if data.dtype.kind == "i":
+        if data.dtype.kind in {"i", "u"}:
             # Make sure integer data types have integer sized bins
             step = 1 + (np.max(data) - np.min(data)) // 100
             bins = np.arange(np.min(data), np.max(data) + step, step)
