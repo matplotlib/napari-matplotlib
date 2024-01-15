@@ -42,7 +42,6 @@ class HistogramWidget(SingleAxesWidget):
 
         # Create widgets for setting bin parameters
         bins_start = QDoubleSpinBox()
-        bins_start.setObjectName("bins start")
         bins_start.setStepType(QAbstractSpinBox.AdaptiveDecimalStepType)
         bins_start.setRange(-1e10, 1e10)
         bins_start.setValue(0)
@@ -51,7 +50,6 @@ class HistogramWidget(SingleAxesWidget):
         bins_start.setDecimals(2)
 
         bins_stop = QDoubleSpinBox()
-        bins_stop.setObjectName("bins stop")
         bins_stop.setStepType(QAbstractSpinBox.AdaptiveDecimalStepType)
         bins_stop.setRange(-1e10, 1e10)
         bins_stop.setValue(100)
@@ -60,7 +58,6 @@ class HistogramWidget(SingleAxesWidget):
         bins_stop.setDecimals(2)
 
         bins_num = QSpinBox()
-        bins_num.setObjectName("bins num")
         bins_num.setRange(1, 100_000)
         bins_num.setValue(101)
         bins_num.setWrapping(False)
@@ -83,6 +80,13 @@ class HistogramWidget(SingleAxesWidget):
         bins_start.valueChanged.connect(self._draw)
         bins_stop.valueChanged.connect(self._draw)
         bins_num.valueChanged.connect(self._draw)
+
+        # Store widgets for later usage
+        self._bin_widgets = {
+            "start": bins_start,
+            "stop": bins_stop,
+            "num": bins_num,
+        }
 
         self._update_layers(None)
         self.viewer.events.theme.connect(self._on_napari_theme_changed)
@@ -108,12 +112,17 @@ class HistogramWidget(SingleAxesWidget):
         is_unsigned = layer_data.dtype.kind == "u"
         minimum_value = 0 if is_unsigned else -1e10
 
-        bins_start = self.findChild(QDoubleSpinBox, name="bins start")
-        bins_stop = self.findChild(QDoubleSpinBox, name="bins stop")
-        bins_start.setDecimals(n_decimals)
-        bins_stop.setDecimals(n_decimals)
-        bins_start.setMinimum(minimum_value)
-        bins_stop.setMinimum(minimum_value)
+        # Disable callbacks whilst widget values might change
+        for widget in self._bin_widgets.values():
+            widget.blockSignals(True)
+
+        self._bin_widgets["start"].setDecimals(n_decimals)
+        self._bin_widgets["stop"].setDecimals(n_decimals)
+        self._bin_widgets["start"].setMinimum(minimum_value)
+        self._bin_widgets["stop"].setMinimum(minimum_value)
+
+        for widget in self._bin_widgets.values():
+            widget.blockSignals(False)
 
     def _update_contrast_lims(self) -> None:
         for lim, line in zip(
@@ -138,39 +147,46 @@ class HistogramWidget(SingleAxesWidget):
         else:
             bins = np.linspace(np.min(data), np.max(data), 100)
 
+        # Disable callbacks whilst setting widget values
+        for widget in self._bin_widgets.values():
+            widget.blockSignals(True)
+
         self.bins_start = bins[0]
         self.bins_stop = bins[-1]
         self.bins_num = bins.size
 
+        for widget in self._bin_widgets.values():
+            widget.blockSignals(False)
+
     @property
     def bins_start(self) -> float:
         """Minimum bin edge"""
-        return self.findChild(QDoubleSpinBox, name="bins start").value()
+        return self._bin_widgets["start"].value()
 
     @bins_start.setter
     def bins_start(self, start: Union[int, float]) -> None:
         """Set the minimum bin edge"""
-        self.findChild(QDoubleSpinBox, name="bins start").setValue(start)
+        self._bin_widgets["start"].setValue(start)
 
     @property
     def bins_stop(self) -> float:
         """Maximum bin edge"""
-        return self.findChild(QDoubleSpinBox, name="bins stop").value()
+        return self._bin_widgets["stop"].value()
 
     @bins_stop.setter
     def bins_stop(self, stop: Union[int, float]) -> None:
         """Set the maximum bin edge"""
-        self.findChild(QDoubleSpinBox, name="bins stop").setValue(stop)
+        self._bin_widgets["stop"].setValue(stop)
 
     @property
     def bins_num(self) -> int:
         """Number of bins to use"""
-        return self.findChild(QSpinBox, name="bins num").value()
+        return self._bin_widgets["num"].value()
 
     @bins_num.setter
     def bins_num(self, num: int) -> None:
         """Set the number of bins to use"""
-        self.findChild(QSpinBox, name="bins num").setValue(num)
+        self._bin_widgets["num"].setValue(num)
 
     def _get_layer_data(self, layer: napari.layers.Layer) -> npt.NDArray[Any]:
         """Get the data associated with a given layer"""
