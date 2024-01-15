@@ -148,7 +148,7 @@ class HistogramWidget(SingleAxesWidget):
 
         self.bins_start = bins[0]
         self.bins_stop = bins[-1]
-        self.bins_num = bins.size
+        self.bins_num = bins.size - 1
 
         for widget in self._bin_widgets.values():
             widget.blockSignals(False)
@@ -208,11 +208,13 @@ class HistogramWidget(SingleAxesWidget):
         # whole cube into memory.
         if data.dtype.kind in {"i", "u"}:
             # Make sure integer data types have integer sized bins
-            step = abs(self.bins_stop - self.bins_start) // (self.bins_num - 1)
+            step = abs(self.bins_stop - self.bins_start) // (self.bins_num)
             step = max(1, step)
             bins = np.arange(self.bins_start, self.bins_stop + step, step)
         else:
-            bins = np.linspace(self.bins_start, self.bins_stop, self.bins_num)
+            bins = np.linspace(
+                self.bins_start, self.bins_stop, self.bins_num + 1
+            )
 
         if layer.rgb:
             # Histogram RGB channels independently
