@@ -95,6 +95,26 @@ class HistogramWidget(SingleAxesWidget):
         for layer in self.viewer.layers:
             layer.events.contrast_limits.connect(self._update_contrast_lims)
 
+        if not self.layers:
+            return
+
+        # Reset to bin start, stop and step
+        layer_data = self._get_layer_data(self.layers[0])
+        self.autoset_widget_bins(data=layer_data)
+
+        # Only allow integer bins for integer data
+        # And only allow values greater than 0 for unsigned integers
+        n_decimals = 0 if np.issubdtype(layer_data.dtype, np.integer) else 2
+        is_unsigned = layer_data.dtype.kind == "u"
+        minimum_value = 0 if is_unsigned else -1e10
+
+        bins_start = self.findChild(QDoubleSpinBox, name="bins start")
+        bins_stop = self.findChild(QDoubleSpinBox, name="bins stop")
+        bins_start.setDecimals(n_decimals)
+        bins_stop.setDecimals(n_decimals)
+        bins_start.setMinimum(minimum_value)
+        bins_stop.setMinimum(minimum_value)
+
     def _update_contrast_lims(self) -> None:
         for lim, line in zip(
             self.layers[0].contrast_limits, self._contrast_lines
@@ -102,6 +122,25 @@ class HistogramWidget(SingleAxesWidget):
             line.set_xdata(lim)
 
         self.figure.canvas.draw()
+
+    def autoset_widget_bins(self, data: npt.NDArray[Any]) -> None:
+        """Update widgets with bins determined from the image data"""
+
+        if data.dtype.kind in {"i", "u"}:
+            # Make sure integer data types have integer sized bins
+            # We can't use unsigned ints when calculating the step, otherwise
+            # the following warning is raised:
+            # 'RuntimeWarning: overflow encountered in scalar subtract'
+            step = abs(np.min(data).astype(int) - np.max(data).astype(int) // 100)
+            step = max(1, step)
+            bins = np.arange(np.min(data), np.max(data) + step, step)
+        else:
+            bins = np.linspace(np.min(data), np.max(data), 100)
+
+        self.bins_start = bins[0]
+        self.bins_stop = bins[-1]
+        self.bins_num = bins.size
+
 
     @property
     def bins_start(self) -> float:
@@ -133,25 +172,6 @@ class HistogramWidget(SingleAxesWidget):
         """Set the number of bins to use"""
         self.findChild(QSpinBox, name="bins num").setValue(num)
 
-    def autoset_widget_bins(self, data: npt.NDArray[Any]) -> None:
-        """Update widgets with bins determined from the image data"""
-        if data.dtype.kind in {"i", "u"}:
-            # Make sure integer data types have integer sized bins
-            # We can't use unsigned ints when calculating the step, otherwise
-            # the following warning is raised:
-            # 'RuntimeWarning: overflow encountered in scalar subtract'
-            step = (
-                abs(np.min(data).astype(int) - np.max(data).astype(int)) // 100
-            )
-            step = max(1, step)
-            bins = np.arange(np.min(data), np.max(data) + step, step)
-        else:
-            bins = np.linspace(np.min(data), np.max(data), 100)
-
-        self.bins_start = bins[0]
-        self.bins_stop = bins[-1]
-        self.bins_num = bins.size
-
     def _get_layer_data(self, layer: napari.layers.Layer) -> npt.NDArray[Any]:
         """Get the data associated with a given layer"""
         if layer.data.ndim - layer.rgb == 3:
@@ -166,30 +186,6 @@ class HistogramWidget(SingleAxesWidget):
 
         return data
 
-    def on_update_layers(self) -> None:
-        """
-        Called when the layer selection changes by ``self._update_layers()``.
-        """
-        if not self.layers:
-            return
-
-        # Reset to bin start, stop and step
-        layer_data = self._get_layer_data(self.layers[0])
-        self.autoset_widget_bins(data=layer_data)
-
-        # Only allow integer bins for integer data
-        # And only allow values greater than 0 for unsigned integers
-        n_decimals = 0 if np.issubdtype(layer_data.dtype, np.integer) else 2
-        is_unsigned = layer_data.dtype.kind == "u"
-        minimum_value = 0 if is_unsigned else -1e10
-
-        bins_start = self.findChild(QDoubleSpinBox, name="bins start")
-        bins_stop = self.findChild(QDoubleSpinBox, name="bins stop")
-        bins_start.setDecimals(n_decimals)
-        bins_stop.setDecimals(n_decimals)
-        bins_start.setMinimum(minimum_value)
-        bins_stop.setMinimum(minimum_value)
-
     def draw(self) -> None:
         """
         Clear the axes and histogram the currently selected layer/slice.
@@ -201,7 +197,7 @@ class HistogramWidget(SingleAxesWidget):
         # whole cube into memory.
         if data.dtype.kind in {"i", "u"}:
             # Make sure integer data types have integer sized bins
-            step = (self.bins_start - self.bins_stop) // self.bins_num
+            step = abs((self.bins_start - self.bins_stop) // self.bins_num)
             step = max(1, step)
             bins = np.arange(self.bins_start, self.bins_stop + step, step)
         else:
