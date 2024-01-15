@@ -136,12 +136,7 @@ class HistogramWidget(SingleAxesWidget):
         """Update widgets with bins determined from the image data"""
         if data.dtype.kind in {"i", "u"}:
             # Make sure integer data types have integer sized bins
-            # We can't use unsigned ints when calculating the step, otherwise
-            # the following warning is raised:
-            # 'RuntimeWarning: overflow encountered in scalar subtract'
-            step = abs(
-                np.min(data).astype(int) - np.max(data).astype(int) // 100
-            )
+            step = abs(np.max(data) - np.min(data)) // 100
             step = max(1, step)
             bins = np.arange(np.min(data), np.max(data) + step, step)
         else:
@@ -213,7 +208,7 @@ class HistogramWidget(SingleAxesWidget):
         # whole cube into memory.
         if data.dtype.kind in {"i", "u"}:
             # Make sure integer data types have integer sized bins
-            step = abs((self.bins_start - self.bins_stop) // self.bins_num)
+            step = abs(self.bins_stop - self.bins_start) // self.bins_num
             step = max(1, step)
             bins = np.arange(self.bins_start, self.bins_stop + step, step)
         else:
