@@ -135,7 +135,19 @@ class HistogramWidget(SingleAxesWidget):
 
     def autoset_widget_bins(self, data: npt.NDArray[Any]) -> None:
         """Update widgets with bins determined from the image data"""
-        bins = np.linspace(np.min(data), np.max(data), 100, dtype=data.dtype)
+        if data.dtype.kind in {"i", "u"}:
+            # Make sure integer data types have integer sized bins
+            # We can't use unsigned ints when calculating the step, otherwise
+            # the following warning is raised:
+            # 'RuntimeWarning: overflow encountered in scalar subtract'
+            step = (
+                abs(np.min(data).astype(int) - np.max(data).astype(int)) // 100
+            )
+            step = max(1, step)
+            bins = np.arange(np.min(data), np.max(data) + step, step)
+        else:
+            bins = np.linspace(np.min(data), np.max(data), 100)
+
         self.bins_start = bins[0]
         self.bins_stop = bins[-1]
         self.bins_num = bins.size
