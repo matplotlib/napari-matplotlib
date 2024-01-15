@@ -208,7 +208,7 @@ class HistogramWidget(SingleAxesWidget):
         # whole cube into memory.
         if data.dtype.kind in {"i", "u"}:
             # Make sure integer data types have integer sized bins
-            step = abs(self.bins_stop - self.bins_start) // self.bins_num
+            step = abs(self.bins_stop - self.bins_start) // (self.bins_num - 1)
             step = max(1, step)
             bins = np.arange(self.bins_start, self.bins_stop + step, step)
         else:
