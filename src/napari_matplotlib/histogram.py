@@ -4,6 +4,8 @@ import napari
 import numpy as np
 import numpy.typing as npt
 from matplotlib.container import BarContainer
+from napari.layers import Image
+from napari.layers._multiscale_data import MultiScaleData
 from qtpy.QtWidgets import (
     QComboBox,
     QLabel,
@@ -68,14 +70,18 @@ class HistogramWidget(SingleAxesWidget):
         """
         Clear the axes and histogram the currently selected layer/slice.
         """
-        layer = self.layers[0]
+        layer: Image = self.layers[0]
+        data = layer.data
 
-        if layer.data.ndim - layer.rgb == 3:
+        if isinstance(layer.data, MultiScaleData):
+            data = data[layer.data_level]
+
+        if layer.ndim - layer.rgb == 3:
             # 3D data, can be single channel or RGB
-            data = layer.data[self.current_z]
+            # Slice in z dimension
+            data = data[self.current_z]
             self.axes.set_title(f"z={self.current_z}")
-        else:
-            data = layer.data
+
         # Read data into memory if it's a dask array
         data = np.asarray(data)
 
