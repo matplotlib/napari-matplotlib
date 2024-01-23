@@ -4,6 +4,8 @@ import napari
 import numpy as np
 import numpy.typing as npt
 from matplotlib.container import BarContainer
+from napari.layers import Image
+from napari.layers._multiscale_data import MultiScaleData
 from qtpy.QtWidgets import (
     QComboBox,
     QLabel,
@@ -26,8 +28,9 @@ def _get_bins(data: npt.NDArray[Any]) -> npt.NDArray[Any]:
         step = np.ceil(np.ptp(data) / 100)
         return np.arange(np.min(data), np.max(data) + step, step)
     else:
-        # For other data types, just have 128 evenly spaced bins
-        return np.linspace(np.min(data), np.max(data), 100)
+        # For other data types, just have 100 evenly spaced bins
+        # (and 101 bin edges)
+        return np.linspace(np.min(data), np.max(data), 101)
 
 
 class HistogramWidget(SingleAxesWidget):
@@ -67,14 +70,18 @@ class HistogramWidget(SingleAxesWidget):
         """
         Clear the axes and histogram the currently selected layer/slice.
         """
-        layer = self.layers[0]
+        layer: Image = self.layers[0]
+        data = layer.data
 
-        if layer.data.ndim - layer.rgb == 3:
+        if isinstance(layer.data, MultiScaleData):
+            data = data[layer.data_level]
+
+        if layer.ndim - layer.rgb == 3:
             # 3D data, can be single channel or RGB
-            data = layer.data[self.current_z]
+            # Slice in z dimension
+            data = data[self.current_z]
             self.axes.set_title(f"z={self.current_z}")
-        else:
-            data = layer.data
+
         # Read data into memory if it's a dask array
         data = np.asarray(data)
 

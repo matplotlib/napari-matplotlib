@@ -6,14 +6,15 @@ build-backend = "setuptools.build_meta"
 write_to = "src/napari_matplotlib/_version.py"
 
 [tool.pytest.ini_options]
-qt_api = "pyqt6"
-addopts = "--mpl --mpl-baseline-relative"
 filterwarnings = [
     "error",
+    "ignore:(?s).*Pyarrow will become a required dependency of pandas",
     # Coming from vispy
     "ignore:distutils Version classes are deprecated:DeprecationWarning",
     "ignore:`np.bool8` is a deprecated alias for `np.bool_`:DeprecationWarning",
 ]
+qt_api = "pyqt6"
+addopts = "--mpl --mpl-baseline-relative"
 
 [tool.black]
 line-length = 79
