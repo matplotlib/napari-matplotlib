@@ -69,7 +69,10 @@ def test_fallback_if_missing_dimensions(mocker):
     test_css = " Flobble { background-color: rgb(0, 97, 163); } "
     mocker.patch("napari.qt.get_current_stylesheet").return_value = test_css
     with pytest.warns(RuntimeWarning, match="Unable to find DimensionToken"):
-        assert from_napari_css_get_size_of("Flobble", (1, 2)) == QSize(1, 2)
+        with pytest.warns(RuntimeWarning, match="Unable to find Flobble"):
+            assert from_napari_css_get_size_of("Flobble", (1, 2)) == QSize(
+                1, 2
+            )
 
 
 def test_fallback_if_prelude_not_in_css():
