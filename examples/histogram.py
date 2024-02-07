@@ -2,6 +2,7 @@
 Histograms
 ==========
 """
+
 import napari
 
 viewer = napari.Viewer()
