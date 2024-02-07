@@ -2,6 +2,7 @@
 Scatter plots
 =============
 """
+
 import napari
 
 viewer = napari.Viewer()

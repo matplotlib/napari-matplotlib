@@ -2,6 +2,7 @@
 1D slices
 =========
 """
+
 import napari
 
 viewer = napari.Viewer()
