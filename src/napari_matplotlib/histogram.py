@@ -27,15 +27,44 @@ __all__ = ["HistogramWidget", "FeaturesHistogramWidget"]
 _COLORS = {"r": "tab:red", "g": "tab:green", "b": "tab:blue"}
 
 
-def _get_bins(data: npt.NDArray[Any]) -> npt.NDArray[Any]:
+def _get_bins(
+    data: npt.NDArray[Any],
+    num_bins: int = 100,
+    start: Optional[Union[int, float]] = None,
+    stop: Optional[Union[int, float]] = None,
+) -> npt.NDArray[Any]:
+    """Create evenly spaced bins with a given interval.
+
+    If `start` or `stop` are `None`, they will be set based on the minimum
+    and maximum values, respectively, of the data.
+
+    Parameters
+    ----------
+    data : napari.layers.Layer.data
+        Napari layer data.
+    num_bins : integer, optional
+        Number of evenly-spaced bins to create.
+    start : integer or real, optional
+        Start bin edge. Defaults to the minimum value of `data`.
+    stop : integer or real, optional
+        Stop bin edge. Defaults to the maximum value of `data`.
+
+    Returns
+    -------
+    bin_edges : numpy.ndarray
+        Array of evenly spaced bin edges.
+    """
+    start = np.min(data) if start is None else start
+    stop = np.max(data) if stop is None else stop
+
     if data.dtype.kind in {"i", "u"}:
         # Make sure integer data types have integer sized bins
-        step = np.ceil(np.ptp(data) / 100)
-        return np.arange(np.min(data), np.max(data) + step, step)
+        step = np.ceil((stop - start) / num_bins)
+        return np.arange(start, stop + step, step)
     else:
-        # For other data types, just have 100 evenly spaced bins
-        # (and 101 bin edges)
-        return np.linspace(np.min(data), np.max(data), 101)
+        # For other data types we can use exactly `num_bins` bins
+        # (and `num_bins` + 1 bin edges)
+        return np.linspace(start, stop, num_bins + 1)
 
 
 class HistogramWidget(SingleAxesWidget):
@@ -217,15 +246,12 @@ class HistogramWidget(SingleAxesWidget):
 
         # Important to calculate bins after slicing 3D data, to avoid reading
         # whole cube into memory.
-        if data.dtype.kind in {"i", "u"}:
-            # Make sure integer data types have integer sized bins
-            step = abs(self.bins_stop - self.bins_start) // (self.bins_num)
-            step = max(1, step)
-            bins = np.arange(self.bins_start, self.bins_stop + step, step)
-        else:
-            bins = np.linspace(
-                self.bins_start, self.bins_stop, self.bins_num + 1
-            )
+        bins = _get_bins(
+            data,
+            num_bins=self.bins_num,
+            start=self.bins_start,
+            stop=self.bins_stop,
+        )
 
         if layer.rgb:
             # Histogram RGB channels independently
