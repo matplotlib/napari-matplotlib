@@ -1,5 +1,13 @@
 Changelog
 =========
+2.0.1
+-----
+Bug fixes
+~~~~~~~~~
+- Fixed using the ``HistogramWidget`` with layers containing multiscale data.
+- Make sure ``HistogramWidget`` uses 100 bins (not 99) when floating point data is
+  selected.
+
 2.0.0
 -----
 Changes to custom theming
