@@ -1,4 +1,4 @@
-from typing import Any, Optional, cast
+from typing import Any, Optional, Union, cast
 
 import napari
 import numpy as np
@@ -7,8 +7,13 @@ from matplotlib.container import BarContainer
 from napari.layers import Image
 from napari.layers._multiscale_data import MultiScaleData
 from qtpy.QtWidgets import (
+    QAbstractSpinBox,
     QComboBox,
+    QDoubleSpinBox,
+    QFormLayout,
+    QGroupBox,
     QLabel,
+    QSpinBox,
     QVBoxLayout,
     QWidget,
 )
@@ -22,15 +27,44 @@ __all__ = ["HistogramWidget", "FeaturesHistogramWidget"]
 _COLORS = {"r": "tab:red", "g": "tab:green", "b": "tab:blue"}
 
 
-def _get_bins(data: npt.NDArray[Any]) -> npt.NDArray[Any]:
+def _get_bins(
+    data: npt.NDArray[Any],
+    num_bins: int = 100,
+    start: Optional[Union[int, float]] = None,
+    stop: Optional[Union[int, float]] = None,
+) -> npt.NDArray[Any]:
+    """Create evenly spaced bins with a given interval.
+
+    If `start` or `stop` are `None`, they will be set based on the minimum
+    and maximum values, respectively, of the data.
+
+    Parameters
+    ----------
+    data : napari.layers.Layer.data
+        Napari layer data.
+    num_bins : integer, optional
+        Number of evenly-spaced bins to create.
+    start : integer or real, optional
+        Start bin edge. Defaults to the minimum value of `data`.
+    stop : integer or real, optional
+        Stop bin edge. Defaults to the maximum value of `data`.
+
+    Returns
+    -------
+    bin_edges : numpy.ndarray
+        Array of evenly spaced bin edges.
+    """
+    start = np.min(data) if start is None else start
+    stop = np.max(data) if stop is None else stop
+
     if data.dtype.kind in {"i", "u"}:
         # Make sure integer data types have integer sized bins
-        step = np.ceil(np.ptp(data) / 100)
-        return np.arange(np.min(data), np.max(data) + step, step)
+        step = np.ceil((stop - start) / num_bins)
+        return np.arange(start, stop + step, step)
     else:
-        # For other data types, just have 100 evenly spaced bins
-        # (and 101 bin edges)
-        return np.linspace(np.min(data), np.max(data), 101)
+        # For other data types we can use exactly `num_bins` bins
+        # (and `num_bins` + 1 bin edges)
+        return np.linspace(start, stop, num_bins + 1)
 
 
 class HistogramWidget(SingleAxesWidget):
@@ -47,6 +81,55 @@ class HistogramWidget(SingleAxesWidget):
         parent: Optional[QWidget] = None,
     ):
         super().__init__(napari_viewer, parent=parent)
+
+        # Create widgets for setting bin parameters
+        bins_start = QDoubleSpinBox()
+        bins_start.setStepType(QAbstractSpinBox.AdaptiveDecimalStepType)
+        bins_start.setRange(-1e10, 1e10)
+        bins_start.setValue(0)
+        bins_start.setWrapping(False)
+        bins_start.setKeyboardTracking(False)
+        bins_start.setDecimals(2)
+
+        bins_stop = QDoubleSpinBox()
+        bins_stop.setStepType(QAbstractSpinBox.AdaptiveDecimalStepType)
+        bins_stop.setRange(-1e10, 1e10)
+        bins_stop.setValue(100)
+        bins_start.setWrapping(False)
+        bins_stop.setKeyboardTracking(False)
+        bins_stop.setDecimals(2)
+
+        bins_num = QSpinBox()
+        bins_num.setRange(1, 100_000)
+        bins_num.setValue(101)
+        bins_num.setWrapping(False)
+        bins_num.setKeyboardTracking(False)
+
+        # Set bins widget layout
+        bins_selection_layout = QFormLayout()
+        bins_selection_layout.addRow("start", bins_start)
+        bins_selection_layout.addRow("stop", bins_stop)
+        bins_selection_layout.addRow("num", bins_num)
+
+        # Group the widgets and add to main layout
+        bins_widget_group = QGroupBox("Bins")
+        bins_widget_group_layout = QVBoxLayout()
+        bins_widget_group_layout.addLayout(bins_selection_layout)
+        bins_widget_group.setLayout(bins_widget_group_layout)
+        self.layout().addWidget(bins_widget_group)
+
+        # Add callbacks
+        bins_start.valueChanged.connect(self._draw)
+        bins_stop.valueChanged.connect(self._draw)
+        bins_num.valueChanged.connect(self._draw)
+
+        # Store widgets for later usage
+        self._bin_widgets = {
+            "start": bins_start,
+            "stop": bins_stop,
+            "num": bins_num,
+        }
+
         self._update_layers(None)
         self.viewer.events.theme.connect(self._on_napari_theme_changed)
 
@@ -58,6 +141,31 @@ class HistogramWidget(SingleAxesWidget):
         for layer in self.viewer.layers:
             layer.events.contrast_limits.connect(self._update_contrast_lims)
 
+        if not self.layers:
+            return
+
+        # Reset the bin start, stop and step values based on new layer data
+        layer_data = self._get_layer_data(self.layers[0])
+        self.autoset_widget_bins(data=layer_data)
+
+        # Only allow integer bins for integer data
+        # And only allow values greater than 0 for unsigned integers
+        n_decimals = 0 if np.issubdtype(layer_data.dtype, np.integer) else 2
+        is_unsigned = layer_data.dtype.kind == "u"
+        minimum_value = 0 if is_unsigned else -1e10
+
+        # Disable callbacks whilst widget values might change
+        for widget in self._bin_widgets.values():
+            widget.blockSignals(True)
+
+        self._bin_widgets["start"].setDecimals(n_decimals)
+        self._bin_widgets["stop"].setDecimals(n_decimals)
+        self._bin_widgets["start"].setMinimum(minimum_value)
+        self._bin_widgets["stop"].setMinimum(minimum_value)
+
+        for widget in self._bin_widgets.values():
+            widget.blockSignals(False)
+
     def _update_contrast_lims(self) -> None:
         for lim, line in zip(
             self.layers[0].contrast_limits, self._contrast_lines
@@ -66,11 +174,53 @@ class HistogramWidget(SingleAxesWidget):
 
         self.figure.canvas.draw()
 
-    def draw(self) -> None:
-        """
-        Clear the axes and histogram the currently selected layer/slice.
-        """
-        layer: Image = self.layers[0]
+    def autoset_widget_bins(self, data: npt.NDArray[Any]) -> None:
+        """Update widgets with bins determined from the image data"""
+        bins = _get_bins(data)
+
+        # Disable callbacks whilst setting widget values
+        for widget in self._bin_widgets.values():
+            widget.blockSignals(True)
+
+        self.bins_start = bins[0]
+        self.bins_stop = bins[-1]
+        self.bins_num = bins.size - 1
+
+        for widget in self._bin_widgets.values():
+            widget.blockSignals(False)
+
+    @property
+    def bins_start(self) -> float:
+        """Minimum bin edge"""
+        return self._bin_widgets["start"].value()
+
+    @bins_start.setter
+    def bins_start(self, start: Union[int, float]) -> None:
+        """Set the minimum bin edge"""
+        self._bin_widgets["start"].setValue(start)
+
+    @property
+    def bins_stop(self) -> float:
+        """Maximum bin edge"""
+        return self._bin_widgets["stop"].value()
+
+    @bins_stop.setter
+    def bins_stop(self, stop: Union[int, float]) -> None:
+        """Set the maximum bin edge"""
+        self._bin_widgets["stop"].setValue(stop)
+
+    @property
+    def bins_num(self) -> int:
+        """Number of bins to use"""
+        return self._bin_widgets["num"].value()
+
+    @bins_num.setter
+    def bins_num(self, num: int) -> None:
+        """Set the number of bins to use"""
+        self._bin_widgets["num"].setValue(num)
+
+    def _get_layer_data(self, layer: napari.layers.Layer) -> npt.NDArray[Any]:
+        """Get the data associated with a given layer"""
         data = layer.data
 
         if isinstance(layer.data, MultiScaleData):
@@ -85,9 +235,23 @@ class HistogramWidget(SingleAxesWidget):
         # Read data into memory if it's a dask array
         data = np.asarray(data)
 
+        return data
+
+    def draw(self) -> None:
+        """
+        Clear the axes and histogram the currently selected layer/slice.
+        """
+        layer: Image = self.layers[0]
+        data = self._get_layer_data(layer)
+
         # Important to calculate bins after slicing 3D data, to avoid reading
         # whole cube into memory.
-        bins = _get_bins(data)
+        bins = _get_bins(
+            data,
+            num_bins=self.bins_num,
+            start=self.bins_start,
+            stop=self.bins_stop,
+        )
 
         if layer.rgb:
             # Histogram RGB channels independently

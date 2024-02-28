@@ -28,6 +28,7 @@ Other changes
 - The ``HistogramWidget`` now has two vertical lines showing the contrast limits used
   to render the selected layer in the main napari window.
 - Added an example gallery for the ``FeaturesHistogramWidget``.
+- Add widgets for setting bin parameters for ``HistogramWidget``.
 
 1.2.0
 -----
