@@ -58,13 +58,15 @@ jobs:
         if: ${{ always() }}
 
       - name: Coverage
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         # Don't run coverage on merge queue CI to avoid duplicating reports
         # to codecov. See https://github.com/matplotlib/napari-matplotlib/issues/155
         if: github.event_name != 'merge_group'
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true
+
+
 
   deploy:
     # this will run when you have tagged a commit, starting with "v*"
