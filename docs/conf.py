@@ -33,6 +33,7 @@ extensions = [
     "sphinx_automodapi.automodapi",
     "sphinx_automodapi.smart_resolver",
     "sphinx.ext.intersphinx",
+    "qtgallery",
 ]
 
 sphinx_gallery_conf = {
@@ -40,6 +41,7 @@ sphinx_gallery_conf = {
     "image_scrapers": (qtgallery.qtscraper,),
     "reset_modules": (qtgallery.reset_qapp,),
 }
+suppress_warnings = ["config.cache"]
 
 qtgallery_conf = {
     "xvfb_size": (640, 480),
