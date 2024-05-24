@@ -1,4 +1,3 @@
-from typing import Optional, Union
 from warnings import warn
 
 import napari.qt
@@ -12,7 +11,7 @@ class Interval:
     An integer interval.
     """
 
-    def __init__(self, lower_bound: Optional[int], upper_bound: Optional[int]):
+    def __init__(self, lower_bound: int | None, upper_bound: int | None):
         """
         Parameters
         ----------
@@ -48,7 +47,7 @@ class Interval:
         return True
 
     @property
-    def _helper_text(self) -> Optional[str]:
+    def _helper_text(self) -> str | None:
         """
         Helper text for widgets.
         """
@@ -86,9 +85,7 @@ def _has_id(nodes: list[tinycss2.ast.Node], id_name: str) -> bool:
     )
 
 
-def _get_dimension(
-    nodes: list[tinycss2.ast.Node], id_name: str
-) -> Union[int, None]:
+def _get_dimension(nodes: list[tinycss2.ast.Node], id_name: str) -> int | None:
     """
     Get the value of the DimensionToken for the IdentToken `id_name`.
 

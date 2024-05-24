@@ -12,6 +12,8 @@ filterwarnings = [
     # Coming from vispy
     "ignore:distutils Version classes are deprecated:DeprecationWarning",
     "ignore:`np.bool8` is a deprecated alias for `np.bool_`:DeprecationWarning",
+    # Coming from pydantic via napari
+    "ignore:Pickle, copy, and deepcopy support will be removed from itertools in Python 3.14.:DeprecationWarning"
 ]
 qt_api = "pyqt6"
 addopts = "--mpl --mpl-baseline-relative"
@@ -24,7 +26,7 @@ profile = "black"
 line_length = 79
 
 [tool.ruff]
-target-version = "py39"
+target-version = "py310"
 select = ["I", "UP", "F", "E", "W", "D"]
 ignore = [
     "D100", # Missing docstring in public module
@@ -46,7 +48,7 @@ fix = true
 convention = "numpy"
 
 [tool.mypy]
-python_version = "3.9"
+python_version = "3.10"
 # Block below are checks that form part of mypy 'strict' mode
 strict = true
 disallow_subclassing_any = false # TODO: fix

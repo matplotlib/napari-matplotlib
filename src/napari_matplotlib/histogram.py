@@ -1,4 +1,4 @@
-from typing import Any, Optional, cast
+from typing import Any, cast
 
 import napari
 import numpy as np
@@ -44,7 +44,7 @@ class HistogramWidget(SingleAxesWidget):
     def __init__(
         self,
         napari_viewer: napari.viewer.Viewer,
-        parent: Optional[QWidget] = None,
+        parent: QWidget | None = None,
     ):
         super().__init__(napari_viewer, parent=parent)
         self._update_layers(None)
@@ -121,7 +121,7 @@ class FeaturesHistogramWidget(SingleAxesWidget):
     def __init__(
         self,
         napari_viewer: napari.viewer.Viewer,
-        parent: Optional[QWidget] = None,
+        parent: QWidget | None = None,
     ):
         super().__init__(napari_viewer, parent=parent)
 
@@ -137,12 +137,12 @@ class FeaturesHistogramWidget(SingleAxesWidget):
         self._update_layers(None)
 
     @property
-    def x_axis_key(self) -> Optional[str]:
+    def x_axis_key(self) -> str | None:
         """Key to access x axis data from the FeaturesTable"""
         return self._x_axis_key
 
     @x_axis_key.setter
-    def x_axis_key(self, key: Optional[str]) -> None:
+    def x_axis_key(self, key: str | None) -> None:
         self._x_axis_key = key
         self._draw()
 
@@ -166,7 +166,7 @@ class FeaturesHistogramWidget(SingleAxesWidget):
         else:
             return self.layers[0].features.keys()
 
-    def _get_data(self) -> tuple[Optional[npt.NDArray[Any]], str]:
+    def _get_data(self) -> tuple[npt.NDArray[Any] | None, str]:
         """Get the plot data.
 
         Returns

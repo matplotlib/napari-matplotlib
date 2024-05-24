@@ -1,4 +1,4 @@
-from typing import Any, Optional, Union
+from typing import Any
 
 import napari
 import numpy.typing as npt
@@ -100,7 +100,7 @@ class FeaturesScatterWidget(ScatterBaseWidget):
     def __init__(
         self,
         napari_viewer: napari.viewer.Viewer,
-        parent: Optional[QWidget] = None,
+        parent: QWidget | None = None,
     ):
         super().__init__(napari_viewer, parent=parent)
 
@@ -118,7 +118,7 @@ class FeaturesScatterWidget(ScatterBaseWidget):
         self._update_layers(None)
 
     @property
-    def x_axis_key(self) -> Union[str, None]:
+    def x_axis_key(self) -> str | None:
         """
         Key for the x-axis data.
         """
@@ -133,7 +133,7 @@ class FeaturesScatterWidget(ScatterBaseWidget):
         self._draw()
 
     @property
-    def y_axis_key(self) -> Union[str, None]:
+    def y_axis_key(self) -> str | None:
         """
         Key for the y-axis data.
         """
