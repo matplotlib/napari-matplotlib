@@ -12,6 +12,10 @@ on:
   workflow_dispatch:
   merge_group:
 
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
 jobs:
   test:
     name: ${{ matrix.platform }} py${{ matrix.python-version }}
