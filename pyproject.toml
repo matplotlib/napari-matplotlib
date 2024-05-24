@@ -12,6 +12,8 @@ filterwarnings = [
     # Coming from vispy
     "ignore:distutils Version classes are deprecated:DeprecationWarning",
     "ignore:`np.bool8` is a deprecated alias for `np.bool_`:DeprecationWarning",
+    # Coming from pydantic via napari
+    "ignore:Pickle, copy, and deepcopy support will be removed from itertools in Python 3.14.:DeprecationWarning"
 ]
 qt_api = "pyqt6"
 addopts = "--mpl --mpl-baseline-relative"
