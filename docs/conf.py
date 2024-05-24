@@ -36,7 +36,7 @@ extensions = [
 ]
 
 
-def reset_napari(gallery_conf, fname):
+def reset_napari(gallery_conf, fname):  # type: ignore[no-untyped-def]
     from napari.settings import get_settings
     from qtpy.QtWidgets import QApplication
 
@@ -49,7 +49,7 @@ def reset_napari(gallery_conf, fname):
     QApplication.exec_ = lambda _: None
 
 
-def napari_scraper(block, block_vars, gallery_conf):
+def napari_scraper(block, block_vars, gallery_conf):  # type: ignore[no-untyped-def]
     """Basic napari window scraper.
 
     Looks for any QtMainWindow instances and takes a screenshot of them.
