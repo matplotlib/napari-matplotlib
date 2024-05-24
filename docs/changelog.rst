@@ -4,7 +4,7 @@ Changelog
 -----
 Dependencies
 ~~~~~~~~~~~~
-napari-matplotlib now adheres to `SPEC 0<https://scientific-python.org/specs/spec-0000/>`_, and has:
+napari-matplotlib now adheres to `SPEC 0 <https://scientific-python.org/specs/spec-0000/>`_, and has:
 - Dropped support for Python 3.9
 - Added support for Python 3.12
 - Added a minimum required numpy verison of 1.23
