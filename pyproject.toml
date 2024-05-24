@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools", "wheel", "setuptools_scm"]
+requires = ["setuptools", "setuptools_scm"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools_scm]
@@ -16,7 +16,11 @@ filterwarnings = [
     "ignore:Pickle, copy, and deepcopy support will be removed from itertools in Python 3.14.:DeprecationWarning"
 ]
 qt_api = "pyqt6"
-addopts = "--mpl --mpl-baseline-relative"
+addopts = ["--mpl", "--mpl-baseline-relative", "--strict-config", "--strict-markers", "-ra"]
+minversion = "7"
+testpaths = ["src/napari_matplotlib/tests"]
+log_cli_level = "INFO"
+xfail_strict = true
 
 [tool.black]
 line-length = 79
