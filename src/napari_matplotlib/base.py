@@ -1,6 +1,5 @@
 import os
 from pathlib import Path
-from typing import Optional
 
 import matplotlib.style as mplstyle
 import napari
@@ -38,7 +37,7 @@ class BaseNapariMPLWidget(QWidget):
     def __init__(
         self,
         napari_viewer: napari.Viewer,
-        parent: Optional[QWidget] = None,
+        parent: QWidget | None = None,
     ):
         super().__init__(parent=parent)
         self.viewer = napari_viewer
@@ -173,7 +172,7 @@ class NapariMPLWidget(BaseNapariMPLWidget):
     def __init__(
         self,
         napari_viewer: napari.viewer.Viewer,
-        parent: Optional[QWidget] = None,
+        parent: QWidget | None = None,
     ):
         super().__init__(napari_viewer=napari_viewer, parent=parent)
         self._setup_callbacks()
@@ -282,7 +281,7 @@ class SingleAxesWidget(NapariMPLWidget):
     def __init__(
         self,
         napari_viewer: napari.viewer.Viewer,
-        parent: Optional[QWidget] = None,
+        parent: QWidget | None = None,
     ):
         super().__init__(napari_viewer=napari_viewer, parent=parent)
         self.add_single_axes()
