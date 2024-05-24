@@ -64,7 +64,7 @@ jobs:
         if: github.event_name != 'merge_group'
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          fail_ci_if_error: true
+          fail_ci_if_error: false
 
 
 
