@@ -1,4 +1,4 @@
-from typing import Any, Optional, Union, cast
+from typing import Any, cast
 
 import napari
 import numpy as np
@@ -30,8 +30,8 @@ _COLORS = {"r": "tab:red", "g": "tab:green", "b": "tab:blue"}
 def _get_bins(
     data: npt.NDArray[Any],
     num_bins: int = 100,
-    start: Optional[Union[int, float]] = None,
-    stop: Optional[Union[int, float]] = None,
+    start: int | float | None = None,
+    stop: int | float | None = None,
 ) -> npt.NDArray[Any]:
     """Create evenly spaced bins with a given interval.
 
@@ -195,7 +195,7 @@ class HistogramWidget(SingleAxesWidget):
         return self._bin_widgets["start"].value()
 
     @bins_start.setter
-    def bins_start(self, start: Union[int, float]) -> None:
+    def bins_start(self, start: int | float) -> None:
         """Set the minimum bin edge"""
         self._bin_widgets["start"].setValue(start)
 
@@ -205,7 +205,7 @@ class HistogramWidget(SingleAxesWidget):
         return self._bin_widgets["stop"].value()
 
     @bins_stop.setter
-    def bins_stop(self, stop: Union[int, float]) -> None:
+    def bins_stop(self, stop: int | float) -> None:
         """Set the maximum bin edge"""
         self._bin_widgets["stop"].setValue(stop)
 
