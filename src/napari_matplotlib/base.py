@@ -245,7 +245,7 @@ class NapariMPLWidget(BaseNapariMPLWidget):
         self.layers = sorted(self.layers, key=lambda layer: layer.name)
         if self._valid_layer_selection:
             self.on_update_layers()
-        self._draw()
+            self._draw()
 
     def _draw(self) -> None:
         """
