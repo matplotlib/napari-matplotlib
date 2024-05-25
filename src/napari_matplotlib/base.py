@@ -229,6 +229,10 @@ class NapariMPLWidget(BaseNapariMPLWidget):
         """
         Return `True` if layer selection is valid.
         """
+        print(f"{self.n_selected_layers=}")
+        print(f"{self.n_layers_input=}")
+        print(f"{self.layers=}")
+        print(f"{self.input_layer_types=}")
         return self.n_selected_layers in self.n_layers_input and all(
             isinstance(layer, self.input_layer_types) for layer in self.layers
         )
