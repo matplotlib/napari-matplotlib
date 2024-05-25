@@ -31,7 +31,10 @@ line_length = 79
 
 [tool.ruff]
 target-version = "py310"
-select = ["I", "UP", "F", "E", "W", "D"]
+fix = true
+
+[tool.ruff.lint]
+select = ["B", "I", "UP", "F", "E", "W", "D"]
 ignore = [
     "D100", # Missing docstring in public module
     "D104", # Missing docstring in public package
@@ -41,14 +44,13 @@ ignore = [
     "D401", # First line of docstring should be in imperative mood
 
 ]
-fix = true
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "docs/*" = ["D"]
 "examples/*" = ["D"]
 "src/napari_matplotlib/tests/*" = ["D"]
 
-[tool.ruff.pydocstyle]
+[tool.ruff.lint.pydocstyle]
 convention = "numpy"
 
 [tool.mypy]
@@ -58,6 +60,8 @@ strict = true
 disallow_subclassing_any = false # TODO: fix
 warn_return_any = false # TODO: fix
 ignore_missing_imports = true
+
+enable_error_code = ["ignore-without-code", "redundant-expr", "truthy-bool"]
 
 [[tool.mypy.overrides]]
 module = [

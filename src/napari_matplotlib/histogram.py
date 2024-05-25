@@ -60,7 +60,7 @@ class HistogramWidget(SingleAxesWidget):
 
     def _update_contrast_lims(self) -> None:
         for lim, line in zip(
-            self.layers[0].contrast_limits, self._contrast_lines
+            self.layers[0].contrast_limits, self._contrast_lines, strict=False
         ):
             line.set_xdata(lim)
 

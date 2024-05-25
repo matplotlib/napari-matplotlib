@@ -94,14 +94,18 @@ def _get_dimension(nodes: list[tinycss2.ast.Node], id_name: str) -> int | None:
         None if no IdentToken is found.
     """
     cleaned_nodes = [node for node in nodes if node.type != "whitespace"]
-    for name, _, value, _ in zip(*(iter(cleaned_nodes),) * 4):
+    for name, _, value, _ in zip(*(iter(cleaned_nodes),) * 4, strict=False):
         if (
             name.type == "ident"
             and value.type == "dimension"
             and name.value == id_name
         ):
             return value.int_value
-    warn(f"Unable to find DimensionToken for {id_name}", RuntimeWarning)
+    warn(
+        f"Unable to find DimensionToken for {id_name}",
+        RuntimeWarning,
+        stacklevel=1,
+    )
     return None
 
 
@@ -134,6 +138,7 @@ def from_napari_css_get_size_of(
         f"Unable to find {qt_element_name} or unable to find its size in "
         f"the current Napari stylesheet, falling back to {fallback}",
         RuntimeWarning,
+        stacklevel=1,
     )
     return QSize(*fallback)
 
