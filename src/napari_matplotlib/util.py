@@ -1,4 +1,3 @@
-from typing import Optional, Union
 from warnings import warn
 
 import napari.qt
@@ -12,7 +11,7 @@ class Interval:
     An integer interval.
     """
 
-    def __init__(self, lower_bound: Optional[int], upper_bound: Optional[int]):
+    def __init__(self, lower_bound: int | None, upper_bound: int | None):
         """
         Parameters
         ----------
@@ -48,7 +47,7 @@ class Interval:
         return True
 
     @property
-    def _helper_text(self) -> Optional[str]:
+    def _helper_text(self) -> str | None:
         """
         Helper text for widgets.
         """
@@ -86,9 +85,7 @@ def _has_id(nodes: list[tinycss2.ast.Node], id_name: str) -> bool:
     )
 
 
-def _get_dimension(
-    nodes: list[tinycss2.ast.Node], id_name: str
-) -> Union[int, None]:
+def _get_dimension(nodes: list[tinycss2.ast.Node], id_name: str) -> int | None:
     """
     Get the value of the DimensionToken for the IdentToken `id_name`.
 
@@ -97,14 +94,18 @@ def _get_dimension(
         None if no IdentToken is found.
     """
     cleaned_nodes = [node for node in nodes if node.type != "whitespace"]
-    for name, _, value, _ in zip(*(iter(cleaned_nodes),) * 4):
+    for name, _, value, _ in zip(*(iter(cleaned_nodes),) * 4, strict=False):
         if (
             name.type == "ident"
             and value.type == "dimension"
             and name.value == id_name
         ):
             return value.int_value
-    warn(f"Unable to find DimensionToken for {id_name}", RuntimeWarning)
+    warn(
+        f"Unable to find DimensionToken for {id_name}",
+        RuntimeWarning,
+        stacklevel=1,
+    )
     return None
 
 
@@ -137,6 +138,7 @@ def from_napari_css_get_size_of(
         f"Unable to find {qt_element_name} or unable to find its size in "
         f"the current Napari stylesheet, falling back to {fallback}",
         RuntimeWarning,
+        stacklevel=1,
     )
     return QSize(*fallback)
 

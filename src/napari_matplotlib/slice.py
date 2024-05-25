@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Any
 
 import matplotlib.ticker as mticker
 import napari
@@ -30,7 +30,7 @@ class SliceWidget(SingleAxesWidget):
     def __init__(
         self,
         napari_viewer: napari.viewer.Viewer,
-        parent: Optional[QWidget] = None,
+        parent: QWidget | None = None,
     ):
         # Setup figure/axes
         super().__init__(napari_viewer, parent=parent)

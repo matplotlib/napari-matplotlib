@@ -12,6 +12,10 @@ on:
   workflow_dispatch:
   merge_group:
 
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
 jobs:
   test:
     name: ${{ matrix.platform }} py${{ matrix.python-version }}
@@ -20,7 +24,7 @@ jobs:
       fail-fast: false
       matrix:
         platform: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: ['3.9', '3.10', '3.11']
+        python-version: ['3.10', '3.11', '3.12']
 
     steps:
       - uses: actions/checkout@v3
@@ -58,13 +62,15 @@ jobs:
         if: ${{ always() }}
 
       - name: Coverage
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         # Don't run coverage on merge queue CI to avoid duplicating reports
         # to codecov. See https://github.com/matplotlib/napari-matplotlib/issues/155
         if: github.event_name != 'merge_group'
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          fail_ci_if_error: true
+          fail_ci_if_error: false
+
+
 
   deploy:
     # this will run when you have tagged a commit, starting with "v*"

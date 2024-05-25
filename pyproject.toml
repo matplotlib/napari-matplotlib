@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools", "wheel", "setuptools_scm"]
+requires = ["setuptools", "setuptools_scm"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools_scm]
@@ -12,9 +12,15 @@ filterwarnings = [
     # Coming from vispy
     "ignore:distutils Version classes are deprecated:DeprecationWarning",
     "ignore:`np.bool8` is a deprecated alias for `np.bool_`:DeprecationWarning",
+    # Coming from pydantic via napari
+    "ignore:Pickle, copy, and deepcopy support will be removed from itertools in Python 3.14.:DeprecationWarning"
 ]
 qt_api = "pyqt6"
-addopts = "--mpl --mpl-baseline-relative"
+addopts = ["--mpl", "--mpl-baseline-relative", "--strict-config", "--strict-markers", "-ra"]
+minversion = "7"
+testpaths = ["src/napari_matplotlib/tests"]
+log_cli_level = "INFO"
+xfail_strict = true
 
 [tool.black]
 line-length = 79
@@ -24,8 +30,11 @@ profile = "black"
 line_length = 79
 
 [tool.ruff]
-target-version = "py39"
-select = ["I", "UP", "F", "E", "W", "D"]
+target-version = "py310"
+fix = true
+
+[tool.ruff.lint]
+select = ["B", "I", "UP", "F", "E", "W", "D"]
 ignore = [
     "D100", # Missing docstring in public module
     "D104", # Missing docstring in public package
@@ -35,23 +44,24 @@ ignore = [
     "D401", # First line of docstring should be in imperative mood
 
 ]
-fix = true
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "docs/*" = ["D"]
 "examples/*" = ["D"]
 "src/napari_matplotlib/tests/*" = ["D"]
 
-[tool.ruff.pydocstyle]
+[tool.ruff.lint.pydocstyle]
 convention = "numpy"
 
 [tool.mypy]
-python_version = "3.9"
+python_version = "3.10"
 # Block below are checks that form part of mypy 'strict' mode
 strict = true
 disallow_subclassing_any = false # TODO: fix
 warn_return_any = false # TODO: fix
 ignore_missing_imports = true
+
+enable_error_code = ["ignore-without-code", "redundant-expr", "truthy-bool"]
 
 [[tool.mypy.overrides]]
 module = [
