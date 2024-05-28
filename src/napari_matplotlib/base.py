@@ -42,7 +42,7 @@ class BaseNapariMPLWidget(QWidget):
         super().__init__(parent=parent)
         self.viewer = napari_viewer
         self.napari_theme_style_sheet = style_sheet_from_theme(
-            get_theme(napari_viewer.theme, as_dict=False)
+            get_theme(napari_viewer.theme)
         )
 
         # Sets figure.* style
@@ -84,7 +84,7 @@ class BaseNapariMPLWidget(QWidget):
             Event that triggered the callback.
         """
         self.napari_theme_style_sheet = style_sheet_from_theme(
-            get_theme(event.value, as_dict=False)
+            get_theme(event.value)
         )
         self._replace_toolbar_icons()
 
@@ -97,7 +97,7 @@ class BaseNapariMPLWidget(QWidget):
         bool
             True if theme's background colour has hsl lighter than 50%, False if darker.
         """
-        theme = napari.utils.theme.get_theme(self.viewer.theme, as_dict=False)
+        theme = napari.utils.theme.get_theme(self.viewer.theme)
         _, _, bg_lightness = theme.background.as_hsl_tuple()
         return bg_lightness > 0.5
 
