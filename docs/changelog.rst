@@ -9,6 +9,12 @@ napari-matplotlib now adheres to `SPEC 0 <https://scientific-python.org/specs/sp
 - Added support for Python 3.12
 - Added a minimum required numpy verison of 1.23
 
+Bug fixes
+~~~~~~~~~
+- Only trigger layer update code paths if the layer selection is valid for the current
+  widget. This prevents errors when e.g., a labels layer is selected when a widget
+  that does not support a labels layer is open.
+
 2.0.1
 -----
 Bug fixes
