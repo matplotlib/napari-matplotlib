@@ -224,6 +224,15 @@ class NapariMPLWidget(BaseNapariMPLWidget):
             self._update_layers
         )
 
+    @property
+    def _valid_layer_selection(self) -> bool:
+        """
+        Return `True` if layer selection is valid.
+        """
+        return self.n_selected_layers in self.n_layers_input and all(
+            isinstance(layer, self.input_layer_types) for layer in self.layers
+        )
+
     def _update_layers(self, event: napari.utils.events.Event) -> None:
         """
         Update the ``layers`` attribute with currently selected layers and re-draw.
@@ -231,7 +240,8 @@ class NapariMPLWidget(BaseNapariMPLWidget):
         self.layers = list(self.viewer.layers.selection)
         self.layers = sorted(self.layers, key=lambda layer: layer.name)
         self.on_update_layers()
-        self._draw()
+        if self._valid_layer_selection:
+            self._draw()
 
     def _draw(self) -> None:
         """
@@ -243,10 +253,7 @@ class NapariMPLWidget(BaseNapariMPLWidget):
         with mplstyle.context(self.napari_theme_style_sheet):
             # everything should be done in the style context
             self.clear()
-            if self.n_selected_layers in self.n_layers_input and all(
-                isinstance(layer, self.input_layer_types)
-                for layer in self.layers
-            ):
+            if self._valid_layer_selection:
                 self.draw()
             self.canvas.draw()  # type: ignore[no-untyped-call]
 

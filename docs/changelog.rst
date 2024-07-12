@@ -1,6 +1,13 @@
 Changelog
 =========
 
+2.0.3
+-----
+Bug fixes
+~~~~~~~~~
+- Fix an error that happened when the histogram widget was open, but a layer that doesn't support
+  histogramming (e.g., a labels layer) was selected.
+
 2.0.2
 -----
 Dependencies
