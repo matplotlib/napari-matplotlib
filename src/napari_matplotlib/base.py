@@ -229,10 +229,6 @@ class NapariMPLWidget(BaseNapariMPLWidget):
         """
         Return `True` if layer selection is valid.
         """
-        print(f"{self.n_selected_layers=}")
-        print(f"{self.n_layers_input=}")
-        print(f"{self.layers=}")
-        print(f"{self.input_layer_types=}")
         return self.n_selected_layers in self.n_layers_input and all(
             isinstance(layer, self.input_layer_types) for layer in self.layers
         )
@@ -243,8 +239,8 @@ class NapariMPLWidget(BaseNapariMPLWidget):
         """
         self.layers = list(self.viewer.layers.selection)
         self.layers = sorted(self.layers, key=lambda layer: layer.name)
+        self.on_update_layers()
         if self._valid_layer_selection:
-            self.on_update_layers()
             self._draw()
 
     def _draw(self) -> None:
@@ -280,7 +276,6 @@ class NapariMPLWidget(BaseNapariMPLWidget):
         Called when the selected layers are updated.
 
         This is a no-op, and is intended for derived classes to override.
-        It is only called if a selected layer is one of the input layer types.
         """
 
 
