@@ -55,8 +55,10 @@ class HistogramWidget(SingleAxesWidget):
         Called when the selected layers are updated.
         """
         super().on_update_layers()
-        for layer in self.viewer.layers:
-            layer.events.contrast_limits.connect(self._update_contrast_lims)
+        if self._valid_layer_selection:
+            self.layers[0].events.contrast_limits.connect(
+                self._update_contrast_lims
+            )
 
     def _update_contrast_lims(self) -> None:
         for lim, line in zip(
