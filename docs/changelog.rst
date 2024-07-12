@@ -1,6 +1,12 @@
 Changelog
 =========
 
+2.1.0
+-----
+New features
+~~~~~~~~~~~~
+- Added a GUI element to manually set the number of bins in the histogram widgets.
+
 2.0.3
 -----
 Bug fixes
@@ -48,7 +54,6 @@ Other changes
 - The ``HistogramWidget`` now has two vertical lines showing the contrast limits used
   to render the selected layer in the main napari window.
 - Added an example gallery for the ``FeaturesHistogramWidget``.
-- Add widgets for setting bin parameters for ``HistogramWidget``.
 
 1.2.0
 -----
