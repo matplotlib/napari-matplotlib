@@ -1,6 +1,13 @@
 Changelog
 =========
 
+2.0.3
+-----
+Bug fixes
+~~~~~~~~~
+- Fix an error that happened when the histogram widget was open, but a layer that doesn't support
+  histogramming (e.g., a labels layer) was selected.
+
 2.0.2
 -----
 Dependencies
@@ -12,12 +19,6 @@ napari-matplotlib now adheres to `SPEC 0 <https://scientific-python.org/specs/sp
 - Added a minimum required numpy verison of 1.23
 - Pinned the maximum napari version to ``< 0.5``.
   Version 3.0 of ``napari-matplotlib`` will introduce support for ``napari`` version 0.5.
-
-Bug fixes
-~~~~~~~~~
-- Only trigger layer update code paths if the layer selection is valid for the current
-  widget. This prevents errors when e.g., a labels layer is selected when a widget
-  that does not support a labels layer is open.
 
 2.0.1
 -----
