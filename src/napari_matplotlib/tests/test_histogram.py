@@ -152,3 +152,15 @@ def test_change_layer(make_napari_viewer, brain_data, astronaut_data):
     viewer.layers.selection.clear()
     viewer.layers.selection.add(viewer.layers[1])
     assert_figures_not_equal(widget.figure, fig1)
+
+
+def test_change_contrast(make_napari_viewer, astronaut_data):
+    viewer = make_napari_viewer()
+    viewer.add_image(astronaut_data[0], **astronaut_data[1])
+
+    widget = HistogramWidget(viewer)
+    viewer.window.add_dock_widget(widget)
+
+    # update contrast limits of image layer, and check no errors are thrown
+    image_layer = viewer.layers[0]
+    image_layer.contrast_limits = [2, 50]
