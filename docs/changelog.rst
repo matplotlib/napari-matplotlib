@@ -1,6 +1,12 @@
 Changelog
 =========
 
+2.1.0
+-----
+New features
+~~~~~~~~~~~~
+- Added a GUI element to manually set the number of bins in the histogram widgets.
+
 2.0.3
 -----
 Bug fixes
