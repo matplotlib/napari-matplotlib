@@ -15,7 +15,7 @@ def fig_to_array(fig: Figure) -> npt.NDArray[np.uint8]:
         io_buf.seek(0)
         img_arr: npt.NDArray[np.uint8] = np.reshape(
             np.frombuffer(io_buf.getvalue(), dtype=np.uint8),
-            shape=(int(fig.bbox.bounds[3]), int(fig.bbox.bounds[2]), -1),
+            newshape=(int(fig.bbox.bounds[3]), int(fig.bbox.bounds[2]), -1),
         )
     return img_arr
 
