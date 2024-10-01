@@ -13,10 +13,16 @@ filterwarnings = [
     "ignore:distutils Version classes are deprecated:DeprecationWarning",
     "ignore:`np.bool8` is a deprecated alias for `np.bool_`:DeprecationWarning",
     # Coming from pydantic via napari
-    "ignore:Pickle, copy, and deepcopy support will be removed from itertools in Python 3.14.:DeprecationWarning"
+    "ignore:Pickle, copy, and deepcopy support will be removed from itertools in Python 3.14.:DeprecationWarning",
 ]
 qt_api = "pyqt6"
-addopts = ["--mpl", "--mpl-baseline-relative", "--strict-config", "--strict-markers", "-ra"]
+addopts = [
+    "--mpl",
+    "--mpl-baseline-relative",
+    "--strict-config",
+    "--strict-markers",
+    "-ra",
+]
 minversion = "7"
 testpaths = ["src/napari_matplotlib/tests"]
 log_cli_level = "INFO"
@@ -54,17 +60,15 @@ ignore = [
 convention = "numpy"
 
 [tool.mypy]
-python_version = "3.10"
+python_version = "3.12"
 # Block below are checks that form part of mypy 'strict' mode
 strict = true
 disallow_subclassing_any = false # TODO: fix
-warn_return_any = false # TODO: fix
+warn_return_any = false          # TODO: fix
 ignore_missing_imports = true
 
 enable_error_code = ["ignore-without-code", "redundant-expr", "truthy-bool"]
 
 [[tool.mypy.overrides]]
-module = [
-    "napari_matplotlib/tests/*",
-]
+module = ["napari_matplotlib/tests/*"]
 disallow_untyped_defs = false
