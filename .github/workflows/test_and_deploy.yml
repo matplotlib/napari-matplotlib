@@ -54,7 +54,7 @@ jobs:
         run: python -m tox
 
       - name: Upload pytest test results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: pytest-results-${{ matrix.platform }} py${{ matrix.python-version }}
           path: reports/
@@ -83,9 +83,9 @@ jobs:
     permissions:
       id-token: write
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: "3.x"
       - name: Install build
