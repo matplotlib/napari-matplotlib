@@ -15,7 +15,7 @@ A plugin to create Matplotlib plots from napari layers
 ## Introduction
 `napari-matplotlib` is a bridge between `napari` and `matplotlib`, making it easy to create publication quality `Matplotlib` plots based on the data loaded in `napari` layers.
 
-Documentaiton can be found at https://napari-matplotlib.github.io/
+Documentation can be found at https://napari-matplotlib.github.io/
 
 ## Contributing
 
