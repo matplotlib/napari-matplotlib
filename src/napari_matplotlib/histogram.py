@@ -28,7 +28,7 @@ _COLORS = {"r": "tab:red", "g": "tab:green", "b": "tab:blue"}
 def _get_bins(
     data: npt.NDArray[Any],
     num_bins: int = 100,
-) -> npt.NDArray[Any]:
+) -> npt.NDArray[np.floating]:
     """Create evenly spaced bins with a given interval.
 
     Parameters
@@ -161,13 +161,13 @@ class HistogramWidget(SingleAxesWidget):
             for i, c in enumerate("rgb"):
                 self.axes.hist(
                     data[..., i].ravel(),
-                    bins=bins.tolist(),
+                    bins=bins.tolist(),  # type: ignore[arg-type]
                     label=c,
                     histtype="step",
                     color=_COLORS[c],
                 )
         else:
-            self.axes.hist(data.ravel(), bins=bins.tolist(), label=layer.name)
+            self.axes.hist(data.ravel(), bins=bins.tolist(), label=layer.name)  # type: ignore[arg-type]
 
         self._contrast_lines = [
             self.axes.axvline(lim, color="white")
@@ -297,7 +297,7 @@ class FeaturesHistogramWidget(SingleAxesWidget):
 
         bins = _get_bins(data)
 
-        _, bins, patches = self.axes.hist(data, bins=bins.tolist())
+        _, bins, patches = self.axes.hist(data, bins=bins.tolist())  # type: ignore[arg-type]
         patches = cast(BarContainer, patches)
 
         # recolor the histogram plot
