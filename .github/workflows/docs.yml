@@ -17,9 +17,9 @@ jobs:
     name: Build & Upload Artifact
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v3
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.10"
 
@@ -38,7 +38,7 @@ jobs:
           working-directory: ./docs
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: docs
           path: docs/_build
@@ -49,7 +49,7 @@ jobs:
     needs: build-docs
     if: contains(github.ref, 'tags')
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - uses: actions/download-artifact@v4.1.7
       with:
         name: docs
