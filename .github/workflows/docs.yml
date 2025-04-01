@@ -50,7 +50,7 @@ jobs:
     if: contains(github.ref, 'tags')
     steps:
     - uses: actions/checkout@v4
-    - uses: actions/download-artifact@v4.1.9
+    - uses: actions/download-artifact@v4.2.1
       with:
         name: docs
 
