@@ -161,13 +161,13 @@ class HistogramWidget(SingleAxesWidget):
             for i, c in enumerate("rgb"):
                 self.axes.hist(
                     data[..., i].ravel(),
-                    bins=bins.tolist(),  # type: ignore[arg-type]
+                    bins=bins.tolist(),
                     label=c,
                     histtype="step",
                     color=_COLORS[c],
                 )
         else:
-            self.axes.hist(data.ravel(), bins=bins.tolist(), label=layer.name)  # type: ignore[arg-type]
+            self.axes.hist(data.ravel(), bins=bins.tolist(), label=layer.name)
 
         self._contrast_lines = [
             self.axes.axvline(lim, color="white")
@@ -297,7 +297,7 @@ class FeaturesHistogramWidget(SingleAxesWidget):
 
         bins = _get_bins(data)
 
-        _, bins, patches = self.axes.hist(data, bins=bins.tolist())  # type: ignore[arg-type]
+        _, bins, patches = self.axes.hist(data, bins=bins.tolist())
         patches = cast(BarContainer, patches)
 
         # recolor the histogram plot
