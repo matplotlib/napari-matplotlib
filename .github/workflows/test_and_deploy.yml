@@ -35,7 +35,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       # these libraries enable testing on Qt on linux
-      - uses: tlambert03/setup-qt-libs@v1
+      - uses: tlambert03/setup-qt-libs@19e4ef2d781d81f5f067182e228b54ec90d23b76 # v1
 
       # strategy borrowed from vispy for installing opengl libs on windows
       - name: Install Windows OpenGL
@@ -62,7 +62,7 @@ jobs:
         if: ${{ always() }}
 
       - name: Coverage
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@18283e04ce6e62d37312384ff67231eb8fd56d24 # v5
         # Don't run coverage on merge queue CI to avoid duplicating reports
         # to codecov. See https://github.com/matplotlib/napari-matplotlib/issues/155
         if: github.event_name != 'merge_group'
