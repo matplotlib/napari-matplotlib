@@ -1,4 +1,6 @@
 name: Build docs
+permissions:
+  contents: read
 
 on:
 
@@ -18,12 +20,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - uses: actions/setup-python@v5
         with:
           python-version: "3.10"
 
-      - uses: tlambert03/setup-qt-libs@v1
+      - uses: tlambert03/setup-qt-libs@19e4ef2d781d81f5f067182e228b54ec90d23b76 # v1
 
       - name: Install Dependencies
         run: |
@@ -32,7 +36,7 @@ jobs:
           sudo apt install graphviz --yes
 
       - name: Build Docs
-        uses: aganders3/headless-gui@v2
+        uses: aganders3/headless-gui@f85dd6316993505dfc5f21839d520ae440c84816 # v2
         with:
           run: make html
           working-directory: ./docs
@@ -50,12 +54,14 @@ jobs:
     if: contains(github.ref, 'tags')
     steps:
     - uses: actions/checkout@v4
+      with:
+        persist-credentials: false
     - uses: actions/download-artifact@v4.3.0
       with:
         name: docs
 
     - name: Push to GitHub pages
-      uses: JamesIves/github-pages-deploy-action@v4
+      uses: JamesIves/github-pages-deploy-action@6c2d9db40f9296374acc17b90404b6e8864128c8 # v4
       with:
         folder: html
         ssh-key: ${{ secrets.DEPLOY_KEY }}
