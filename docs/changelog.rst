@@ -1,7 +1,13 @@
 Changelog
 =========
 
-2.1.0
+3.0.1
+-----
+Bug fixes
+~~~~~~~~~
+- Fix an error that happened when changing the contrast limit when the histogram widget was open
+
+3.0.0
 -----
 New features
 ~~~~~~~~~~~~
