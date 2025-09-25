@@ -37,9 +37,7 @@ def test_scatter_3D(make_napari_viewer, brain_data):
 
     viewer.add_image(brain_data[0], **brain_data[1], name="brain")
 
-    viewer.add_image(
-        brain_data[0] * -1.0, **brain_data[1], name="brain_reversed"
-    )
+    viewer.add_image(brain_data[0] * -1.0, **brain_data[1], name="brain_reversed")
     # De-select existing selection
     viewer.layers.selection.clear()
     axis = viewer.dims.last_used

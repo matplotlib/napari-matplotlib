@@ -19,9 +19,7 @@ def _are_different(a: QImage, b: QImage) -> bool:
     return False
 
 
-@pytest.mark.parametrize(
-    "Widget", [HistogramWidget, ScatterWidget, SliceWidget]
-)
+@pytest.mark.parametrize("Widget", [HistogramWidget, ScatterWidget, SliceWidget])
 def test_mpl_toolbar_buttons_checked(make_napari_viewer, Widget):
     """Test that the icons for checkable actions change when when a tool is selected.
 

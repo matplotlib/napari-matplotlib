@@ -100,9 +100,7 @@ class HistogramWidget(SingleAxesWidget):
         """
         super().on_update_layers()
         if self._valid_layer_selection:
-            self.layers[0].events.contrast_limits.connect(
-                self._update_contrast_lims
-            )
+            self.layers[0].events.contrast_limits.connect(self._update_contrast_lims)
 
         if not self.layers:
             return
@@ -170,8 +168,7 @@ class HistogramWidget(SingleAxesWidget):
             self.axes.hist(data.ravel(), bins=bins.tolist(), label=layer.name)
 
         self._contrast_lines = [
-            self.axes.axvline(lim, color="white")
-            for lim in layer.contrast_limits
+            self.axes.axvline(lim, color="white") for lim in layer.contrast_limits
         ]
         self.axes.legend()
 
@@ -197,9 +194,7 @@ class FeaturesHistogramWidget(SingleAxesWidget):
         self.layout().addWidget(QLabel("Key:"))
         self.layout().addWidget(self._key_selection_widget)
 
-        self._key_selection_widget.currentTextChanged.connect(
-            self._set_axis_keys
-        )
+        self._key_selection_widget.currentTextChanged.connect(self._set_axis_keys)
 
         self._update_layers(None)
 

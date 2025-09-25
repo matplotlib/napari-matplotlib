@@ -71,9 +71,7 @@ def assert_features_plot_changes(
     widget = widget_cls(viewer)
     viewer.add_points(data[0], **data[1])
     # Change the features data for the second layer
-    data[1]["features"] = {
-        name: data + 1 for name, data in data[1]["features"].items()
-    }
+    data[1]["features"] = {name: data + 1 for name, data in data[1]["features"].items()}
     viewer.add_points(data[0], **data[1])
     assert_plot_changes(viewer, widget, n_layers=1)
 

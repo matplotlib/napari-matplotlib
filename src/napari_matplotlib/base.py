@@ -83,9 +83,7 @@ class BaseNapariMPLWidget(QWidget):
         event : napari.utils.events.Event
             Event that triggered the callback.
         """
-        self.napari_theme_style_sheet = style_sheet_from_theme(
-            get_theme(event.value)
-        )
+        self.napari_theme_style_sheet = style_sheet_from_theme(get_theme(event.value))
         self._replace_toolbar_icons()
 
     def _napari_theme_has_light_bg(self) -> bool:
@@ -220,9 +218,7 @@ class NapariMPLWidget(BaseNapariMPLWidget):
         # z-step changed in viewer
         self.viewer.dims.events.current_step.connect(self._draw)
         # Layer selection changed in viewer
-        self.viewer.layers.selection.events.changed.connect(
-            self._update_layers
-        )
+        self.viewer.layers.selection.events.changed.connect(self._update_layers)
 
     @property
     def _valid_layer_selection(self) -> bool:
@@ -307,9 +303,7 @@ class NapariNavigationToolbar(NavigationToolbar2QT):
     def __init__(self, *args, **kwargs) -> None:  # type: ignore[no-untyped-def]
         super().__init__(*args, **kwargs)  # type: ignore[no-untyped-call]
         self.setIconSize(
-            from_napari_css_get_size_of(
-                "QtViewerPushButton", fallback=(28, 28)
-            )
+            from_napari_css_get_size_of("QtViewerPushButton", fallback=(28, 28))
         )
 
     def _update_buttons_checked(self) -> None:
@@ -324,15 +318,11 @@ class NapariNavigationToolbar(NavigationToolbar2QT):
                     QIcon(os.path.join(icon_dir, "Pan_checked.png"))
                 )
             else:
-                self._actions["pan"].setIcon(
-                    QIcon(os.path.join(icon_dir, "Pan.png"))
-                )
+                self._actions["pan"].setIcon(QIcon(os.path.join(icon_dir, "Pan.png")))
         if "zoom" in self._actions:
             if self._actions["zoom"].isChecked():
                 self._actions["zoom"].setIcon(
                     QIcon(os.path.join(icon_dir, "Zoom_checked.png"))
                 )
             else:
-                self._actions["zoom"].setIcon(
-                    QIcon(os.path.join(icon_dir, "Zoom.png"))
-                )
+                self._actions["zoom"].setIcon(QIcon(os.path.join(icon_dir, "Zoom.png")))

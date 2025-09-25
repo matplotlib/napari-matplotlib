@@ -9,16 +9,12 @@ from napari_matplotlib import FeaturesScatterWidget
 
 
 @pytest.mark.mpl_image_compare
-def test_features_scatter_widget_2D(
-    make_napari_viewer, points_with_features_data
-):
+def test_features_scatter_widget_2D(make_napari_viewer, points_with_features_data):
     viewer = make_napari_viewer()
     viewer.theme = "light"
     widget = FeaturesScatterWidget(viewer)
 
-    viewer.add_points(
-        points_with_features_data[0], **points_with_features_data[1]
-    )
+    viewer.add_points(points_with_features_data[0], **points_with_features_data[1])
     assert len(viewer.layers) == 1
     # De-select existing selection
     viewer.layers.selection.clear()
@@ -33,9 +29,7 @@ def test_features_scatter_widget_2D(
     return deepcopy(fig)
 
 
-def make_labels_layer_with_features() -> (
-    tuple[npt.NDArray[np.uint16], dict[str, Any]]
-):
+def make_labels_layer_with_features() -> tuple[npt.NDArray[np.uint16], dict[str, Any]]:
     label_image: npt.NDArray[np.uint16] = np.zeros((100, 100), dtype=np.uint16)
     for label_value, start_index in enumerate([10, 30, 50], start=1):
         end_index = start_index + 10
