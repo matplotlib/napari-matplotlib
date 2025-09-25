@@ -29,7 +29,7 @@ def _mock_up_theme() -> None:
     Based on:
     https://napari.org/stable/gallery/new_theme.html
     """
-    blue_theme = napari.utils.theme.get_theme("dark", False)
+    blue_theme = napari.utils.theme.get_theme("dark")
     blue_theme.label = "blue"
     blue_theme.background = "#4169e1"  # my favourite shade of blue
     napari.utils.theme.register_theme(

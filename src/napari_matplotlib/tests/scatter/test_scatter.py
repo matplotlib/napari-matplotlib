@@ -15,7 +15,9 @@ def test_scatter_2D(make_napari_viewer, astronaut_data):
     viewer.add_image(astronaut_data[0], **astronaut_data[1], name="astronaut")
 
     viewer.add_image(
-        astronaut_data[0] * -1, **astronaut_data[1], name="astronaut_reversed"
+        astronaut_data[0] * -1.0,
+        **astronaut_data[1],
+        name="astronaut_reversed",
     )
     # De-select existing selection
     viewer.layers.selection.clear()
@@ -36,7 +38,7 @@ def test_scatter_3D(make_napari_viewer, brain_data):
     viewer.add_image(brain_data[0], **brain_data[1], name="brain")
 
     viewer.add_image(
-        brain_data[0] * -1, **brain_data[1], name="brain_reversed"
+        brain_data[0] * -1.0, **brain_data[1], name="brain_reversed"
     )
     # De-select existing selection
     viewer.layers.selection.clear()

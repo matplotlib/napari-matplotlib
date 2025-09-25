@@ -8,7 +8,10 @@ from napari.layers import Image
 from napari.layers._multiscale_data import MultiScaleData
 from qtpy.QtWidgets import (
     QComboBox,
+    QFormLayout,
+    QGroupBox,
     QLabel,
+    QSpinBox,
     QVBoxLayout,
     QWidget,
 )
@@ -22,15 +25,32 @@ __all__ = ["HistogramWidget", "FeaturesHistogramWidget"]
 _COLORS = {"r": "tab:red", "g": "tab:green", "b": "tab:blue"}
 
 
-def _get_bins(data: npt.NDArray[Any]) -> npt.NDArray[Any]:
+def _get_bins(
+    data: npt.NDArray[Any],
+    num_bins: int = 100,
+) -> npt.NDArray[np.floating]:
+    """Create evenly spaced bins with a given interval.
+
+    Parameters
+    ----------
+    data : napari.layers.Layer.data
+        Napari layer data.
+    num_bins : integer, optional
+        Number of evenly-spaced bins to create. Defaults to 100.
+
+    Returns
+    -------
+    bin_edges : numpy.ndarray
+        Array of evenly spaced bin edges.
+    """
     if data.dtype.kind in {"i", "u"}:
         # Make sure integer data types have integer sized bins
-        step = np.ceil(np.ptp(data) / 100)
+        step = np.ceil(np.ptp(data) / num_bins)
         return np.arange(np.min(data), np.max(data) + step, step)
     else:
-        # For other data types, just have 100 evenly spaced bins
-        # (and 101 bin edges)
-        return np.linspace(np.min(data), np.max(data), 101)
+        # For other data types we can use exactly `num_bins` bins
+        # (and `num_bins` + 1 bin edges)
+        return np.linspace(np.min(data), np.max(data), num_bins + 1)
 
 
 class HistogramWidget(SingleAxesWidget):
@@ -47,6 +67,30 @@ class HistogramWidget(SingleAxesWidget):
         parent: QWidget | None = None,
     ):
         super().__init__(napari_viewer, parent=parent)
+
+        num_bins_widget = QSpinBox()
+        num_bins_widget.setRange(1, 100_000)
+        num_bins_widget.setValue(101)
+        num_bins_widget.setWrapping(False)
+        num_bins_widget.setKeyboardTracking(False)
+
+        # Set bins widget layout
+        bins_selection_layout = QFormLayout()
+        bins_selection_layout.addRow("num bins", num_bins_widget)
+
+        # Group the widgets and add to main layout
+        params_widget_group = QGroupBox("Params")
+        params_widget_group_layout = QVBoxLayout()
+        params_widget_group_layout.addLayout(bins_selection_layout)
+        params_widget_group.setLayout(params_widget_group_layout)
+        self.layout().addWidget(params_widget_group)
+
+        # Add callbacks
+        num_bins_widget.valueChanged.connect(self._draw)
+
+        # Store widgets for later usage
+        self.num_bins_widget = num_bins_widget
+
         self._update_layers(None)
         self.viewer.events.theme.connect(self._on_napari_theme_changed)
 
@@ -55,8 +99,17 @@ class HistogramWidget(SingleAxesWidget):
         Called when the selected layers are updated.
         """
         super().on_update_layers()
-        for layer in self.viewer.layers:
-            layer.events.contrast_limits.connect(self._update_contrast_lims)
+        if self._valid_layer_selection:
+            self.layers[0].events.contrast_limits.connect(
+                self._update_contrast_lims
+            )
+
+        if not self.layers:
+            return
+
+        # Reset the num bins based on new layer data
+        layer_data = self._get_layer_data(self.layers[0])
+        self._set_widget_nums_bins(data=layer_data)
 
     def _update_contrast_lims(self) -> None:
         for lim, line in zip(
@@ -66,11 +119,13 @@ class HistogramWidget(SingleAxesWidget):
 
         self.figure.canvas.draw()
 
-    def draw(self) -> None:
-        """
-        Clear the axes and histogram the currently selected layer/slice.
-        """
-        layer: Image = self.layers[0]
+    def _set_widget_nums_bins(self, data: npt.NDArray[Any]) -> None:
+        """Update num_bins widget with bins determined from the image data"""
+        bins = _get_bins(data)
+        self.num_bins_widget.setValue(bins.size - 1)
+
+    def _get_layer_data(self, layer: napari.layers.Layer) -> npt.NDArray[Any]:
+        """Get the data associated with a given layer"""
         data = layer.data
 
         if isinstance(layer.data, MultiScaleData):
@@ -85,9 +140,21 @@ class HistogramWidget(SingleAxesWidget):
         # Read data into memory if it's a dask array
         data = np.asarray(data)
 
+        return data
+
+    def draw(self) -> None:
+        """
+        Clear the axes and histogram the currently selected layer/slice.
+        """
+        layer: Image = self.layers[0]
+        data = self._get_layer_data(layer)
+
         # Important to calculate bins after slicing 3D data, to avoid reading
         # whole cube into memory.
-        bins = _get_bins(data)
+        bins = _get_bins(
+            data,
+            num_bins=self.num_bins_widget.value(),
+        )
 
         if layer.rgb:
             # Histogram RGB channels independently
@@ -209,10 +276,12 @@ class FeaturesHistogramWidget(SingleAxesWidget):
         # get the colormap from the layer depending on its type
         if isinstance(self.layers[0], napari.layers.Points):
             colormap = self.layers[0].face_colormap
-            self.layers[0].face_color = self.x_axis_key
+            if self.x_axis_key:
+                self.layers[0].face_color = self.x_axis_key
         elif isinstance(self.layers[0], napari.layers.Vectors):
             colormap = self.layers[0].edge_colormap
-            self.layers[0].edge_color = self.x_axis_key
+            if self.x_axis_key:
+                self.layers[0].edge_color = self.x_axis_key
         else:
             colormap = None
 
