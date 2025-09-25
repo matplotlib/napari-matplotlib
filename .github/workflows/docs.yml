@@ -3,7 +3,6 @@ permissions:
   contents: read
 
 on:
-
   pull_request:
     branches:
       - main
@@ -25,7 +24,7 @@ jobs:
 
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.10"
+          python-version: "3.13"
 
       - uses: tlambert03/setup-qt-libs@19e4ef2d781d81f5f067182e228b54ec90d23b76 # v1
 
@@ -53,16 +52,16 @@ jobs:
     needs: build-docs
     if: contains(github.ref, 'tags')
     steps:
-    - uses: actions/checkout@v4
-      with:
-        persist-credentials: false
-    - uses: actions/download-artifact@v4.3.0
-      with:
-        name: docs
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v4.3.0
+        with:
+          name: docs
 
-    - name: Push to GitHub pages
-      uses: JamesIves/github-pages-deploy-action@6c2d9db40f9296374acc17b90404b6e8864128c8 # v4
-      with:
-        folder: html
-        ssh-key: ${{ secrets.DEPLOY_KEY }}
-        repository-name: napari-matplotlib/napari-matplotlib.github.io
+      - name: Push to GitHub pages
+        uses: JamesIves/github-pages-deploy-action@6c2d9db40f9296374acc17b90404b6e8864128c8 # v4
+        with:
+          folder: html
+          ssh-key: ${{ secrets.DEPLOY_KEY }}
+          repository-name: napari-matplotlib/napari-matplotlib.github.io

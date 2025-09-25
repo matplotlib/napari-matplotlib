@@ -1,6 +1,14 @@
 Changelog
 =========
 
+4.0.0
+-----
+Dependencies
+~~~~~~~~~~~~
+
+- Dropped support for Python 3.10
+- Added explicit support and testing for Python 3.13
+
 3.0.1
 -----
 Bug fixes
