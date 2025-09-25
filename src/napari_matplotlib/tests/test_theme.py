@@ -10,17 +10,15 @@ from napari_matplotlib.base import NapariMPLWidget
     "theme_name, expected_icons",
     [("dark", "white"), ("light", "black")],
 )
-def test_theme_mpl_toolbar_icons(
-    make_napari_viewer, theme_name, expected_icons
-):
+def test_theme_mpl_toolbar_icons(make_napari_viewer, theme_name, expected_icons):
     """Check that the icons are taken from the correct folder for each napari theme."""
     viewer = make_napari_viewer()
     viewer.theme = theme_name
     path_to_icons = NapariMPLWidget(viewer)._get_path_to_icon()
     assert path_to_icons.exists(), "The theme points to non-existant icons."
-    assert (
-        path_to_icons.stem == expected_icons
-    ), "The theme is selecting unexpected icons."
+    assert path_to_icons.stem == expected_icons, (
+        "The theme is selecting unexpected icons."
+    )
 
 
 def _mock_up_theme() -> None:
@@ -32,9 +30,7 @@ def _mock_up_theme() -> None:
     blue_theme = napari.utils.theme.get_theme("dark")
     blue_theme.label = "blue"
     blue_theme.background = "#4169e1"  # my favourite shade of blue
-    napari.utils.theme.register_theme(
-        "blue", blue_theme, source="napari-mpl-tests"
-    )
+    napari.utils.theme.register_theme("blue", blue_theme, source="napari-mpl-tests")
 
 
 def test_theme_background_check(make_napari_viewer):
@@ -62,9 +58,7 @@ def test_theme_background_check(make_napari_viewer):
         ("light", "#3b3a39"),  # #3b3a39 is a brownish dark grey (almost black)
     ],
 )
-def test_titles_respect_theme(
-    make_napari_viewer, theme_name, expected_text_colour
-):
+def test_titles_respect_theme(make_napari_viewer, theme_name, expected_text_colour):
     """
     Test that the axis labels and titles are the correct color for the napari theme.
     """
@@ -114,9 +108,7 @@ def test_no_theme_side_effects(make_napari_viewer):
     ax.hist(normal_dist, bins=100)
     ax.set_xlabel("something unrelated to napari (x)")
     ax.set_ylabel("something unrelated to napari (y)")
-    ax.set_title(
-        "this plot style should not change with napari styles or themes"
-    )
+    ax.set_title("this plot style should not change with napari styles or themes")
     unrelated_figure.tight_layout()
 
     return unrelated_figure

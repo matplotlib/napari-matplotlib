@@ -54,20 +54,15 @@ class Interval:
         if self.lower is None and self.upper is None:
             helper_text = None
         elif self.lower is not None and self.upper is None:
-            helper_text = (
-                f"Select at least {self.lower} layers to generate plot"
-            )
+            helper_text = f"Select at least {self.lower} layers to generate plot"
         elif self.lower is None and self.upper is not None:
-            helper_text = (
-                f"Select at most {self.upper} layers to generate plot"
-            )
+            helper_text = f"Select at most {self.upper} layers to generate plot"
         elif self.lower == self.upper:
             helper_text = f"Select {self.lower} layers to generate plot"
 
         else:
             helper_text = (
-                f"Select between {self.lower} and "
-                f"{self.upper} layers to generate plot"
+                f"Select between {self.lower} and {self.upper} layers to generate plot"
             )
 
         if helper_text is not None:
@@ -80,9 +75,7 @@ def _has_id(nodes: list[tinycss2.ast.Node], id_name: str) -> bool:
     """
     Is `id_name` in IdentTokens in the list of CSS `nodes`?
     """
-    return any(
-        [node.type == "ident" and node.value == id_name for node in nodes]
-    )
+    return any([node.type == "ident" and node.value == id_name for node in nodes])
 
 
 def _get_dimension(nodes: list[tinycss2.ast.Node], id_name: str) -> int | None:
@@ -95,11 +88,7 @@ def _get_dimension(nodes: list[tinycss2.ast.Node], id_name: str) -> int | None:
     """
     cleaned_nodes = [node for node in nodes if node.type != "whitespace"]
     for name, _, value, _ in zip(*(iter(cleaned_nodes),) * 4, strict=False):
-        if (
-            name.type == "ident"
-            and value.type == "dimension"
-            and name.value == id_name
-        ):
+        if name.type == "ident" and value.type == "dimension" and name.value == id_name:
             return value.int_value
     warn(
         f"Unable to find DimensionToken for {id_name}",

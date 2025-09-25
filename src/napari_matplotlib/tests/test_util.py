@@ -10,6 +10,7 @@ from napari_matplotlib.util import Interval, from_napari_css_get_size_of
 def test_version_fallback(mocker):
     """Test the versioning fallback (in case setuptools_scm didn't work)"""
     import napari_matplotlib  # fmt: skip
+
     assert napari_matplotlib.__version__ != "unknown"  # type: ignore[attr-defined]
 
     mocker.patch.dict(sys.modules, {"napari_matplotlib._version": None})
@@ -70,9 +71,7 @@ def test_fallback_if_missing_dimensions(mocker):
     mocker.patch("napari.qt.get_current_stylesheet").return_value = test_css
     with pytest.warns(RuntimeWarning, match="Unable to find DimensionToken"):
         with pytest.warns(RuntimeWarning, match="Unable to find Flobble"):
-            assert from_napari_css_get_size_of("Flobble", (1, 2)) == QSize(
-                1, 2
-            )
+            assert from_napari_css_get_size_of("Flobble", (1, 2)) == QSize(1, 2)
 
 
 def test_fallback_if_prelude_not_in_css():
