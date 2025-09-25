@@ -62,7 +62,7 @@ class HistogramWidget(SingleAxesWidget):
         for lim, line in zip(
             self.layers[0].contrast_limits, self._contrast_lines, strict=False
         ):
-            line.set_xdata(lim)
+            line.set_xdata([lim])
 
         self.figure.canvas.draw()
 
