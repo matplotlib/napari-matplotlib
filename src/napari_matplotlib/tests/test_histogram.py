@@ -164,3 +164,13 @@ def test_change_contrast(make_napari_viewer, astronaut_data):
     # update contrast limits of image layer, and check no errors are thrown
     image_layer = viewer.layers[0]
     image_layer.contrast_limits = [2, 50]
+
+
+def test_select_labels_layer(make_napari_viewer):
+    """Test that no errors are thrown when the Histogram widget
+    is opened with a labels layer selected."""
+    viewer = make_napari_viewer()
+    viewer.add_labels(np.ones(shape=(5, 5, 5), dtype="uint8"))
+
+    widget = HistogramWidget(viewer)
+    viewer.window.add_dock_widget(widget)
