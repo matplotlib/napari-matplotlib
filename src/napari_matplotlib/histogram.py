@@ -99,15 +99,12 @@ class HistogramWidget(SingleAxesWidget):
         Called when the selected layers are updated.
         """
         super().on_update_layers()
-        if self._valid_layer_selection:
+        if self._valid_layer_selection and self.layers:
             self.layers[0].events.contrast_limits.connect(self._update_contrast_lims)
 
-        if not self.layers:
-            return
-
-        # Reset the num bins based on new layer data
-        layer_data = self._get_layer_data(self.layers[0])
-        self._set_widget_nums_bins(data=layer_data)
+            # Reset the num bins based on new layer data
+            layer_data = self._get_layer_data(self.layers[0])
+            self._set_widget_nums_bins(data=layer_data)
 
     def _update_contrast_lims(self) -> None:
         for lim, line in zip(
