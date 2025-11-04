@@ -194,7 +194,7 @@ requires = ["tox>=4.19"]
 env_list = ["py311", "py312", "py313"]
 isolate_build = true
 
-[tool.tox.gh-actions.python]
+[tool.tox.gh.python]
 py311 = ["3.11"]
 pt312 = ["3.12"]
 py313 = ["3.13"]
