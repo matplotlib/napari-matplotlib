@@ -207,11 +207,9 @@ commands = [[
         "pytest",
         "--mpl",
         "--mpl-generate-summary=html",
-        "--mpl-results-path={toxinidir}/reports",
+        "--mpl-results-path=./reports",
         "-v",
         "--color=yes",
         "--cov=napari_matplotlib",
         "--cov-report=xml"
 ]]
-
-# python -m pytest --mpl --mpl-generate-summary=html --mpl-results-path={toxinidir}/reports -v --color=yes --cov=napari_matplotlib --cov-report=xml
