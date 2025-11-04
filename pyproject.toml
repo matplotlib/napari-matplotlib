@@ -201,7 +201,17 @@ py313 = ["3.13"]
 
 [tool.tox.env.test]
 extras = ["testing"]
-commands = [
-    ["python", "-m", "pytest", "--mpl"]]
+commands = [[
+        "python",
+        "-m",
+        "pytest",
+        "--mpl",
+        "--mpl-generate-summary=html",
+        "--mpl-results-path={toxinidir}/reports",
+        "-v",
+        "--color=yes",
+        "--cov=napari_matplotlib",
+        "--cov-report=xml"
+]]
 
 # python -m pytest --mpl --mpl-generate-summary=html --mpl-results-path={toxinidir}/reports -v --color=yes --cov=napari_matplotlib --cov-report=xml
