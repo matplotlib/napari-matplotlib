@@ -74,3 +74,20 @@ enable_error_code = ["ignore-without-code", "redundant-expr", "truthy-bool"]
 [[tool.mypy.overrides]]
 module = ["napari_matplotlib/tests/*"]
 disallow_untyped_defs = false
+
+[tool.tox]
+requires = ["tox>=4.19"]
+env_list = ["py311", "py312", "py313"]
+isolate_build = true
+
+[tool.tox.gh-actions.python]
+py311 = ["3.11"]
+pt312 = ["3.12"]
+py313 = ["3.13"]
+
+[tool.tox.env.test]
+extras = ["testing"]
+commands = [
+    ["python", "-m", "pytest", "--mpl"]]
+
+# python -m pytest --mpl --mpl-generate-summary=html --mpl-results-path={toxinidir}/reports -v --color=yes --cov=napari_matplotlib --cov-report=xml
