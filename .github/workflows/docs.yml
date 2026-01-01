@@ -18,7 +18,7 @@ jobs:
     name: Build & Upload Artifact
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
 
@@ -41,7 +41,7 @@ jobs:
           working-directory: ./docs
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: docs
           path: docs/_build
@@ -52,15 +52,15 @@ jobs:
     needs: build-docs
     if: contains(github.ref, 'tags')
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
-      - uses: actions/download-artifact@v6.0.0
+      - uses: actions/download-artifact@v7.0.0
         with:
           name: docs
 
       - name: Push to GitHub pages
-        uses: JamesIves/github-pages-deploy-action@6c2d9db40f9296374acc17b90404b6e8864128c8 # v4
+        uses: JamesIves/github-pages-deploy-action@9d877eea73427180ae43cf98e8914934fe157a1a # v4
         with:
           folder: html
           ssh-key: ${{ secrets.DEPLOY_KEY }}
