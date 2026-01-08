@@ -14,8 +14,6 @@ filterwarnings = [
     "ignore:`np.bool8` is a deprecated alias for `np.bool_`:DeprecationWarning",
     # Coming from pydantic via napari
     "ignore:Pickle, copy, and deepcopy support will be removed from itertools in Python 3.14.:DeprecationWarning",
-    # Until we stop supporting older numpy versions (<2.1)
-    "ignore:(?s).*`newshape` keyword argument is deprecated.*$:DeprecationWarning",
 ]
 qt_api = "pyqt6"
 addopts = [
