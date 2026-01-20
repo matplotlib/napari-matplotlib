@@ -193,6 +193,9 @@ class NapariMPLWidget(BaseNapariMPLWidget):
         Current z-step of the napari viewer.
         """
         return self.viewer.dims.current_step[0]
+        if self.viewer.dims.ndim < 3:
+            return slice(None)
+        return self.viewer.dims.current_step[-3]
 
     def _on_napari_theme_changed(self, event: Event) -> None:
         """Update MPL toolbar and axis styling when `napari.Viewer.theme` is changed.
