@@ -2,8 +2,78 @@
 requires = ["setuptools", "setuptools_scm"]
 build-backend = "setuptools.build_meta"
 
+[project]
+name = "napari-matplotlib"
+description = "A plugin to use Matplotlib with napari"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "BSD-3-Clause" }
+authors = [{ name = "David Stansby", email = "d.stansby@ucl.ac.uk" }]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Framework :: napari",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Software Development :: Testing",
+]
+dependencies = ["matplotlib", "napari>=0.5", "numpy>=2", "tinycss2"]
+dynamic = ["version"]
+
+[project.urls]
+"Bug Tracker" = "https://github.com/matplotlib/napari-matplotlib/issues"
+Documentation = "https://napari-matplotlib.github.io"
+"Source Code" = "https://github.com/matplotlib/napari-matplotlib"
+"User Support" = "https://github.com/matplotlib/napari-matplotlib/issues"
+
+[project.entry-points."napari.manifest"]
+"napari-matplotlib" = "napari_matplotlib:napari.yaml"
+
+[dependency-groups]
+docs = [
+    "napari[all]",
+    "numpydoc",
+    "pydantic<2",
+    "pydata-sphinx-theme",
+    "sphinx",
+    "sphinx-automodapi",
+    "sphinx-gallery",
+]
+testing = [
+    "napari[pyqt6_experimental]>=0.5",
+    "numpy>=2.1",
+    "pooch",
+    "pyqt6",
+    "pytest",
+    "pytest-cov",
+    "pytest-mock",
+    "pytest-mpl",
+    "pytest-qt",
+    "tox",
+    "pytest-xvfb; sys_platform == 'linux'",
+]
+dev = [
+    { include-group = "testing" },
+    { include-group = "docs" }
+]
+
 [tool.setuptools_scm]
 write_to = "src/napari_matplotlib/_version.py"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.setuptools.package-data]
+"*" = ["*.yaml"]
 
 [tool.pytest.ini_options]
 filterwarnings = [
@@ -72,3 +142,28 @@ enable_error_code = ["ignore-without-code", "redundant-expr", "truthy-bool"]
 [[tool.mypy.overrides]]
 module = ["napari_matplotlib/tests/*"]
 disallow_untyped_defs = false
+
+[tool.tox]
+requires = ["tox>=4.19"]
+env_list = ["py311", "py312", "py313"]
+isolate_build = true
+
+[tool.tox.gh.python]
+py311 = ["3.11"]
+py312 = ["3.12"]
+py313 = ["3.13"]
+
+[tool.tox.env.test]
+extras = ["testing"]
+commands = [[
+        "python",
+        "-m",
+        "pytest",
+        "--mpl",
+        "--mpl-generate-summary=html",
+        "--mpl-results-path=./reports",
+        "-v",
+        "--color=yes",
+        "--cov=napari_matplotlib",
+        "--cov-report=xml",
+]]
