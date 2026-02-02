@@ -9,6 +9,12 @@ Dependencies
 - Dropped support for Python 3.10
 - Added explicit support and testing for Python 3.13
 
+3.0.2
+-----
+Bug fixes
+~~~~~~~~~
+- Fix an error when selecting a layer incompatible with the histogram widget.
+
 3.0.1
 -----
 Bug fixes
