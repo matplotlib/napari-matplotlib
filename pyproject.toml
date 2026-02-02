@@ -8,9 +8,7 @@ description = "A plugin to use Matplotlib with napari"
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "BSD-3-Clause" }
-authors = [
-    { name = "David Stansby", email = "d.stansby@ucl.ac.uk" },
-]
+authors = [{ name = "David Stansby", email = "d.stansby@ucl.ac.uk" }]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Framework :: napari",
@@ -22,12 +20,7 @@ classifiers = [
     "Programming Language :: Python :: 3 :: Only",
     "Topic :: Software Development :: Testing",
 ]
-dependencies = [
-    "matplotlib",
-    "napari>=0.5",
-    "numpy>=1.23",
-    "tinycss2",
-]
+dependencies = ["matplotlib", "napari>=0.5", "numpy>=2", "tinycss2"]
 dynamic = ["version"]
 
 [project.urls]
@@ -39,7 +32,7 @@ Documentation = "https://napari-matplotlib.github.io"
 [project.entry-points."napari.manifest"]
 "napari-matplotlib" = "napari_matplotlib:napari.yaml"
 
-[project.optional-dependencies]
+[dependency-groups]
 docs = [
     "napari[all]",
     "numpydoc",
@@ -51,6 +44,7 @@ docs = [
 ]
 testing = [
     "napari[pyqt6_experimental]>=0.5",
+    "numpy>=2.1",
     "pooch",
     "pyqt6",
     "pytest",
@@ -60,6 +54,10 @@ testing = [
     "pytest-qt",
     "tox",
     "pytest-xvfb; sys_platform == 'linux'",
+]
+dev = [
+    { include-group = "testing" },
+    { include-group = "docs" }
 ]
 
 [tool.setuptools_scm]
@@ -147,33 +145,6 @@ enable_error_code = ["ignore-without-code", "redundant-expr", "truthy-bool"]
 module = ["napari_matplotlib/tests/*"]
 disallow_untyped_defs = false
 
-[dependency-groups]
-docs = [
-    "napari[all]",
-    "numpydoc",
-    "pydantic<2",
-    "pydata-sphinx-theme",
-    "sphinx",
-    "sphinx-automodapi",
-    "sphinx-gallery",
-]
-test = [
-    "napari[pyqt6_experimental]>=0.5",
-    "pooch",
-    "pyqt6",
-    "pytest",
-    "pytest-cov",
-    "pytest-mock",
-    "pytest-mpl",
-    "pytest-qt",
-    "tox",
-    "pytest-xvfb; sys_platform == 'linux'",
-]
-dev = [
-    {include-group = "test"},
-    {include-group = "docs"},
-]
-
 [tool.tox]
 requires = ["tox>=4.19"]
 env_list = ["py311", "py312", "py313"]
@@ -196,5 +167,5 @@ commands = [[
         "-v",
         "--color=yes",
         "--cov=napari_matplotlib",
-        "--cov-report=xml"
+        "--cov-report=xml",
 ]]
