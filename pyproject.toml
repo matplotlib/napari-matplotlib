@@ -50,7 +50,7 @@ docs = [
     "sphinx-gallery",
 ]
 testing = [
-    "napari[pyqt6_experimental]>=0.4.18",
+    "napari[pyqt6_experimental]>=0.5",
     "pooch",
     "pyqt6",
     "pytest",
@@ -158,7 +158,7 @@ docs = [
     "sphinx-gallery",
 ]
 test = [
-    "napari[pyqt6_experimental]>=0.4.18",
+    "napari[pyqt6_experimental]>=0.5",
     "pooch",
     "pyqt6",
     "pytest",
@@ -196,7 +196,7 @@ isolate_build = true
 
 [tool.tox.gh.python]
 py311 = ["3.11"]
-pt312 = ["3.12"]
+py312 = ["3.12"]
 py313 = ["3.13"]
 
 [tool.tox.env.test]
